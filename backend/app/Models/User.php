@@ -17,10 +17,13 @@ class User extends Authenticatable
      *
      * @var list<string>
      */
+    protected $table = 'users';
+    protected $primaryKey = 'id_user';
     protected $fillable = [
-        'name',
+        'user',
         'email',
         'password',
+        'phone',
     ];
 
     /**
@@ -44,5 +47,10 @@ class User extends Authenticatable
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
         ];
+    }
+
+    public function stores() {
+        return $this->belongsToMany(Store::class, 'user_stores', 'fk1_id_user', 'fk2_id_store')
+                    ->withPivot('salary');
     }
 }
