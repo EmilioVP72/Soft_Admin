@@ -8,16 +8,20 @@ class Locality extends Model
 {
     protected $table = 'localities';
     protected $primaryKey = 'id_locality';
+    public $timestamps = true;
+
     protected $fillable = [
-        'locality', 
-        'fkl_id_municipality'
+        'locality',
+        'fk1_id_municipality'
     ];
 
-    public function municipality() {
-        return $this->belongsTo(Municipality::class, 'fkl_id_municipality');
+    public function municipality()
+    {
+        return $this->belongsTo(Municipality::class, 'fk1_id_municipality', 'id_municipality');
     }
 
-    public function stores() {
-        return $this->hasMany(Store::class, 'fkl_id_locality');
+    public function stores()
+    {
+        return $this->hasMany(Store::class, 'fk1_id_locality', 'id_locality');
     }
 }

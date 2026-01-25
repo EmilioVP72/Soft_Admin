@@ -19,6 +19,8 @@ class User extends Authenticatable
      */
     protected $table = 'users';
     protected $primaryKey = 'id_user';
+    public $timestamps = true;
+
     protected $fillable = [
         'user',
         'email',
@@ -49,8 +51,13 @@ class User extends Authenticatable
         ];
     }
 
-    public function stores() {
-        return $this->belongsToMany(Store::class, 'user_stores', 'fk1_id_user', 'fk2_id_store')
-                    ->withPivot('salary');
+    public function stores()
+    {
+        return $this->belongsToMany(
+            Store::class,
+            User_Store::class,
+            'fk1_id_user',
+            'fk2_id_store'
+        )->withPivot('salary');
     }
 }

@@ -8,16 +8,20 @@ class State extends Model
 {
     protected $table = 'states';
     protected $primaryKey = 'id_state';
-    protected $fillable = [
-        'state', 
-        'fk1_id_country'
-    ]; 
+    public $timestamps = true;
 
-    public function country() {
-        return $this->belongsTo(Country::class, 'fk1_id_country');
+    protected $fillable = [
+        'state',
+        'fk1_id_country'
+    ];
+
+    public function country()
+    {
+        return $this->belongsTo(Country::class, 'fk1_id_country', 'id_country');
     }
 
-    public function municipalities() {
-        return $this->hasMany(Municipality::class, 'fhl_id_state');
+    public function municipalities()
+    {
+        return $this->hasMany(Municipality::class, 'fk1_id_state', 'id_state');
     }
 }
