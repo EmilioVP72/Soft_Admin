@@ -10,7 +10,7 @@ class StoreResource extends JsonResource
     public function toArray($request)
     {
         return [
-            'id_store' => $this->id_store,
+            'id_store' => $this->id_store
             'store' => $this->store,
             'colony' => $this->colony,
             'street' => $this->street,
