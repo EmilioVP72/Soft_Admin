@@ -7,4 +7,6 @@ Route::get('/user', function (Request $request) {
     return $request->user();
 })->middleware('auth:sanctum');
 
-
+Route::prefix('stores')->group( function (){
+    require __DIR__.'/Store/store.php';
+});
