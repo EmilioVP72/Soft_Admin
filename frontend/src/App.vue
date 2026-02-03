@@ -1,18 +1,18 @@
-<script setup>
+<script setup lang="ts">
 import { ref, onMounted } from 'vue'
+import { RouterView, useRoute } from 'vue-router'
+import NavBar from './components/Navbar.vue'
 
-const message = ref('Cargando...')
+const route = useRoute()
 
-onMounted(async () => {
-  const response = await fetch('http://127.0.0.1:8000/api/stores/all')
-  const data = await response.json()
-  message.value = data.message
-})
 </script>
 
 <template>
-  <main style="padding: 2rem; font-family: Arial;">
-    <h1>Prueba Laravel + Vue 3</h1>
-    <p>{{ message }}</p>
-  </main>
+<header v-if="route.meta.showNavbar">
+    <NavBar />
+  </header>
+
+  <main>
+    <RouterView />
+  </main>  
 </template>

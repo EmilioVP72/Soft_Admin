@@ -59,24 +59,22 @@ class AuthController extends Controller
             $credentials = $request->only('email', 'password');
 
             if (!$token = JWTAuth::attempt($credentials)) {
-                return $this->errorResponse(
-                    'Las credenciales proporcionadas son incorrectas',
-                    401
-                );
+                return $this->errorResponse('Las credenciales son incorrectas', 401);
             }
 
-            $user = auth('api')->user();
+            $user = JWTAuth::user();
 
-            return $this->successResponse(
-                [
-                    'user' => new UserResource($user),
-                    'token' => $token,
-                    'token_type' => 'Bearer',
-                    'expires_in' => JWTAuth::factory()->getTTL() * 60
-                ],
-                'Autenticación exitosa',
-                200
-            );
+            if (!$user) {
+                return $this->errorResponse('Usuario no encontrado tras autenticación', 404);
+            }
+
+            return $this->successResponse([
+                'user' => new UserResource($user), 
+                'token' => $token,
+                'token_type' => 'Bearer',
+                'expires_in' => JWTAuth::factory()->getTTL() * 60
+            ], 'Autenticación exitosa', 200);
+
         } catch (JWTException $e) {
             return $this->errorResponse(
                 'Error al generar el token: ' . $e->getMessage(),
