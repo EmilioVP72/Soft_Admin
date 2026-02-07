@@ -36,4 +36,12 @@ class Department extends Model
             'fk1_id_supplier'
         )->withPivot('montos');
     }
+
+    /**
+     * Relación One to Many con TransactionDetail
+     */
+    public function transactionDetails()
+    {
+        return $this->hasMany(TransactionDetail::class, 'fk2_id_department', 'id_department');
+    }
 }
