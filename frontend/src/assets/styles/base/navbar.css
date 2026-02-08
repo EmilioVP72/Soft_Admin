@@ -1,0 +1,135 @@
+/* Variables globales del tema */
+:root{
+    --primary-color: #1e293b;
+    --color-button-background: #1179a2;
+}
+
+/* Contenedor principal del navbar */
+.navbar{
+    background-color: var(--primary-color);
+    padding: 1rem;
+    color: white;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+}
+
+/* Contenedor del menú y elementos del navbar */
+.menu-container{
+    display: flex;
+    justify-content: space-between; 
+    padding: 1rem auto;
+    align-items: center;
+    max-width: 250px;
+    margin: 0 0.5rem;
+    position: relative;
+}
+
+/* Estilos de los enlaces de navegación */
+.nav-links ul{
+    list-style: none;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 1rem;
+    margin: 0;
+    padding: 0;
+}
+
+.nav-links ul .link{
+    text-decoration: none;
+    color: white;
+    font-weight: bold;
+    font-size: large;
+    transition: color 0.3s;
+}
+
+.nav-links ul .link:hover{
+    color: aqua;
+}
+
+/* Botón de cerrar sesión */
+.logout-button{
+    background-color: var(--color-button-background);
+    border: none;
+    color: rgb(255, 255, 255);
+    padding: 0.5rem 1rem;
+    border-radius: 5px;
+    cursor: pointer;
+    font-weight: bold;
+    transition: background-color 0.3s, color 0.3s;
+}
+
+.logout-button:hover{
+    background-color: #00bbff;
+    color: black;
+}
+
+/* Botón hamburguesa para móviles */
+.menu-toggle{
+    display: none; 
+    background: none;
+    border: none;
+    color: white;
+    font-size: 1.8rem;
+    cursor: pointer;
+    z-index: 101;
+}
+
+/* Estilos responsivos para pantallas pequeñas */
+@media (max-width: 768px) {
+    .menu-toggle{
+        display: block; 
+    }
+
+    .navbar{
+        padding: 0.5rem 1rem 1rem 0rem;
+    }
+
+    .menu-container{
+        max-width: 50%;
+        margin: 0;
+    }
+
+
+    .nav-links {
+        display: none; 
+        position: absolute;
+        top: 100%;
+        left: 0;
+        width: 100%;
+        background-color: #1e293b;
+        padding: 1rem 0;
+        border-top: 1px solid #334155;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    }
+
+    .nav-links.open {
+        display: flex;
+        flex-direction: column;
+        align-items: center;        
+    }
+
+    .nav-links ul {
+        flex-direction: column;
+        width: 100%;
+        text-align: center;
+        gap: 0.5rem;
+    }
+
+    .nav-links ul li {
+        width: 100%;
+        padding: 0.5rem 0;
+    }
+
+    .nav-links ul .link {
+        display: block;
+        padding: 0.5rem 1rem;
+    }
+
+    .logout-button {
+        width: 90%;
+        max-width: 300px;
+        margin-top: 1rem;
+    }
+}
