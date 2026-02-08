@@ -1,0 +1,32 @@
+.graphics{
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    padding: 1rem;
+    align-items: center;
+    justify-content: center;
+    
+}
+
+.general-graphics{
+    width: 78.2rem;
+    height: auto;
+    background-color: cadetblue;
+    border-radius: 8px;
+    padding: 0.2rem 1rem 1rem 1rem;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    text-align: center;
+    color: white;
+}
+
+.graphics-for-stores{
+    margin-top: 1rem;
+    width: 78.2rem;
+    height: auto;
+    background-color: cadetblue;
+    border-radius: 8px;
+    padding: 0.2rem 1rem 1rem 1rem;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    text-align: center;
+    color: white;
+}
