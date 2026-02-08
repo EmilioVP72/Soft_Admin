@@ -2,21 +2,31 @@
 
 import { ref} from 'vue'
 import { RouterView, useRouter } from 'vue-router'
+import { useAuthStore } from '../stores/auth';
+import LoginServices from '../services/LoginServices';
 
 const router = useRouter();
+const authStore = useAuthStore();
 const isMenuOpen = ref(false);
 
 const menuItems = [
   { name: 'Dashboard', path: '/dashboard' },
+  
   // Agrega más elementos del menú según sea necesario
 ];
 
 const toggleMenu = () => {  isMenuOpen.value = !isMenuOpen.value; };
 
 const logout = () => {
-  localStorage.removeItem('token');
-  localStorage.removeItem('user');
-  router.push({ name: 'login' });
+    
+    LoginServices.logoutUser().then(() => {
+        authStore.logout();
+        router.push({ name: 'login' });
+    }).catch((error) => {
+        console.error('Error during logout:', error);
+    });
+    
+    
 };
 
 </script>
@@ -25,9 +35,7 @@ const logout = () => {
 
     <nav class="navbar">
         <section class="menu-container">
-            <button class="menu-toggle" @click="toggleMenu">
-                ☰
-            </button>
+            
 
             <div class="nav-links" :class="{ 'open': isMenuOpen }">
                 <ul>
@@ -44,9 +52,13 @@ const logout = () => {
                     </li>
                 </ul>
             </div>
+
+            <button class="menu-toggle" @click="toggleMenu">
+                ☰
+            </button>
         </section>
     </nav>
 
 </template>
 
-<style src="@/assets/css/views/base/navbar.css"></style>
+<style src="@/assets/styles/base/navbar.css"></style>
