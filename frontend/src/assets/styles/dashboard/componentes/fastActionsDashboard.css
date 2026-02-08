@@ -1,0 +1,40 @@
+.fast-action-dashboard{
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    padding: 1rem;
+    align-items: center;
+    justify-content: center;
+}
+
+.fast-action-dashboard h2{
+    color: #ffffff;
+    text-align: center;
+}
+
+.actions-container{
+    width: 78.2rem;
+    height: auto;
+    background-color: cadetblue;
+    border-radius: 8px;
+    padding: 0.2rem 1rem 1rem 1rem;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    text-align: center;
+}
+
+.actions{
+    display: flex;
+    gap: 2rem;
+    align-items: center;
+    justify-content: center;
+    margin: 2rem;
+}
+
+.action{
+    background: white;
+    padding: 1.5rem;
+    border-radius: 12px;
+    width: 300px;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+    text-align: center;
+}
