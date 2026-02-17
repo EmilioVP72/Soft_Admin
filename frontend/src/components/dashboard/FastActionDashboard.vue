@@ -1,4 +1,9 @@
-<script>
+<script setup lang="ts">
+import { 
+  DocumentCurrencyDollarIcon,
+  BanknotesIcon, 
+  TableCellsIcon
+} from '@heroicons/vue/24/outline';
 
 </script>
 
@@ -8,24 +13,27 @@
             <h2>Acciones Rápidas</h2>
             <section class="actions">
                 <section class="action">
+                    <DocumentCurrencyDollarIcon class="icon"/>
                     <h3>Realizar Factura</h3>
                     <p>Para crear una factura ingresando los datos necesarios</p>
-                    <RouterLink to="" class="btn btn-primary">
-                        Nuevo Usuario
+                    <RouterLink to="" class="btn-action">
+                        Crear Factura
                     </RouterLink>
                 </section>        
                 <section class="action">
-                    <h3>Realizar Factura</h3>
-                    <p>Para crear una factura ingresando los datos necesarios</p>
-                    <RouterLink to="" class="btn btn-primary">
-                        Nuevo Usuario
+                    <BanknotesIcon class="icon"/>
+                    <h3>Verificar Promociones</h3>
+                    <p>Calcular el total de ventas de un proveedor para obtener promociones</p>
+                    <RouterLink to="" class="btn-action">
+                        Calcular Promociones
                     </RouterLink>
                 </section>   
                 <section class="action">
-                    <h3>Realizar Factura</h3>
-                    <p>Para crear una factura ingresando los datos necesarios</p>
-                    <RouterLink to="" class="btn btn-primary">
-                        Nuevo Usuario
+                    <TableCellsIcon class="icon"/>
+                    <h3>Datos del Negocio</h3>
+                    <p>Visualizar datos sobre sucursales, empleados y otros aspectos del negocio</p>
+                    <RouterLink to="" class="btn-action">
+                        Ver Datos
                     </RouterLink>
                 </section>       
             </section>

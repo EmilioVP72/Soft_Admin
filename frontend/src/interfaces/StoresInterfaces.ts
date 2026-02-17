@@ -10,3 +10,12 @@ export interface Store {
         total_quantity: number;
     }
 }
+
+export interface StoreList {
+    success: boolean;
+    message: string;
+    data: {
+        id_store: number;
+        name: String;
+    }[]
+}

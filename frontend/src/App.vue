@@ -1,14 +1,11 @@
 <script setup lang="ts">
-import { ref, onMounted } from 'vue'
 import { RouterView, useRoute } from 'vue-router'
 import NavBar from './components/Navbar.vue'
-import SessionModal from '@/components/SessionModal.vue'
-import { useSessionMonitor } from '@/composables/useSessionMonitor'
-
-const { showWarningModal, isLoading, refreshToken, logout } = useSessionMonitor();
+import SessionModal from './components/SessionModal.vue'
+import { useSessionWarning } from './composables/useSessionWarning'
 
 const route = useRoute()
-
+const { showWarningModal, isLoading, refreshToken, logout } = useSessionWarning()
 
 </script>
 

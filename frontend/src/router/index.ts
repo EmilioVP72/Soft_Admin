@@ -9,7 +9,7 @@ const router = createRouter({
     {
       path: '/',         
       name: 'login',      
-      component: () => import('../views/auth/LoginView.vue') ,
+      component: () => import('@/views/auth/LoginView.vue') ,
       meta : { 
         showNavbar: false,
         requiresAuth: false 
@@ -18,12 +18,13 @@ const router = createRouter({
     {
       path: '/dashboard',
       name: 'dashboard',
-      component: () => import('../views/dashboard/DashboardView.vue'),
+      component: () => import('@/views/dashboard/DashboardView.vue'),
       meta : { 
         showNavbar: true,
         requiresAuth: true 
        }
-    }
+    },
+    
   ]
 })
 

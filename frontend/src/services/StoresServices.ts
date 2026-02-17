@@ -7,6 +7,10 @@ export default{
     },
 
     getSalesByDepartmentByStore(storeId: number){
-        return apiClient.get<Store>(`/sales/byDepartment/${storeId}`);
+        return apiClient.get<Store>(`/sales/byStore/${storeId}`);
+    },
+
+    getStores(){
+        return apiClient.get<Store[]>('/stores/all');
     }
 }
