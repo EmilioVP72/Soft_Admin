@@ -10,49 +10,48 @@ use App\Traits\UtilResponse;
 
 class StoreController extends Controller
 {
-    private $utilResponse;
+    use UtilResponse;
     private $storeRepository;
 
-    public function __construct(UtilResponse $utilResponse, StoreRepository $storeRepository)
+    public function __construct(StoreRepository $storeRepository)
     {
-        $this->utilResponse = $utilResponse;
         $this->storeRepository = $storeRepository;
     }
 
     public function index()
     {
-        return $this->utilResponse->successResponse(StoreResource::collection($this->storeRepository->all()), 'Tiendas obtenidas correctamente');
+        return $this->successResponse(StoreResource::collection($this->storeRepository->all()), 'Tiendas obtenidas correctamente');
     }
 
     public function show($id)
     {
         $store = $this->storeRepository->find($id);
         if ($store) {
-            return $this->utilResponse->successResponse(new StoreResource($store), 'Tienda encontrada');
+            return $this->successResponse(new StoreResource($store), 'Tienda encontrada');
         }
-        return $this->utilResponse->errorResponse('No existe la tienda');
+        return $this->errorResponse('No existe la tienda');
     }
 
     public function store(StoreRequest $request)
     {
         $store = $this->storeRepository->create($request->validated());
         if ($store) {
-            return $this->utilResponse->successResponse(new StoreResource($store), 'Tienda creada correctamente', 201);
+            return $this->successResponse(new StoreResource($store), 'Tienda creada correctamente', 201);
         }
-        return $this->utilResponse->errorResponse('Error al crear la tienda');
+        return $this->errorResponse('Error al crear la tienda');
     }
 
     public function update(StoreRequest $request, $id)
     {
         $store = $this->storeRepository->update($id, $request->validated());
-        return $this->utilResponse->successResponse(new StoreResource($store), 'Tienda actualizada correctamente');
+        return $this->successResponse(new StoreResource($store), 'Tienda actualizada correctamente');
     }
 
     public function destroy($id)
     {
         if ($this->storeRepository->delete($id)) {
-            return $this->utilResponse->successResponse(null, 'Tienda eliminada correctamente');
+            return $this->successResponse(null, 'Tienda eliminada correctamente');
         }
-        return $this->utilResponse->errorResponse('No se pudo eliminar la tienda o no existe');
+        return $this->errorResponse('No se pudo eliminar la tienda o no existe');
     }
 }
