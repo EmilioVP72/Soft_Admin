@@ -22,7 +22,13 @@ Route::get('/user', function (Request $request) {
     return $request->user();
 })->middleware('auth:api');
 
+
 // Rutas de Ventas/Sales
 Route::prefix('sales')->group(function () {
     require __DIR__ . '/Sale/sales.php';
+});
+
+// Rutas de Tiendas/Store
+Route::prefix('stores')->group(function () {
+    require __DIR__ . '/Store/stores.php';
 });
