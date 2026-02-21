@@ -1,0 +1,118 @@
+*{
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+.data-view{
+    display: flex;
+    flex-direction: column;
+    gap: clamp(1rem, 3vw, 1.25rem);
+    padding: clamp(1rem, 3vw, 1.25rem);
+    text-align: center;
+}
+
+.data-view h1{
+    font-size: clamp(1.75rem, 4vw, 2.5rem);
+    color: #333;
+}
+
+.data-view p{
+    font-size: clamp(1rem, 2.5vw, 1.2rem);
+    color: #666;
+}
+
+.component-section{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: clamp(0.75rem, 2vw, 1rem);
+}
+
+.component-select{
+    background-color: rgb(228, 227, 229);
+    padding: clamp(0.4rem, 1.5vw, 0.6rem);
+    font-size: clamp(0.875rem, 2vw, 1rem);
+    border: 1px solid #000000;
+    border-radius: 0.5rem;
+    min-width: clamp(10rem, 30vw, 13rem);
+    max-width: 100%;
+}
+
+.component-select option{
+    padding: clamp(0.4rem, 1.5vw, 0.6rem);
+    border-radius: 1rem;
+    background-color: #fff;
+}
+
+.component-view{
+    display: flex;
+    justify-content: center;
+    width: 100%;
+}
+
+.component-container{
+    display: flex;
+    align-items: center;
+    padding: clamp(1rem, 3vw, 1.25rem);
+    border: 1px solid #ccc;
+    border-radius: 10px;
+    background-color: #f9f9f9;
+    margin: 0 clamp(1rem, 10vw, 15rem);
+    width: 100%;
+    max-width: 100%;
+}
+
+/* Media Queries para tablets */
+@media screen and (max-width: 1024px) {
+    .component-container{
+        margin: 0 0.2rem;
+    }
+}
+
+/* Media Queries para dispositivos medianos */
+@media screen and (max-width: 768px) {
+    .data-view h1{
+        font-size: 1.75rem;
+    }
+    
+    .data-view p{
+        font-size: 1rem;
+    }
+    
+    .component-container{
+        margin: 0 0.2rem;
+        padding: 1rem;
+    }
+    
+    .component-select{
+        width: 100%;
+        max-width: 300px;
+    }
+}
+
+/* Media Queries para móviles */
+@media screen and (max-width: 480px) {
+    .data-view{
+        gap: 0.75rem;
+        padding: 0.75rem;
+    }
+    
+    .data-view h1{
+        font-size: 1.5rem;
+    }
+    
+    .data-view p{
+        font-size: 0.9rem;
+    }
+    
+    .component-container{
+        margin: 0 0.2rem;
+        padding: 0.75rem;
+        border-radius: 8px;
+    }
+    
+    .component-section{
+        gap: 0.5rem;
+    }
+}

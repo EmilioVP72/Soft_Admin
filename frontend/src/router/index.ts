@@ -24,6 +24,15 @@ const router = createRouter({
         requiresAuth: true 
        }
     },
+    {
+      path: '/data',
+      name: 'data',
+      component: () => import('@/views/data/DataView.vue'),
+      meta : { 
+        showNavbar: true,
+        requiresAuth: true 
+       }
+    }
     
   ]
 })

@@ -32,7 +32,7 @@ import {
                     <TableCellsIcon class="icon"/>
                     <h3>Datos del Negocio</h3>
                     <p>Visualizar datos sobre sucursales, empleados y otros aspectos del negocio</p>
-                    <RouterLink to="" class="btn-action">
+                    <RouterLink to="/data" class="btn-action">
                         Ver Datos
                     </RouterLink>
                 </section>       
