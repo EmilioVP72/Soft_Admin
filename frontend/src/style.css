@@ -1,11 +1,41 @@
 @import url('https://fonts.googleapis.com/css2?family=Libre+Baskerville:ital,wght@0,400..700;1,400..700&display=swap');
 
+:root {
+    --color-primary: #1e293b;
+    --color-button-background: #1179a2;
+    --color-button-hover: #00bbff;
+    --color-text-primary: #0b3d91;
+    --color-login-button: #38b6e6;
+    --color-login-button-hover: #2691b5;
+    --color-bg-main: #d4e8f6;
+    --color-bg-card: #f4f9fc;
+    --color-bg-section: cadetblue;
+    --color-text-white: #ffffff;
+    --color-border: #cbdff3;
+    --color-border-dark: #8294a6;
+    --color-icon: #0059ff;
+    --color-icon-hover: #0088ff;
+    --color-danger: #d94141;
+    --color-pdf-button: #ae5b27;
+    --color-pdf-button-hover: #d46b3e;
+    --color-excel-button: #27ae34;
+    --color-excel-button-hover: #2ecc71;
+    --color-modal-warning: #e67e22;
+    --color-modal-success: #27ae60;
+    --color-modal-danger: #c0392b;
+    --color-shadow: rgba(0, 0, 0, 0.1);
+    --color-shadow-hover: rgba(0, 0, 0, 0.2);
+    --border-radius-sm: clamp(6px, 1vw, 8px);
+    --border-radius-md: clamp(8px, 1.5vw, 12px);
+    --border-radius-lg: clamp(12px, 2vw, 16px);
+    --transition-base: 0.3s ease;
+}
+
 body{
     margin: 0;
     padding: 0;
-    background-color: #d4e8f6;
+    background-color: var(--color-bg-main);
     box-sizing: border-box;
-    
     font-family: 'Libre Baskerville', serif;
 }
 

@@ -61,7 +61,7 @@ const submitForm = async () => {
   try {
     
     const response = await LoginServices.loginUser({email: formData.email, password: formData.password});
-    authStore.setAuthData(response.data.token, response.data.user);
+    authStore.setAuthData(response.data.data.token, response.data.data.expires_in);
     router.push({ name: 'dashboard' });
 
   } catch (error) {
@@ -132,4 +132,4 @@ const submitForm = async () => {
   </div>
 </template>
 
-<style src="@/assets/css/views/auth/login/login.css" ></style>
+<style src="@/assets/styles/auth/login/login.css" ></style>

@@ -1,8 +1,0 @@
-:root{
-    --primary-color: #0b7691;
-    --color-button-background: #38b6e6;
-}
-
-.navbar{
-    background-color: var(--primary-color);
-}

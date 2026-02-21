@@ -1,9 +1,11 @@
 <script setup lang="ts">
-import { ref, onMounted } from 'vue'
 import { RouterView, useRoute } from 'vue-router'
 import NavBar from './components/Navbar.vue'
+import SessionModal from './components/SessionModal.vue'
+import { useSessionWarning } from './composables/useSessionWarning'
 
 const route = useRoute()
+const { showWarningModal, isLoading, refreshToken, logout } = useSessionWarning()
 
 </script>
 
@@ -14,5 +16,14 @@ const route = useRoute()
 
   <main>
     <RouterView />
+
+    <Teleport to="body">
+      <SessionModal 
+        v-if="showWarningModal" 
+        :isLoading="isLoading" 
+        @confirm="refreshToken" 
+        @cancel="logout"
+      />
+    </Teleport>
   </main>  
 </template>

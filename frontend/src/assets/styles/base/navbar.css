@@ -1,0 +1,122 @@
+.navbar{
+    background-color: var(--color-primary);
+    padding: clamp(0.75rem, 2vw, 1rem);
+    color: var(--color-text-white);
+    position: sticky;
+    top: 0;
+    z-index: 100;
+}
+
+.menu-container{
+    display: flex;
+    justify-content: space-between; 
+    padding: clamp(0.5rem, 1vw, 1rem) auto;
+    align-items: center;
+    max-width: clamp(200px, 30vw, 250px);
+    margin: 0 clamp(0.5rem, 1vw, 1rem);
+    position: relative;
+}
+
+.nav-links ul{
+    list-style: none;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: clamp(0.75rem, 2vw, 1rem);
+    margin: 0;
+    padding: 0;
+}
+
+.nav-links ul .link{
+    text-decoration: none;
+    color: var(--color-text-white);
+    font-weight: bold;
+    font-size: clamp(1rem, 1.5vw, 1.125rem);
+    transition: color var(--transition-base);
+}
+
+.nav-links ul .link:hover{
+    color: aqua;
+}
+
+.logout-button{
+    background-color: var(--color-button-background);
+    border: none;
+    color: var(--color-text-white);
+    padding: clamp(0.5rem, 1vw, 0.625rem) clamp(0.875rem, 2vw, 1rem);
+    border-radius: var(--border-radius-sm);
+    cursor: pointer;
+    font-weight: bold;
+    transition: background-color var(--transition-base), color var(--transition-base);
+}
+
+.logout-button:hover{
+    background-color: var(--color-button-hover);
+    color: black;
+}
+
+.menu-toggle{
+    display: none; 
+    background: none;
+    border: none;
+    color: var(--color-text-white);
+    font-size: clamp(1.5rem, 3vw, 1.8rem);
+    cursor: pointer;
+    z-index: 101;
+}
+
+@media (max-width: 768px) {
+    .menu-toggle{
+        display: block; 
+    }
+
+    .navbar{
+        padding: 0.5rem 1rem 1rem 0rem;
+    }
+
+    .menu-container{
+        max-width: 50%;
+        margin: 0;
+    }
+
+    .nav-links {
+        display: none; 
+        position: absolute;
+        top: 100%;
+        left: 0;
+        width: 100%;
+        background-color: #1e293b;
+        padding: 1rem 0;
+        border-top: 1px solid #334155;
+        box-shadow: 0 4px 6px var(--color-shadow);
+    }
+
+    .nav-links.open {
+        display: flex;
+        flex-direction: column;
+        align-items: center;        
+    }
+
+    .nav-links ul {
+        flex-direction: column;
+        width: 100%;
+        text-align: center;
+        gap: 0.5rem;
+    }
+
+    .nav-links ul li {
+        width: 100%;
+        padding: 0.5rem 0;
+    }
+
+    .nav-links ul .link {
+        display: block;
+        padding: 0.5rem 1rem;
+    }
+
+    .logout-button {
+        width: 90%;
+        max-width: 300px;
+        margin-top: 1rem;
+    }
+}

@@ -4,23 +4,23 @@ import type {LoginResponse} from '@/interfaces/AuthInterfaces';
 
 export const useAuthStore = defineStore('auth', () =>{
     const token = ref<string | null>(localStorage.getItem('token'));
-    const user = ref<LoginResponse['data']['user'] | null>(
-        localStorage.getItem('user') ? JSON.parse(localStorage.getItem('user') as string) : null
-    );
 
-    function setAuthData(newToken: string, newUser: LoginResponse['data']['user']) {
+    
+    function setAuthData(newToken: string, expiresIn: number){ 
         token.value = newToken;
-        user.value = newUser;
         localStorage.setItem('token', newToken);
-        localStorage.setItem('user', JSON.stringify(newUser));
+
+        const expirationTime = Date.now() + (expiresIn * 1000);
+        localStorage.setItem('tokenExpiration', expirationTime.toString());
+        
     }
 
     function logout(){
+        
         token.value = null;
-        user.value = null;
-        localStorage.removeItem('token');
-        localStorage.removeItem('user');
+        localStorage.clear();
     }
 
-    return { token, user, setAuthData, logout}
+    return { token, setAuthData, logout}
+
 })
