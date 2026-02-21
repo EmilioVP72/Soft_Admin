@@ -49,4 +49,12 @@ class Store extends Model
     {
         return $this->hasMany(Receipt_Type::class, 'fkl_id_store', 'id_store');
     }
+
+    /**
+     * Relación: Una tienda tiene muchos empleados
+     */
+    public function employees()
+    {
+        return $this->hasMany(Employee::class, 'fk_id_store', 'id_store');
+    }
 }

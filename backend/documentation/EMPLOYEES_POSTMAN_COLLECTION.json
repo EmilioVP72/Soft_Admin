@@ -1,0 +1,306 @@
+{
+  "info": {
+    "_postman_id": "employee-api-crud-collection",
+    "name": "Soft Admin - API Empleados (Employees)",
+    "description": "Colección completa de endpoints CRUD para la API de Empleados\n\nImportar esta colección en Postman:\n1. Abrir Postman\n2. Clic en Import\n3. Pegar este JSON o seleccionar el archivo\n4. Reemplazar {{BASE_URL}} con http://localhost o tu servidor\n5. Reemplazar {{TOKEN}} con tu token JWT válido",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "🔐 Autenticación",
+      "item": [
+        {
+          "name": "Login - Obtener Token",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"admin@example.com\",\n  \"password\": \"password\"\n}"
+            },
+            "url": {
+              "raw": "{{BASE_URL}}/api/auth/login",
+              "host": ["{{BASE_URL}}"],
+              "path": ["api", "auth", "login"]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "📋 Operaciones CRUD Básicas",
+      "item": [
+        {
+          "name": "GET - Obtener todos los empleados",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{TOKEN}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{BASE_URL}}/api/employees/all",
+              "host": ["{{BASE_URL}}"],
+              "path": ["api", "employees", "all"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "GET - Obtener empleado por ID",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{TOKEN}}"
+              }
+            ],
+            "url": {
+              "raw": "{{BASE_URL}}/api/employees/1",
+              "host": ["{{BASE_URL}}"],
+              "path": ["api", "employees", "1"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "POST - Crear nuevo empleado",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{TOKEN}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"full_name\": \"Carlos Mendez García\",\n  \"email\": \"carlos.mendez@example.com\",\n  \"phone\": \"555-1234\",\n  \"document_type\": \"DNI\",\n  \"document_number\": \"12345678A\",\n  \"position\": \"Manager\",\n  \"salary\": 3500.00,\n  \"status\": \"Active\",\n  \"hire_date\": \"2024-02-20\",\n  \"end_date\": null,\n  \"fk_id_user\": null,\n  \"fk_id_store\": 1,\n  \"notes\": \"Gerente principal de tienda\"\n}"
+            },
+            "url": {
+              "raw": "{{BASE_URL}}/api/employees/create",
+              "host": ["{{BASE_URL}}"],
+              "path": ["api", "employees", "create"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "PUT - Actualizar empleado",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{TOKEN}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"salary\": 4000.00,\n  \"status\": \"Active\",\n  \"notes\": \"Incremento de salario aprobado\"\n}"
+            },
+            "url": {
+              "raw": "{{BASE_URL}}/api/employees/update/1",
+              "host": ["{{BASE_URL}}"],
+              "path": ["api", "employees", "update", "1"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "DELETE - Eliminar empleado (Soft Delete)",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{TOKEN}}"
+              }
+            ],
+            "url": {
+              "raw": "{{BASE_URL}}/api/employees/delete/1",
+              "host": ["{{BASE_URL}}"],
+              "path": ["api", "employees", "delete", "1"]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "🔍 Filtros y Búsquedas",
+      "item": [
+        {
+          "name": "GET - Empleados activos",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{TOKEN}}"
+              }
+            ],
+            "url": {
+              "raw": "{{BASE_URL}}/api/employees/active",
+              "host": ["{{BASE_URL}}"],
+              "path": ["api", "employees", "active"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "GET - Empleados por tienda",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{TOKEN}}"
+              }
+            ],
+            "url": {
+              "raw": "{{BASE_URL}}/api/employees/store/1",
+              "host": ["{{BASE_URL}}"],
+              "path": ["api", "employees", "store", "1"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "GET - Empleados por posición",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{TOKEN}}"
+              }
+            ],
+            "url": {
+              "raw": "{{BASE_URL}}/api/employees/position/Manager",
+              "host": ["{{BASE_URL}}"],
+              "path": ["api", "employees", "position", "Manager"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "GET - Buscar empleado",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{TOKEN}}"
+              }
+            ],
+            "url": {
+              "raw": "{{BASE_URL}}/api/employees/search?q=carlos",
+              "host": ["{{BASE_URL}}"],
+              "path": ["api", "employees", "search"],
+              "query": [
+                {
+                  "key": "q",
+                  "value": "carlos"
+                }
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "🗑️ Gestión de Eliminados",
+      "item": [
+        {
+          "name": "GET - Empleados eliminados (Trashed)",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{TOKEN}}"
+              }
+            ],
+            "url": {
+              "raw": "{{BASE_URL}}/api/employees/trashed",
+              "host": ["{{BASE_URL}}"],
+              "path": ["api", "employees", "trashed"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "PUT - Restaurar empleado eliminado",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{TOKEN}}"
+              }
+            ],
+            "url": {
+              "raw": "{{BASE_URL}}/api/employees/restore/1",
+              "host": ["{{BASE_URL}}"],
+              "path": ["api", "employees", "restore", "1"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "DELETE - Eliminar permanentemente",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{TOKEN}}"
+              }
+            ],
+            "url": {
+              "raw": "{{BASE_URL}}/api/employees/force-delete/1",
+              "host": ["{{BASE_URL}}"],
+              "path": ["api", "employees", "force-delete", "1"]
+            }
+          },
+          "response": []
+        }
+      ]
+    }
+  ],
+  "variable": [
+    {
+      "key": "BASE_URL",
+      "value": "http://localhost",
+      "type": "string"
+    },
+    {
+      "key": "TOKEN",
+      "value": "your_jwt_token_here",
+      "type": "string"
+    }
+  ]
+}
