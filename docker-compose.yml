@@ -5,8 +5,7 @@ services:
     ports:
       - "8000:8000"
     volumes:
-      - ./backend:/app
-      - /app/vendor          
+      - ./backend:/app        
     depends_on:
       - db
     environment:
