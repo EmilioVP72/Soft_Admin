@@ -72,4 +72,12 @@ class User extends Authenticatable implements JWTSubject
             'fk2_id_store'
         )->withPivot('salary');
     }
+
+    /**
+     * Relación: Un usuario puede tener muchos empleados asignados
+     */
+    public function employees()
+    {
+        return $this->hasMany(Employee::class, 'fk_id_user', 'id_user');
+    }
 }
