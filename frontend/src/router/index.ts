@@ -32,6 +32,15 @@ const router = createRouter({
         showNavbar: true,
         requiresAuth: true 
        }
+    },
+    {
+      path: '/filtered-data',
+      name: 'filtered-data',
+      component: () => import('@/views/data/FilterDataView.vue'),
+      meta : { 
+        showNavbar: true,
+        requiresAuth: true 
+       }
     }
     
   ]

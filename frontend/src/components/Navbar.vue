@@ -12,7 +12,7 @@ const isMenuOpen = ref(false);
 const menuItems = [
   { name: 'Dashboard', path: '/dashboard' },
   { name: 'Datos', path: '/data' },
-  
+  { name: 'Filtros', path: '/filtered-data' },
   
   // Agrega más elementos del menú según sea necesario
 ];
