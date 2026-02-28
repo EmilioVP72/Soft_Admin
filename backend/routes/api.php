@@ -20,17 +20,24 @@ Route::get('/user', function (Request $request) {
 })->middleware('auth:api');
 
 
-// Rutas de Ventas/Sales
-Route::prefix('sales')->group(function () {
-    require __DIR__ . '/Sale/sales.php';
-});
+Route::middleware('auth:api')->group(function () {
+    // Rutas de Ventas/Sales
+    Route::prefix('sales')->group(function () {
+        require __DIR__ . '/Sale/sales.php';
+    });
 
-// Rutas de Tiendas/Store
-Route::prefix('stores')->group(function () {
-    require __DIR__ . '/Store/stores.php';
-});
+    // Rutas de Tiendas/Store
+    Route::prefix('stores')->group(function () {
+        require __DIR__ . '/Store/stores.php';
+    });
 
-// Rutas de Empleados/Employees
-Route::prefix('employees')->group(function () {
-    require __DIR__ . '/Employee/employees.php';
+    // Rutas de Empleados/Employees
+    Route::prefix('employees')->group(function () {
+        require __DIR__ . '/Employee/employees.php';
+    });
+
+    // Rutas de Localidades/Localities
+    Route::prefix('localities')->group(function () {
+        require __DIR__ . '/Locality/localities.php';
+    });
 });
