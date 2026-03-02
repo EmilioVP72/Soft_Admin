@@ -139,7 +139,9 @@ class EmployeeRepository
      */
     public function forceDelete($id)
     {
-        $employee = $this->employee->withTrashed()->find($id);
+        $employee = $this->employeeRepository->employee
+            ->withTrashed()
+            ->find($id);
         return $employee?->forceDelete();
     }
 }
