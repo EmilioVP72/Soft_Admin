@@ -62,3 +62,26 @@
     margin: 1rem 0;
     font-weight: 500;
 }
+
+/* ── Responsive ── */
+@media (max-width: 768px) {
+    .store-chart {
+        min-height: 280px;
+    }
+
+    .store-charts-container {
+        gap: clamp(0.75rem, 2vw, 1rem);
+    }
+}
+
+@media (max-width: 480px) {
+    .store-chart {
+        min-height: 220px;
+        padding: 0.5rem;
+    }
+
+    .general-graphics h2,
+    .graphics-for-stores h2 {
+        font-size: 1.1rem;
+    }
+}

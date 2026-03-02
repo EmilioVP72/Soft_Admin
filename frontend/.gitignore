@@ -22,3 +22,6 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+
+#guias
+documentation/VUE_PERSONAL_GUIDE.md

@@ -5,8 +5,11 @@ const apiClient = axios.create({
     headers: {
         'Content-Type': 'application/json',
     }
-})
+});
 
+// Seccion: "Interceptor de autenticacion"
+// Explicacion: Antes de cada peticion lee el token JWT de localStorage y lo inyecta
+//              en el header Authorization; asi el token siempre esta actualizado
 apiClient.interceptors.request.use((config) => {
     const token = localStorage.getItem('token');
     if (token) {

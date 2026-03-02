@@ -1,31 +1,147 @@
+/* Seccion: "Reset global"
+   Explicacion: Elimina padding y margin por defecto y aplica box-sizing
+                border-box para un modelo de caja predecible en toda la vista */
 *{
     padding: 0;
     margin: 0;
     box-sizing: border-box;
 }
 
-.data-view{
-  display: flex;
-    flex-direction: column;
-    align-items: center;
+/* ── Variables locales ──
+   Cambiar estos valores para personalizar la paleta de esta vista */
+.data-view {
+    --c-toolbar-bg:        #1e293b;   /* fondo de la barra superior */
+    --c-toolbar-bg-hover:  #2d4a6e;   /* hover del toolbar */
+    --c-table-head-bg:     #1e293b;   /* cabecera de la tabla */
+    --c-btn-primary-bg:    #1179a2;   /* botón principal (nuevo / editar) */
+    --c-btn-primary-hover: #0e6689;
+    --c-btn-danger-bg:     #b42d2d;
+    --c-btn-danger-hover:  #d23c3c;
+    --c-focus-ring:        rgba(17, 121, 162, 0.18);
+    --c-row-stripe:        #ddeef8;   /* filas alternas */
+    --c-delete-header-bg:  #b42d2d;
+    --c-delete-btn-bg:     #b42d2d;
+    --c-delete-btn-hover:  #d23c3c;
+    --c-cancel-border:     #1179a2;
+    --c-cancel-color:      #1179a2;
+    --c-cancel-hover-bg:   #1179a2;
 }
 
+/* ── Toolbar ── */
+.toolbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+    width: 100%;
+    padding: 0.75rem 1rem;
+    background: linear-gradient(135deg, var(--c-toolbar-bg) 0%, var(--c-toolbar-bg-hover) 100%);
+    border-radius: 8px;
+    margin-bottom: 0.5rem;
+}
+
+.toolbar h1 {
+    color: white;
+    font-size: clamp(1rem, 2vw + 0.5rem, 1.4rem);
+    margin: 0;
+}
+
+.toolbar-actions {
+    display: flex;
+    gap: 0.6rem;
+    flex-wrap: wrap;
+}
+
+.btn-new {
+    padding: 0.45rem 1.1rem;
+    background-color: white;
+    color: var(--c-btn-primary-bg);
+    border: 2px solid white;
+    border-radius: 6px;
+    font-size: 0.875rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+.btn-new:hover {
+    background-color: var(--c-btn-primary-bg);
+    color: white;
+    border-color: white;
+}
+
+.btn-print {
+    padding: 0.45rem 1.1rem;
+    background-color: transparent;
+    color: white;
+    border: 2px solid white;
+    border-radius: 6px;
+    font-size: 0.875rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+.btn-print:hover {
+    background-color: white;
+    color: var(--c-btn-primary-bg);
+}
+
+/* ── Botones de acción ── */
+.action-button {
+    border: none;
+    border-radius: 4px;
+    padding: 0.3rem 0.7rem;
+    font-size: 0.8rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color 0.2s ease, transform 0.1s ease;
+    margin: 0.2rem;
+}
+
+.edit-button {
+    background-color: var(--c-btn-primary-bg);
+    color: white;
+}
+
+.edit-button:hover {
+    background-color: var(--c-btn-primary-hover);
+}
+
+.delete-button {
+    background-color: var(--c-btn-danger-bg);
+    color: white;
+}
+
+.delete-button:hover {
+    background-color: var(--c-btn-danger-hover);
+}
+
+.action-button:active {
+    transform: scale(0.96);
+}
+
+/* Seccion: "Tabla de datos"
+   Explicacion: Contenedor con sombra y la tabla principal con los registros de sucursales;
+                las filas pares llevan fondo gris para facilitar la lectura */
 .table-section {
     margin-top: 20px;
     border-radius: 8px;
-    overflow: hidden;
+    overflow-x: auto;
+    overflow-y: visible;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-
+    width: 100%;
 }
 
 .stores-table {
     width: 100%;
+    min-width: 640px;
     border-collapse: collapse;
-    overflow-x: auto;
 }
 
 .table-header {
-    background-color: rgb(6, 92, 95);
+    background: linear-gradient(135deg, var(--c-table-head-bg) 0%, var(--c-toolbar-bg-hover) 100%);
 }
 
 .header-row {
@@ -45,12 +161,15 @@
     text-align: center;
     border: 1px solid black;
     font-size: clamp(0.75rem, 1.2vw + 0.3rem, 1rem);
+    white-space: nowrap;
 }
 
 .data-row:nth-child(even){
-    background-color: rgb(223, 223, 223);
+    background-color: var(--c-row-stripe);
 }
 
+/* Seccion: "Media queries"
+   Explicacion: Ajustes de font-size y padding para pantallas medianas y pequeñas */
 /* Media Queries para ajustes específicos */
 @media (max-width: 768px) {
     .stores-table {
@@ -76,4 +195,106 @@
         padding: 0.4rem;
         font-size: 0.75rem;
     }
+}
+
+/* ── Modal de confirmacion de eliminacion ── */
+/* Seccion: "Overlay del confirm"
+   Explicacion: Mismo patron que el modal del formulario: fondo oscuro centrado */
+.delete-overlay {
+    position: fixed;
+    inset: 0;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1100;
+    padding: 1rem;
+}
+
+.delete-card {
+    background-color: #fff;
+    border-radius: 10px;
+    width: 100%;
+    max-width: 400px;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.25);
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+
+.delete-header {
+    background-color: var(--c-delete-header-bg);
+    color: white;
+    padding: 0.9rem 1.25rem;
+    font-size: 1rem;
+    font-weight: 700;
+}
+
+.delete-body {
+    padding: 1.25rem 1.5rem 0.75rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+}
+
+.delete-body p {
+    font-size: 0.95rem;
+    color: rgb(30, 30, 30);
+    margin: 0;
+}
+
+.delete-warning {
+    font-size: 0.82rem !important;
+    color: rgb(130, 130, 130) !important;
+}
+
+.delete-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 0.75rem;
+    padding: 1rem 1.5rem;
+    border-top: 1px solid rgb(220, 220, 220);
+}
+
+.btn-cancel-delete {
+    padding: 0.45rem 1.2rem;
+    border: 2px solid var(--c-cancel-border);
+    background: transparent;
+    color: var(--c-cancel-color);
+    border-radius: 5px;
+    font-size: 0.9rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+.btn-cancel-delete:hover:not(:disabled) {
+    background-color: var(--c-cancel-hover-bg);
+    color: white;
+}
+
+.btn-confirm-delete {
+    padding: 0.45rem 1.4rem;
+    background-color: var(--c-delete-btn-bg);
+    color: white;
+    border: none;
+    border-radius: 5px;
+    font-size: 0.9rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color 0.2s ease, transform 0.1s ease;
+}
+
+.btn-confirm-delete:hover:not(:disabled) {
+    background-color: var(--c-delete-btn-hover);
+}
+
+.btn-confirm-delete:active {
+    transform: scale(0.97);
+}
+
+.btn-cancel-delete:disabled,
+.btn-confirm-delete:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
 }

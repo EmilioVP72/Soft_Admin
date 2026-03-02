@@ -24,7 +24,6 @@ watch(selectedOption, async (newValue) => {
             totalQuantity: sale.total_quantity,
             totalSales: sale.total_sales
         }));
-        console.log('Ventas por Sucursal:', storesSales.value);
     } catch (error) {
         
     }

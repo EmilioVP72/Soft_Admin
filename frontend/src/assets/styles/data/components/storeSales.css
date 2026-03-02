@@ -1,3 +1,14 @@
+/* ── Variables locales ── */
+* {
+    --c-table-head-bg:    #1e293b;
+    --c-table-head-hover: #2d4a6e;
+    --c-row-stripe:       #ddeef8;
+    --c-select-border:    #8294a6;
+    --c-select-bg:        #f4f9fc;
+    --c-select-focus:     #1179a2;
+    --c-select-focus-ring: rgba(17, 121, 162, 0.18);
+}
+
 *{
     padding: 0;
     margin: 0;
@@ -22,10 +33,20 @@
     padding: clamp(0.4rem, 1.5vw, 0.6rem);
     font-size: clamp(0.875rem, 2vw, 1rem);
     border-radius: 5px;
-    border: 1px solid #000000;
-    background-color: rgb(230, 228, 228);
+    border: 1px solid var(--c-select-border);
+    background-color: var(--c-select-bg);
     min-width: clamp(200px, 50vw, 300px);
     max-width: 100%;
+    color: #1e293b;
+    font-family: inherit;
+    cursor: pointer;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.component-select:focus {
+    outline: none;
+    border-color: var(--c-select-focus);
+    box-shadow: 0 0 0 3px var(--c-select-focus-ring);
 }
 
 .component-select option{
@@ -35,7 +56,7 @@
 
 .table-header{
     font-size: clamp(1rem, 2.5vw, 1.3rem);
-    background-color: rgb(6, 92, 95);
+    background: linear-gradient(135deg, var(--c-table-head-bg) 0%, var(--c-table-head-hover) 100%);
     color: white;
 }
 
@@ -52,7 +73,7 @@
 }
 
 tr:nth-child(even) {
-    background-color: rgb(223, 223, 223);
+    background-color: var(--c-row-stripe);
 }
 
 /* Media Queries para dispositivos pequeños */

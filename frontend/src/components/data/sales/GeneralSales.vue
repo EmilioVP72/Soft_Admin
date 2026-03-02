@@ -5,13 +5,11 @@ const salesData = ref<Array<{ department: string; totalQuantity: number; totalSa
 onMounted(async () => {
     try {
         const response = await StoresServices.getSalesByDepartment();
-        console.log('API Response for General Sales:', response.data.data);
         salesData.value = response.data.data.map((sale: { department: string; total_quantity: number; total_sales: number }) => ({
             department: sale.department,
             totalQuantity: sale.total_quantity,
             totalSales: sale.total_sales
         }));
-        console.log('General Sales Data:', salesData.value);
     } catch (error) {
         console.error('Error fetching general sales data:', error);
     }

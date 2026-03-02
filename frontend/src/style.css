@@ -1,21 +1,40 @@
 @import url('https://fonts.googleapis.com/css2?family=Libre+Baskerville:ital,wght@0,400..700;1,400..700&display=swap');
 
 :root {
-    --color-primary: #1e293b;
-    --color-button-background: #1179a2;
-    --color-button-hover: #00bbff;
-    --color-text-primary: #0b3d91;
-    --color-login-button: #38b6e6;
-    --color-login-button-hover: #2691b5;
-    --color-bg-main: #d4e8f6;
-    --color-bg-card: #f4f9fc;
-    --color-bg-section: cadetblue;
+    /* ── Paleta principal (azules) ── */
+    --color-primary: #1e293b;           /* Azul oscuro — navbar, headers */
+    --color-primary-mid: #2d4a6e;       /* Azul medio — gradientes, hover de primary */
+    --color-accent: #1179a2;            /* Azul acento — botones, bordes activos */
+    --color-accent-hover: #0e6689;      /* Azul acento hover */
+    --color-accent-light: #38b6e6;      /* Azul claro — login button, highlights */
+    --color-accent-light-hover: #2691b5;
+
+    /* ── Fondos ── */
+    --color-bg-main: #d4e8f6;           /* Fondo global */
+    --color-bg-card: #f4f9fc;           /* Tarjetas / paneles */
+    --color-bg-section: #1e6f8e;        /* Secciones de fondo medio (fastActions, reports) */
+
+    /* ── Textos ── */
     --color-text-white: #ffffff;
+    --color-text-primary: #0b3d91;      /* Títulos de formulario */
+
+    /* ── Bordes ── */
     --color-border: #cbdff3;
     --color-border-dark: #8294a6;
-    --color-icon: #0059ff;
-    --color-icon-hover: #0088ff;
+
+    /* ── Iconos ── */
+    --color-icon: #1179a2;
+    --color-icon-hover: #0e6689;
+
+    /* ── Aliases de compatibilidad (no rompen código existente) ── */
+    --color-button-background: var(--color-accent);
+    --color-button-hover: var(--color-accent-hover);
+    --color-login-button: var(--color-accent-light);
+    --color-login-button-hover: var(--color-accent-light-hover);
+
+    /* ── Estados / semánticos ── */
     --color-danger: #d94141;
+    --color-danger-hover: #b83030;
     --color-pdf-button: #ae5b27;
     --color-pdf-button-hover: #d46b3e;
     --color-excel-button: #27ae34;
@@ -23,6 +42,8 @@
     --color-modal-warning: #e67e22;
     --color-modal-success: #27ae60;
     --color-modal-danger: #c0392b;
+
+    /* ── Sombras / radios / transiciones ── */
     --color-shadow: rgba(0, 0, 0, 0.1);
     --color-shadow-hover: rgba(0, 0, 0, 0.2);
     --border-radius-sm: clamp(6px, 1vw, 8px);

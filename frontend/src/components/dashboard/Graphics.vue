@@ -44,15 +44,17 @@ const storeCharts = ref<Array<{
 onMounted(async () => {
     // Cargar gráfica general
     try {
-        const response = await StoresServices.getSalesByDepartment();        
-        const departments = response.data.data.map((item: { department: string; }) => item.department);
-        const sales = response.data.data.map((item: { totalSales: number; }) => item.totalSales);
+        const response = await StoresServices.getSalesByDepartment();  
+        const data = response.data.data.map((item: { department: string; total_sales: number; }) => ({
+            department: item.department,
+            totalSales: item.total_sales
+        }));
         chartData.value = {
-            labels: departments,
+            labels: data.map(item => item.department),
             datasets: [
                 {
                 label: 'Ingresos Totales',
-                data: sales,
+                data: data.map(item => item.totalSales),
                 backgroundColor: 'rgba(75, 192, 192, 0.5)',
                 borderColor: 'rgba(75, 192, 192, 1)',
                 borderWidth: 1
@@ -74,27 +76,29 @@ onMounted(async () => {
     try {
         const storesResponse = await StoresServices.getStores();
         const stores = storesResponse.data.data;
-        console.log('Sucursales obtenidas:', stores);
 
         // Crear una gráfica por cada sucursal
         for (let i = 0; i < stores.length; i++) {
             const store = stores[i];
             try {
                 const response = await StoresServices.getSalesByDepartmentByStore(store.id);
-                const departments = response.data.data.map((item: { department: string; }) => item.department);
-                const sales = response.data.data.map((item: { totalSales: number; }) => item.totalSales);
+                const data = response.data.data.map((item: { department: string; total_sales: number; }) => ({
+                    department: item.department,
+                    totalSales: item.total_sales
+                }));
                 
+
                 const colorIndex = i % colors.length;
                 
                 storeCharts.value.push({
                     storeId: store.id,
                     storeName: store.name,
                     chartData: {
-                        labels: departments,
+                        labels: data.map(item => item.department),
                         datasets: [
                             {
                                 label: 'Ingresos Totales',
-                                data: sales,
+                                data: data.map(item => item.totalSales),
                                 backgroundColor: colors[colorIndex].bg,
                                 borderColor: colors[colorIndex].border,
                                 borderWidth: 1

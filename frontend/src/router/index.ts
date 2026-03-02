@@ -34,15 +34,14 @@ const router = createRouter({
        }
     },
     {
-      path: '/filtered-data',
-      name: 'filtered-data',
-      component: () => import('@/views/data/FilterDataView.vue'),
+      path: '/calculate',
+      name: 'calculate',
+      component: () => import('@/views/calculate/CalculateView.vue'),
       meta : { 
         showNavbar: true,
         requiresAuth: true 
        }
     }
-    
   ]
 })
 
