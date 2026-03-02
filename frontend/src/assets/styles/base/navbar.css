@@ -12,9 +12,15 @@
     justify-content: space-between; 
     padding: clamp(0.5rem, 1vw, 1rem) auto;
     align-items: center;
-    max-width: clamp(200px, 30vw, 250px);
+    width: 100%;
+    max-width: 100%;
     margin: 0 clamp(0.5rem, 1vw, 1rem);
     position: relative;
+}
+
+.nav-links{
+    width: 100%;
+    margin-right: clamp(0.5rem, 1vw, 1rem);
 }
 
 .nav-links ul{
@@ -22,9 +28,14 @@
     display: flex;
     flex-direction: row;
     align-items: center;
+    width: 100%;
     gap: clamp(0.75rem, 2vw, 1rem);
     margin: 0;
     padding: 0;
+}
+
+.nav-links ul li:last-child{
+    margin-left: auto;
 }
 
 .nav-links ul .link{

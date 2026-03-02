@@ -2,15 +2,17 @@
 
 import { ref} from 'vue'
 import { RouterView, useRouter } from 'vue-router'
-import { useAuthStore } from '../stores/auth';
-import LoginServices from '../services/LoginServices';
+import { useAuthStore } from '@/stores/auth';
+import LoginServices from '@/services/LoginServices';
 
 const router = useRouter();
 const authStore = useAuthStore();
 const isMenuOpen = ref(false);
 
 const menuItems = [
-  { name: 'Dashboard', path: '/dashboard' },
+  { name: 'Inicio', path: '/dashboard' },
+  { name: 'Datos', path: '/data' },
+  { name: 'Calculos', path: '/calculate' },
   
   // Agrega más elementos del menú según sea necesario
 ];

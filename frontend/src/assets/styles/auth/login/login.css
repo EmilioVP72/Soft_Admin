@@ -83,3 +83,34 @@
 .submit-button:hover{
     background-color: var(--color-login-button-hover);
 }
+
+/* ── Responsive ── */
+@media (max-width: 480px) {
+    .login-container {
+        padding: 1.75rem 1.5rem;
+        border-radius: clamp(20px, 6vw, 35px);
+        width: 100%;
+        max-width: 100%;
+        margin: 0 1rem;
+    }
+
+    .form-group input {
+        width: 100%;
+        min-width: unset;
+    }
+}
+
+@media (max-width: 360px) {
+    .login-container {
+        padding: 1.5rem 1.25rem;
+        margin: 0 0.5rem;
+    }
+
+    .login-container h1 {
+        font-size: 1.4rem;
+    }
+
+    .login-container h2 {
+        font-size: 1rem;
+    }
+}

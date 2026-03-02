@@ -1,0 +1,129 @@
+/* ── Reset ── */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+/* ── Contenedor principal ── */
+.calculate-view {
+    display: flex;
+    flex-direction: column;
+    gap: clamp(1rem, 3vw, 1.25rem);
+    padding: clamp(1rem, 3vw, 1.25rem);
+}
+
+/* ── Sección de encabezado ── */
+.calculate-view .view-header {
+    background: linear-gradient(135deg, var(--color-primary) 0%, #2d4a6e 100%);
+    border-radius: var(--border-radius-md);
+    padding: clamp(1.25rem, 3vw, 1.75rem) clamp(1.5rem, 4vw, 2rem);
+    color: var(--color-text-white);
+    box-shadow: 0 4px 12px var(--color-shadow);
+}
+
+.calculate-view .view-header h1 {
+    font-size: clamp(1.5rem, 3.5vw, 2.25rem);
+    font-weight: 700;
+    margin-bottom: 0.4rem;
+    letter-spacing: 0.02em;
+}
+
+.calculate-view .view-header p {
+    font-size: clamp(0.875rem, 2vw, 1rem);
+    opacity: 0.85;
+    max-width: 65ch;
+    line-height: 1.5;
+}
+
+/* ── Sección de control (selector de componente) ── */
+.calculate-view .component-section {
+    display: flex;
+    align-items: center;
+    gap: clamp(0.75rem, 2vw, 1rem);
+    background-color: var(--color-bg-card);
+    border: 1px solid var(--color-border);
+    border-radius: var(--border-radius-md);
+    padding: clamp(0.75rem, 2vw, 1rem) clamp(1rem, 3vw, 1.5rem);
+    box-shadow: 0 2px 6px var(--color-shadow);
+}
+
+.calculate-view .component-label {
+    font-size: clamp(0.875rem, 1.5vw, 1rem);
+    font-weight: 600;
+    color: var(--color-primary);
+    white-space: nowrap;
+}
+
+.calculate-view .component-select {
+    background-color: #fff;
+    padding: clamp(0.4rem, 1vw, 0.55rem) clamp(0.75rem, 1.5vw, 1rem);
+    font-size: clamp(0.875rem, 1.5vw, 0.95rem);
+    border: 1px solid var(--color-border-dark);
+    border-radius: var(--border-radius-sm);
+    min-width: clamp(10rem, 25vw, 14rem);
+    color: var(--color-primary);
+    cursor: pointer;
+    transition: border-color var(--transition-base), box-shadow var(--transition-base);
+    font-family: inherit;
+}
+
+.calculate-view .component-select:focus {
+    outline: none;
+    border-color: var(--color-button-background);
+    box-shadow: 0 0 0 3px rgba(17, 121, 162, 0.15);
+}
+
+/* ── Área de visualización del componente ── */
+.calculate-view .component-view {
+    display: flex;
+    justify-content: center;
+    width: 100%;
+}
+
+.calculate-view .component-container {
+    background-color: var(--color-bg-card);
+    border: 1px solid var(--color-border);
+    border-radius: var(--border-radius-lg);
+    padding: clamp(1rem, 3vw, 1.5rem);
+    width: 100%;
+    max-width: 900px;
+    box-shadow: 0 2px 8px var(--color-shadow);
+}
+
+/* ── Media Queries ── */
+@media screen and (max-width: 768px) {
+    .calculate-view .component-section {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .calculate-view .component-select {
+        width: 100%;
+        max-width: 100%;
+    }
+
+    .calculate-view .component-container {
+        padding: 1rem;
+    }
+}
+
+@media screen and (max-width: 480px) {
+    .calculate-view {
+        gap: 0.75rem;
+        padding: 0.75rem;
+    }
+
+    .calculate-view .view-header {
+        padding: 1rem 1.25rem;
+    }
+
+    .calculate-view .view-header h1 {
+        font-size: 1.4rem;
+    }
+
+    .calculate-view .component-container {
+        padding: 0.75rem;
+        border-radius: var(--border-radius-md);
+    }
+}

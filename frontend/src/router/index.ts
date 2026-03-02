@@ -24,7 +24,24 @@ const router = createRouter({
         requiresAuth: true 
        }
     },
-    
+    {
+      path: '/data',
+      name: 'data',
+      component: () => import('@/views/data/DataView.vue'),
+      meta : { 
+        showNavbar: true,
+        requiresAuth: true 
+       }
+    },
+    {
+      path: '/calculate',
+      name: 'calculate',
+      component: () => import('@/views/calculate/CalculateView.vue'),
+      meta : { 
+        showNavbar: true,
+        requiresAuth: true 
+       }
+    }
   ]
 })
 

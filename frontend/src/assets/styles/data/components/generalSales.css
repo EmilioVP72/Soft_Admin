@@ -1,0 +1,74 @@
+/* ── Variables locales ── */
+* {
+    --c-table-head-bg:     #1e293b;
+    --c-table-head-hover:  #2d4a6e;
+    --c-row-stripe:        #ddeef8;
+}
+
+*{
+    padding: 0;
+    margin: 0;
+    box-sizing: border-box;
+}
+
+.sales-table {
+    width: 100%;
+    border-collapse: collapse;
+    overflow-x: auto;
+    display: block;
+}
+
+.table-header {
+    background: linear-gradient(135deg, var(--c-table-head-bg) 0%, var(--c-table-head-hover) 100%);
+}
+
+.header-row {
+    color: white;
+    font-size: clamp(0.875rem, 1.5vw + 0.5rem, 1.2rem);
+}
+
+.header-cell {
+    padding: clamp(0.5rem, 2vw, 1rem);
+    text-align: center;
+    border: 1px solid black;
+    white-space: nowrap;
+}
+
+.data-cell {
+    padding: clamp(0.5rem, 1.5vw, 0.75rem);
+    text-align: center;
+    border: 1px solid black;
+    font-size: clamp(0.75rem, 1.2vw + 0.3rem, 1rem);
+}
+
+.data-row:nth-child(even){
+    background-color: var(--c-row-stripe);
+}
+
+/* Media Queries para ajustes específicos */
+@media (max-width: 768px) {
+    .sales-table {
+        font-size: 0.875rem;
+    }
+    
+    .header-cell,
+    .data-cell {
+        min-width: 80px;
+    }
+}
+
+@media (max-width: 480px) {
+    .sales-table {
+        font-size: 0.75rem;
+    }
+    
+    .header-cell {
+        padding: 0.4rem;
+        font-size: 0.8rem;
+    }
+    
+    .data-cell {
+        padding: 0.35rem;
+        min-width: 60px;
+    }
+}

@@ -1,0 +1,110 @@
+/* ── Variables locales ── */
+* {
+    --c-table-head-bg:    #1e293b;
+    --c-table-head-hover: #2d4a6e;
+    --c-row-stripe:       #ddeef8;
+    --c-select-border:    #8294a6;
+    --c-select-bg:        #f4f9fc;
+    --c-select-focus:     #1179a2;
+    --c-select-focus-ring: rgba(17, 121, 162, 0.18);
+}
+
+*{
+    padding: 0;
+    margin: 0;
+    box-sizing: border-box;
+}
+
+.component-section{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: clamp(0.75rem, 2vw, 1.5rem);
+    padding: clamp(0.5rem, 2vw, 1rem);
+}
+
+.component-label{
+    font-size: clamp(1rem, 2.5vw, 1.2rem);
+    text-align: center;
+}
+
+.component-select{
+    padding: clamp(0.4rem, 1.5vw, 0.6rem);
+    font-size: clamp(0.875rem, 2vw, 1rem);
+    border-radius: 5px;
+    border: 1px solid var(--c-select-border);
+    background-color: var(--c-select-bg);
+    min-width: clamp(200px, 50vw, 300px);
+    max-width: 100%;
+    color: #1e293b;
+    font-family: inherit;
+    cursor: pointer;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.component-select:focus {
+    outline: none;
+    border-color: var(--c-select-focus);
+    box-shadow: 0 0 0 3px var(--c-select-focus-ring);
+}
+
+.component-select option{
+    padding: clamp(0.4rem, 1.5vw, 0.6rem);
+    font-size: clamp(0.875rem, 2vw, 1rem);
+}
+
+.table-header{
+    font-size: clamp(1rem, 2.5vw, 1.3rem);
+    background: linear-gradient(135deg, var(--c-table-head-bg) 0%, var(--c-table-head-hover) 100%);
+    color: white;
+}
+
+.table-header .table-row .table-cell{
+    padding: clamp(0.5rem, 1.5vw, 0.7rem);
+    border: 1px solid #000000;
+    font-size: clamp(0.875rem, 2vw, 1rem);
+}
+
+.table-body .table-row .table-cell{
+    padding: clamp(0.5rem, 1.5vw, 0.7rem);
+    border: 1px solid #000000;
+    font-size: clamp(0.875rem, 2vw, 1rem);
+}
+
+tr:nth-child(even) {
+    background-color: var(--c-row-stripe);
+}
+
+/* Media Queries para dispositivos pequeños */
+@media screen and (max-width: 768px) {
+    .component-section{
+        width: 100%;
+        padding: 1rem;
+    }
+    
+    .component-select{
+        width: 100%;
+        max-width: 100%;
+    }
+    
+    .table-header .table-row .table-cell,
+    .table-body .table-row .table-cell{
+        padding: 0.4rem;
+        font-size: 0.875rem;
+    }
+}
+
+/* Media Queries para dispositivos muy pequeños */
+@media screen and (max-width: 480px) {
+    .component-label{
+        font-size: 1rem;
+    }
+    
+    .table-header .table-row .table-cell,
+    .table-body .table-row .table-cell{
+        padding: 0.3rem;
+        font-size: 0.8rem;
+    }
+}
+
