@@ -188,8 +188,7 @@ class EmployeeController extends Controller
 
     public function forceDelete($id)
     {
-        $employee = $this->employeeRepository->
-            ->find($id)
+        $employee = $this->employeeRepository->employee
             ->withTrashed()
             ->find($id);
         
