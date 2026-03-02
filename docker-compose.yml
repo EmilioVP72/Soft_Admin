@@ -1,0 +1,47 @@
+services: 
+  backend:
+    build: ./backend
+    container_name: laravel_backend
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./backend:/app        
+    depends_on:
+      - db
+    environment:
+      DB_HOST: db
+      DB_PORT: 5432
+      DB_DATABASE: soft_admin
+      DB_USERNAME: user
+      DB_PASSWORD: devteam777
+    command: >
+      sh -c "composer install && 
+            php artisan key:generate &&
+            php artisan serve --host=0.0.0.0 --port=8000"
+
+  frontend:
+    build: ./frontend
+    container_name: vue_frontend
+    ports:
+      - "5173:5173"
+    volumes:
+      - ./frontend:/app
+      - /app/node_modules      
+    depends_on:
+      - backend
+
+  db:
+    image: postgres:16.11-alpine3.21
+    container_name: postgres_db
+    ports: 
+      - "65432:5432"
+    environment:
+      POSTGRES_USER: user
+      POSTGRES_PASSWORD: devteam777
+      POSTGRES_DB: soft_admin
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./init-postgres.sql:/docker-entrypoint-initdb.d/init.sql
+
+volumes:
+  postgres_data:

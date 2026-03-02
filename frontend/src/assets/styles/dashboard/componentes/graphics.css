@@ -1,0 +1,87 @@
+.graphics{
+    display: flex;
+    flex-direction: column;
+    gap: clamp(0.75rem, 2vw, 1rem);
+    padding: clamp(0.75rem, 2vw, 1rem);
+    align-items: center;
+    justify-content: center;
+}
+
+.general-graphics{
+    width: clamp(320px, 90vw, 1252px);
+    height: auto;
+    background-color:white;
+    border-radius: var(--border-radius-md);
+    padding: clamp(0.5rem, 1.5vw, 1rem) clamp(0.75rem, 2vw, 1rem) clamp(0.75rem, 2vw, 1rem) clamp(0.75rem, 2vw, 1rem);
+    box-shadow: 0 2px 4px var(--color-shadow);
+    text-align: center;
+    color: rgb(0, 0, 0);
+}
+
+.general-graphics h2{
+    font-size: clamp(1.25rem, 3vw, 1.5rem);
+    margin: clamp(0.5rem, 1vw, 0.75rem) 0;
+}
+
+.graphics-for-stores{
+    margin-top: clamp(0.75rem, 2vw, 1rem);
+    width: clamp(320px, 90vw, 1252px);
+    height: auto;
+    background-color: white;
+    border-radius: var(--border-radius-md);
+    padding: clamp(0.5rem, 1.5vw, 1rem) clamp(0.75rem, 2vw, 1rem) clamp(0.75rem, 2vw, 1rem) clamp(0.75rem, 2vw, 1rem);
+    box-shadow: 0 2px 4px var(--color-shadow);
+    text-align: center;
+    color: rgb(0, 0, 0);
+}
+
+.graphics-for-stores h2{
+    font-size: clamp(1.25rem, 3vw, 1.5rem);
+    margin: clamp(0.5rem, 1vw, 0.75rem) 0;
+}
+
+.store-charts-container {
+    display: flex;
+    flex-direction: column;
+    gap: clamp(1rem, 2vw, 1.5rem);
+    margin-top: clamp(1rem, 2vw, 1.5rem);
+}
+
+.store-chart {
+    width: 100%;
+    min-height: 400px;
+    padding: clamp(0.75rem, 2vw, 1rem);
+    background-color: #f9f9f9;
+    border-radius: var(--border-radius-md);
+    border: 1px solid #e0e0e0;
+}
+
+.error-message {
+    color: #d32f2f;
+    padding: 1rem;
+    margin: 1rem 0;
+    font-weight: 500;
+}
+
+/* ── Responsive ── */
+@media (max-width: 768px) {
+    .store-chart {
+        min-height: 280px;
+    }
+
+    .store-charts-container {
+        gap: clamp(0.75rem, 2vw, 1rem);
+    }
+}
+
+@media (max-width: 480px) {
+    .store-chart {
+        min-height: 220px;
+        padding: 0.5rem;
+    }
+
+    .general-graphics h2,
+    .graphics-for-stores h2 {
+        font-size: 1.1rem;
+    }
+}

@@ -1,79 +1,65 @@
+@import url('https://fonts.googleapis.com/css2?family=Libre+Baskerville:ital,wght@0,400..700;1,400..700&display=swap');
+
 :root {
-  font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
-  line-height: 1.5;
-  font-weight: 400;
+    /* ── Paleta principal (azules) ── */
+    --color-primary: #1e293b;           /* Azul oscuro — navbar, headers */
+    --color-primary-mid: #2d4a6e;       /* Azul medio — gradientes, hover de primary */
+    --color-accent: #1179a2;            /* Azul acento — botones, bordes activos */
+    --color-accent-hover: #0e6689;      /* Azul acento hover */
+    --color-accent-light: #38b6e6;      /* Azul claro — login button, highlights */
+    --color-accent-light-hover: #2691b5;
 
-  color-scheme: light dark;
-  color: rgba(255, 255, 255, 0.87);
-  background-color: #242424;
+    /* ── Fondos ── */
+    --color-bg-main: #d4e8f6;           /* Fondo global */
+    --color-bg-card: #f4f9fc;           /* Tarjetas / paneles */
+    --color-bg-section: #1e6f8e;        /* Secciones de fondo medio (fastActions, reports) */
 
-  font-synthesis: none;
-  text-rendering: optimizeLegibility;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-}
+    /* ── Textos ── */
+    --color-text-white: #ffffff;
+    --color-text-primary: #0b3d91;      /* Títulos de formulario */
 
-a {
-  font-weight: 500;
-  color: #646cff;
-  text-decoration: inherit;
-}
-a:hover {
-  color: #535bf2;
-}
+    /* ── Bordes ── */
+    --color-border: #cbdff3;
+    --color-border-dark: #8294a6;
 
-body {
-  margin: 0;
-  display: flex;
-  place-items: center;
-  min-width: 320px;
-  min-height: 100vh;
-}
+    /* ── Iconos ── */
+    --color-icon: #1179a2;
+    --color-icon-hover: #0e6689;
 
-h1 {
-  font-size: 3.2em;
-  line-height: 1.1;
-}
+    /* ── Aliases de compatibilidad (no rompen código existente) ── */
+    --color-button-background: var(--color-accent);
+    --color-button-hover: var(--color-accent-hover);
+    --color-login-button: var(--color-accent-light);
+    --color-login-button-hover: var(--color-accent-light-hover);
 
-button {
-  border-radius: 8px;
-  border: 1px solid transparent;
-  padding: 0.6em 1.2em;
-  font-size: 1em;
-  font-weight: 500;
-  font-family: inherit;
-  background-color: #1a1a1a;
-  cursor: pointer;
-  transition: border-color 0.25s;
-}
-button:hover {
-  border-color: #646cff;
-}
-button:focus,
-button:focus-visible {
-  outline: 4px auto -webkit-focus-ring-color;
+    /* ── Estados / semánticos ── */
+    --color-danger: #d94141;
+    --color-danger-hover: #b83030;
+    --color-pdf-button: #ae5b27;
+    --color-pdf-button-hover: #d46b3e;
+    --color-excel-button: #27ae34;
+    --color-excel-button-hover: #2ecc71;
+    --color-modal-warning: #e67e22;
+    --color-modal-success: #27ae60;
+    --color-modal-danger: #c0392b;
+
+    /* ── Sombras / radios / transiciones ── */
+    --color-shadow: rgba(0, 0, 0, 0.1);
+    --color-shadow-hover: rgba(0, 0, 0, 0.2);
+    --border-radius-sm: clamp(6px, 1vw, 8px);
+    --border-radius-md: clamp(8px, 1.5vw, 12px);
+    --border-radius-lg: clamp(12px, 2vw, 16px);
+    --transition-base: 0.3s ease;
 }
 
-.card {
-  padding: 2em;
+body{
+    margin: 0;
+    padding: 0;
+    background-color: var(--color-bg-main);
+    box-sizing: border-box;
+    font-family: 'Libre Baskerville', serif;
 }
 
-#app {
-  max-width: 1280px;
-  margin: 0 auto;
-  padding: 2rem;
-  text-align: center;
-}
-
-@media (prefers-color-scheme: light) {
-  :root {
-    color: #213547;
-    background-color: #ffffff;
-  }
-  a:hover {
-    color: #747bff;
-  }
-  button {
-    background-color: #f9f9f9;
-  }
+*, *::before, *::after {
+  box-sizing: inherit;
 }

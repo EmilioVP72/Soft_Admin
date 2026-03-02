@@ -1,18 +1,29 @@
-<script setup>
-import { ref, onMounted } from 'vue'
+<script setup lang="ts">
+import { RouterView, useRoute } from 'vue-router'
+import NavBar from './components/Navbar.vue'
+import SessionModal from './components/SessionModal.vue'
+import { useSessionWarning } from './composables/useSessionWarning'
 
-const message = ref('Cargando...')
+const route = useRoute()
+const { showWarningModal, isLoading, refreshToken, logout } = useSessionWarning()
 
-onMounted(async () => {
-  const response = await fetch('http://127.0.0.1:8000/api/test')
-  const data = await response.json()
-  message.value = data.message
-})
 </script>
 
 <template>
-  <main style="padding: 2rem; font-family: Arial;">
-    <h1>Prueba Laravel + Vue 3</h1>
-    <p>{{ message }}</p>
-  </main>
+<header v-if="route.meta.showNavbar">
+    <NavBar />
+  </header>
+
+  <main>
+    <RouterView />
+
+    <Teleport to="body">
+      <SessionModal 
+        v-if="showWarningModal" 
+        :isLoading="isLoading" 
+        @confirm="refreshToken" 
+        @cancel="logout"
+      />
+    </Teleport>
+  </main>  
 </template>
