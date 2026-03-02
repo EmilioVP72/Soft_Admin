@@ -1,0 +1,108 @@
+<script setup lang="ts">
+import { ref, computed } from 'vue';
+import { CalculatePromotion, TotalySalesByPromotion } from '@/interfaces/CalculateInterfaces';
+
+const formInput = ref({
+    date: '',
+    totaly_sales: 0
+});
+
+const dataList = ref<CalculatePromotion[]>([]);
+
+const calculateTable = computed<TotalySalesByPromotion[]>(() => {
+    let temporalTotaly = 0;
+    return dataList.value.map(item => {
+        temporalTotaly += item.totaly_sales;
+        return {
+            ...item,
+            acumulated_sales: temporalTotaly
+        };
+    });
+});
+
+const addRow = () => {
+    if (!formInput.value.date || formInput.value.totaly_sales <= 0) {
+        alert('Por favor, ingresa una fecha y un valor de ventas válido.');
+        return;
+    }
+
+    dataList.value.push({
+        id: crypto.randomUUID(),
+        date: formInput.value.date,
+        totaly_sales: formInput.value.totaly_sales
+    });
+
+    formInput.value.date = '';
+    formInput.value.totaly_sales = 0;
+};
+
+</script>
+
+<template>
+    <div class="promotions-view">
+        <h1>Calculadora de Promociones</h1>
+
+        <div class="form-section">
+            <h2>Agregar Registro de Ventas</h2>
+
+            <form @submit.prevent="addRow">
+                <div>
+                    <label>Fecha</label>
+                    <input
+                        v-model="formInput.date"
+                        type="date"
+                    />
+                </div>
+
+                <div>
+                    <label>Total Ventas ($)</label>
+                    <input
+                        v-model.number="formInput.totaly_sales"
+                        type="number"
+                        min="0"
+                        step="0.01"
+                    />
+                </div>
+
+                <button type="submit">Insertar</button>
+            </form>
+        </div>
+
+        <div class="table-section">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Fecha</th>
+                        <th>Total Ventas</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    <tr v-if="calculateTable.length === 0">
+                        <td colspan="2">No hay datos. Inserta un registro arriba.</td>
+                    </tr>
+
+                    <tr v-for="row in calculateTable" :key="row.id">
+                        <td>{{ row.date }}</td>
+                        <td>$ {{ row.totaly_sales.toFixed(2) }}</td>
+                    </tr>
+                </tbody>
+
+                <tfoot v-if="calculateTable.length > 0">
+                    <tr>
+                        <td>Total Acumulado</td>
+                        <td>$ {{ calculateTable[calculateTable.length - 1].acumulated_sales.toFixed(2) }}</td>
+                    </tr>
+                </tfoot>
+            </table>
+        </div>
+
+        <div class="actions">
+            <button disabled>Exportar PDF</button>
+            <button disabled>Exportar Excel</button>
+        </div>
+    </div>
+</template>
+
+<style src="@/assets/styles/calculate/components/promotions.css" scoped>
+</style>

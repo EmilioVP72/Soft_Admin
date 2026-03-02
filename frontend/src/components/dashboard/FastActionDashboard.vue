@@ -11,20 +11,20 @@ import {
     <div class="fast-action-dashboard">
         <section class="actions-container">
             <h2>Acciones Rápidas</h2>
-            <section class="actions">
-                <section class="action">
+            <section class="actions" >
+                <!--<section class="action" >
                     <DocumentCurrencyDollarIcon class="icon"/>
                     <h3>Realizar Factura</h3>
                     <p>Para crear una factura ingresando los datos necesarios</p>
-                    <RouterLink to="" class="btn-action">
+                    <RouterLink to="" class="btn-action" >
                         Crear Factura
                     </RouterLink>
-                </section>        
+                </section>  IGNORE -->     
                 <section class="action">
                     <BanknotesIcon class="icon"/>
                     <h3>Verificar Promociones</h3>
                     <p>Calcular el total de ventas de un proveedor para obtener promociones</p>
-                    <RouterLink to="" class="btn-action">
+                    <RouterLink to="/calculate" class="btn-action">
                         Calcular Promociones
                     </RouterLink>
                 </section>   
@@ -32,7 +32,7 @@ import {
                     <TableCellsIcon class="icon"/>
                     <h3>Datos del Negocio</h3>
                     <p>Visualizar datos sobre sucursales, empleados y otros aspectos del negocio</p>
-                    <RouterLink to="" class="btn-action">
+                    <RouterLink to="/data" class="btn-action">
                         Ver Datos
                     </RouterLink>
                 </section>       

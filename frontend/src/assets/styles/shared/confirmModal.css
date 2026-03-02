@@ -1,0 +1,133 @@
+/* ── Variables locales ── */
+.confirm-overlay {
+    --c-header-bg:         #1e293b;
+    --c-header-bg-hover:   #2d4a6e;
+    --c-header-danger-bg:  #b42d2d;
+    --c-btn-primary-bg:    #1179a2;
+    --c-btn-primary-hover: #0e6689;
+    --c-btn-danger-bg:     #b42d2d;
+    --c-btn-danger-hover:  #d23c3c;
+    --c-cancel-border:     #1179a2;
+    --c-cancel-color:      #1179a2;
+    --c-cancel-hover-bg:   #1179a2;
+}
+
+/* Seccion: "Overlay del modal" */
+.confirm-overlay {
+    position: fixed;
+    inset: 0;
+    background-color: rgba(0, 0, 0, 0.55);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 2000;
+    padding: 1rem;
+}
+
+.confirm-card {
+    background-color: #fff;
+    border-radius: 10px;
+    width: 100%;
+    max-width: 420px;
+    box-shadow: 0 8px 28px rgba(0, 0, 0, 0.25);
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+}
+
+/* Seccion: "Header del modal"
+   Explicacion: Barra superior teal por defecto; con la clase --danger se vuelve roja
+                para comunicar visualmente que la accion es destructiva */
+/* ── Header ── */
+.confirm-header {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    padding: 1rem 1.25rem;
+    background: linear-gradient(135deg, var(--c-header-bg) 0%, var(--c-header-bg-hover) 100%);
+    color: white;
+}
+
+.confirm-header--danger {
+    background: var(--c-header-danger-bg);
+}
+
+.confirm-header h3 {
+    margin: 0;
+    font-size: 1rem;
+    font-weight: 600;
+}
+
+.confirm-icon {
+    font-size: 1.2rem;
+    line-height: 1;
+}
+
+/* ── Body ── */
+.confirm-body {
+    padding: 1.25rem 1.5rem;
+    color: rgb(40, 40, 40);
+    font-size: 0.95rem;
+    line-height: 1.5;
+}
+
+.confirm-body p {
+    margin: 0;
+}
+
+/* Seccion: "Acciones del modal"
+   Explicacion: Fila inferior con Cancelar y Confirmar; el boton confirmar
+                hereda el color rojo cuando danger=true via la clase --danger */
+/* ── Actions ── */
+.confirm-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 0.75rem;
+    padding: 0.85rem 1.25rem;
+    border-top: 1px solid rgb(220, 220, 220);
+}
+
+.confirm-btn-cancel {
+    padding: 0.4rem 1.1rem;
+    border: 2px solid var(--c-cancel-border);
+    background: transparent;
+    color: var(--c-cancel-color);
+    border-radius: 5px;
+    font-size: 0.875rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+.confirm-btn-cancel:hover {
+    background-color: var(--c-cancel-hover-bg);
+    color: white;
+}
+
+.confirm-btn-confirm {
+    padding: 0.4rem 1.2rem;
+    background-color: var(--c-btn-primary-bg);
+    color: white;
+    border: none;
+    border-radius: 5px;
+    font-size: 0.875rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color 0.2s ease, transform 0.1s ease;
+}
+
+.confirm-btn-confirm:hover {
+    background-color: var(--c-btn-primary-hover);
+}
+
+.confirm-btn-confirm--danger {
+    background-color: var(--c-btn-danger-bg);
+}
+
+.confirm-btn-confirm--danger:hover {
+    background-color: var(--c-btn-danger-hover);
+}
+
+.confirm-btn-confirm:active {
+    transform: scale(0.97);
+}
