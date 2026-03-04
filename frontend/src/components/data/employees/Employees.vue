@@ -10,8 +10,7 @@ import ConfirmModal from '../../shared/ConfirmModal.vue';
 // Seccion: "Estado reactivo"
 // Explicacion: Variables que controlan la lista de empleados, la visibilidad del formulario
 //              y el estado del modal de confirmacion antes de eliminar
-const employeeData = ref([]);
-const employeeDataStore = ref([]);
+const employeeData = ref<any[]>([]);
 const showForm = ref(false);
 const selectedEmployeeId = ref<number | undefined>(undefined);
 const showConfirm = ref(false);
@@ -40,7 +39,7 @@ async function fetchEmployees() {
                 colony: employee.store.colony,
                 street: employee.store.street
             }
-        })).sort((a, b) => a.id - b.id);
+        })).sort((a: any, b: any) => a.id - b.id);
     } catch (error) {
         console.error('Error fetching employee data:', error);
     }

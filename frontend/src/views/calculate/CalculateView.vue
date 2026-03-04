@@ -15,7 +15,7 @@ const options = [
 const selectedOption = ref('promociones');
 
 const activeComponent = computed(() => {
-    return componentsMap[selectedOption.value] || null;
+    return (componentsMap as Record<string, any>)[selectedOption.value] || null;
 });
 
 </script>

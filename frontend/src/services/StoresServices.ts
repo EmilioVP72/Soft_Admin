@@ -2,21 +2,22 @@
 // Explicacion: Se importa el cliente HTTP de sucursales y el tipo de respuesta Store
 import apiClient from "../api/stores";
 import type { Store } from "../interfaces/StoresInterfaces";
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 
 // Seccion: "Consultas de ventas y sucursales"
 // Explicacion: Expone los endpoints de ventas por departamento, ventas por sucursal
 //              y listado de sucursales; aun no incluye CRUD completo de sucursales
 export default{
     getSalesByDepartment(){
-        return apiClient.get<Store>('/sales/byDepartment');
+        return apiClient.get<any>('/sales/byDepartment');
     },
 
     getSalesByDepartmentByStore(storeId: number){
-        return apiClient.get<Store>(`/sales/byStore/${storeId}`);
+        return apiClient.get<any>(`/sales/byStore/${storeId}`);
     },
 
     getStores(){
-        return apiClient.get<Store[]>('/stores/all');
+        return apiClient.get<any>('/stores/all');
     },
 
     createStore(storeData: Partial<Store>){

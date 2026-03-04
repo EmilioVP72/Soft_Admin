@@ -1,13 +1,10 @@
 <script setup lang="ts">
-import StoresServices from '@/services/StoresServices';
 import { onMounted, ref, computed, watch } from 'vue';
-import axios from 'axios';
 import storesServices from '@/services/StoresServices';
 
 
 const storesSales = ref<Array<{ department: string; totalQuantity: number; totalSales: number }>>([]);
 const dataStore = ref<Array<{ storeId: number; storeName: string }>>([]);
-const dataVentas = ref([]);
 var selectedOption = ref<number>(0);
 
 // selectedStoreId es computed, se calcula automáticamente cuando selectedOption cambia
@@ -16,7 +13,7 @@ const selectedStoreId = computed(() => {
 });
 
 // Watch para ver los cambios cuando seleccionas otra sucursal
-watch(selectedOption, async (newValue) => {
+watch(selectedOption, async (_newValue) => {
     try {
         const response = await storesServices.getSalesByDepartmentByStore(selectedStoreId.value);
         storesSales.value = response.data.data.map((sale: { department: string; total_quantity: number; total_sales: number }) => ({
@@ -31,7 +28,7 @@ watch(selectedOption, async (newValue) => {
 
 onMounted(async () => {
     try {
-        const response = await StoresServices.getStores();
+        const response = await storesServices.getStores();
         storesSales.value = response.data.data;
         dataStore.value = response.data.data.map((store: { id: number; name: string }) => ({ 
             storeId: store.id, 
@@ -40,7 +37,7 @@ onMounted(async () => {
 
         // Solo asigna a selectedOption, selectedStoreId se calcula automáticamente
         if (dataStore.value.length > 0) {
-            selectedOption.value = dataStore.value[0].storeId;
+            selectedOption.value = dataStore.value[0]!.storeId;
         }
 
         

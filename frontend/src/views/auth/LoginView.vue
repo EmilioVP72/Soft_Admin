@@ -3,7 +3,7 @@ import {reactive, ref} from 'vue';
 import {useRouter} from 'vue-router';
 import LoginServices from '@/services/LoginServices';
 import { useAuthStore } from '../../stores/auth';
-import axios, { AxiosError } from 'axios';
+import axios from 'axios';
 import {z} from 'zod';
 
 const router = useRouter();

@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import { 
-  DocumentCurrencyDollarIcon,
   BanknotesIcon, 
   TableCellsIcon
 } from '@heroicons/vue/24/outline';
