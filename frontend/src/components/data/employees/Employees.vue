@@ -6,11 +6,13 @@ import { ref, onMounted } from 'vue';
 import EmployeeServices from '../../../services/EmployeeServices';
 import EmployeeForm from './EmployeeForm.vue';
 import ConfirmModal from '../../shared/ConfirmModal.vue';
+import ErrorMessage from '@/components/shared/Error.vue';
 
 // Seccion: "Estado reactivo"
 // Explicacion: Variables que controlan la lista de empleados, la visibilidad del formulario
 //              y el estado del modal de confirmacion antes de eliminar
 const employeeData = ref<any[]>([]);
+const error_data = ref<boolean>(false);
 const showForm = ref(false);
 const selectedEmployeeId = ref<number | undefined>(undefined);
 const showConfirm = ref(false);
@@ -41,7 +43,7 @@ async function fetchEmployees() {
             }
         })).sort((a: any, b: any) => a.id - b.id);
     } catch (error) {
-        console.error('Error fetching employee data:', error);
+        error_data.value = true;
     }
 }
 
@@ -112,7 +114,11 @@ onMounted(fetchEmployees);
 </script>
 
 <template>
-    <div class="data-view">
+    <ErrorMessage v-if="error_data"
+        tittle="Error al cargar los datos de empleados"
+        message="Hubo un error al obtener los datos. Por favor, inténtalo de nuevo más tarde o contacta al soporte si el problema persiste."
+    />
+    <div v-else class="data-view">
         <div class="toolbar">
             <h1>Datos de los Empleados</h1>
             <div class="toolbar-actions">

@@ -5,6 +5,7 @@
 import { ref, onMounted, computed } from 'vue';
 import StoresServices from '@/services/StoresServices';
 import LocalitiesServices from '@/services/LocalitiesServices';
+import ErrorMessage from '@/components/shared/Error.vue';
 
 // Seccion: "Props y eventos"
 // Explicacion: storeId es opcional; si se recibe el componente actua en modo edicion,
@@ -25,6 +26,7 @@ const isEditMode = computed(() => !!props.storeId);
 const loading = ref(false);
 const saving = ref(false);
 const errorMsg = ref('');
+const error_load = ref<boolean>(false);
 const localities = ref<Array<{ id_locality: number; locality: string }>>([]);
 
 const form = ref({
@@ -45,7 +47,7 @@ onMounted(async () => {
         const res = await LocalitiesServices.getLocalities();
         localities.value = res.data.data;
     } catch {
-        errorMsg.value = 'No se pudieron cargar las localidades.';
+        error_load.value = true;
     }
 
     if (isEditMode.value) {
@@ -106,7 +108,11 @@ async function handleSubmit() {
                 <button class="close-btn" @click="emit('cancel')">✕</button>
             </div>
 
-            <div v-if="loading" class="loading-msg">Cargando datos...</div>
+            <ErrorMessage v-if="error_load"
+                tittle="Error al cargar los datos"
+                message="No se pudieron cargar los datos del formulario. Por favor, cierra e intenta de nuevo."
+            />
+            <div v-else-if="loading" class="loading-msg">Cargando datos...</div>
 
             <form v-else @submit.prevent="handleSubmit" class="store-form">
                 <div class="form-grid">
