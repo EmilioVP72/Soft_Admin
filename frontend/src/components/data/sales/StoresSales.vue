@@ -1,8 +1,9 @@
 <script setup lang="ts">
 import { onMounted, ref, computed, watch } from 'vue';
 import storesServices from '@/services/StoresServices';
+import ErrorMessage from '@/components/shared/Error.vue';
 
-
+const error_data = ref<boolean>(false);
 const storesSales = ref<Array<{ department: string; totalQuantity: number; totalSales: number }>>([]);
 const dataStore = ref<Array<{ storeId: number; storeName: string }>>([]);
 var selectedOption = ref<number>(0);
@@ -43,7 +44,7 @@ onMounted(async () => {
         
 
     } catch (error) {
-        console.error('Error fetching stores sales:', error);
+        error_data.value = true;
     }
 
     
@@ -52,7 +53,11 @@ onMounted(async () => {
 </script>
 
 <template>
-    <div class="data-view">
+    <ErrorMessage v-if="error_data"
+        tittle="Error al cargar las ventas por sucursal"
+        message="Hubo un error al obtener los datos. Por favor, inténtalo de nuevo más tarde o contacta al soporte si el problema persiste."
+    />
+    <div v-else class="data-view">
         <h1>Ventas por Sucursal</h1>
         <section class="component-section">
             <label class="component-label">Seleccione la Sucursal</label>

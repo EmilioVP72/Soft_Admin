@@ -1,0 +1,36 @@
+.error-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: clamp(0.5rem, 2vw, 1rem);
+    padding: clamp(2rem, 4vw, 4rem);
+    background-color: #ffe5e5;
+    border: 1px solid #ffcccc;
+    border-radius: 8px;
+    max-width: min(1100px, 95%);
+    margin: clamp(1rem, 4vw, 2rem) auto;
+}
+
+.error-container h1 {
+    color: #cc0000;
+    font-size: clamp(1.4rem, 4vw, 3rem);
+    text-align: center;
+}
+
+.error-container svg {
+    width: clamp(5rem, 15vw, 15rem);
+    height: clamp(5rem, 15vw, 15rem);
+    color: #cc0000;
+}
+
+.error-container p {
+    color: #cc0000;
+    font-size: clamp(0.95rem, 2vw, 1.4rem);
+    text-align: center;
+}
+
+@media (max-width: 480px) {
+    .error-container {
+        border-radius: 4px;
+    }
+}

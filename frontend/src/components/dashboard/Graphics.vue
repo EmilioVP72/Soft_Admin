@@ -3,6 +3,7 @@
 import StoresServices from '@/services/StoresServices';
 import { onMounted, ref } from 'vue';
 import axios from 'axios';
+import ErrorMessage from '@/components/shared/Error.vue';
 import type { ChartData, ChartOptions } from 'chart.js';
 import BarGraph from '@/components/dashboard/graphics/BarGraph.vue';
 
@@ -143,13 +144,19 @@ onMounted(async () => {
 
             <section class="general-graphics">
                 <h2>Resumen General de Ventas - Todas las Sucursales</h2>
-                <p v-if="isValid" class="error-message">{{ message }}</p>
+                <ErrorMessage v-if="isValid"
+                    tittle="Error al cargar las gráficas de ventas"
+                    :message="message || 'Hubo un error al obtener los datos. Por favor, inténtalo de nuevo más tarde.'"
+                />
                 <BarGraph v-else :chartData="chartData" :chartOptions="chartOptions" />
             </section>
 
             <section class="graphics-for-stores">
                 <h2>Ventas por Departamento según Sucursal</h2>
-                <p v-if="isValid2" class="error-message">{{ message2 }}</p>
+                <ErrorMessage v-if="isValid2"
+                    tittle="Error al cargar las gráficas por sucursal"
+                    :message="message2 || 'Hubo un error al obtener los datos. Por favor, inténtalo de nuevo más tarde.'"
+                />
                 <div v-else class="store-charts-container">
                     <div v-for="chart in storeCharts" :key="chart.storeId" class="store-chart">
                         <BarGraph :chartData="chart.chartData" :chartOptions="chart.chartOptions" />

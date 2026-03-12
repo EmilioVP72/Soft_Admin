@@ -23,7 +23,6 @@ dist-ssr
 *.sln
 *.sw?
 .env
-.env.production
 
 #guias
 documentation/VUE_PERSONAL_GUIDE.md
