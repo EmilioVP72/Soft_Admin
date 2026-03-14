@@ -23,4 +23,9 @@ class Supplier extends Model
             'fk2_id_department'
         )->withPivot('montos');
     }
+
+    public function payments()
+    {
+        return $this->hasMany(SupplierPayment::class, 'fk1_id_supplier', 'id_supplier');
+    }
 }

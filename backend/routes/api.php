@@ -40,4 +40,19 @@ Route::middleware('auth:api')->group(function () {
     Route::prefix('localities')->group(function () {
         require __DIR__ . '/Locality/localities.php';
     });
+
+    // Rutas de Proveedores/Suppliers
+    Route::prefix('suppliers')->group(function () {
+        require __DIR__ . '/Supplier/suppliers.php';
+    });
+
+    // Rutas de Entradas/Inputs
+    Route::prefix('inputs')->group(function () {
+        require __DIR__ . '/Input/inputs.php';
+    });
+
+    // Rutas de Salidas/Outputs
+    Route::prefix('outputs')->group(function () {
+        require __DIR__ . '/Output/outputs.php';
+    });
 });
