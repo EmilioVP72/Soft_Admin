@@ -15,6 +15,7 @@ class Transaction extends Model
     protected $fillable = [
         'fk1_id_store',
         'fk2_id_user',
+        'fk3_id_payment',
         'total_amount',
         'transaction_type',
         'notes',
@@ -48,5 +49,13 @@ class Transaction extends Model
     public function details(): HasMany
     {
         return $this->hasMany(TransactionDetail::class, 'fk1_id_transaction', 'id_transaction');
+    }
+
+    /**
+     * Get the payment type associated with the transaction.
+     */
+    public function payment(): BelongsTo
+    {
+        return $this->belongsTo(Payments::class, 'fk3_id_payment', 'id_payment');
     }
 }

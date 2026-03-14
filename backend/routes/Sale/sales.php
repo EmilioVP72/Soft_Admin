@@ -14,3 +14,10 @@ Route::get('/byDepartment', [SalesController::class, 'getSalesByDepartmentGenera
 Route::get('/byStore/{storeId}', [SalesController::class, 'getSalesByDepartmentByStore']);
 Route::get('/byStore/{storeId}/filtered', [SalesController::class, 'getSalesByDepartmentStoreWithDates']);
 Route::get('/transactions/department/{departmentId}', [SalesController::class, 'getTransactionsByDepartment']);
+
+// CRUD Ventas
+Route::get('/', [SalesController::class, 'index']);
+Route::post('/', [SalesController::class, 'store']);
+Route::get('/{id}', [SalesController::class, 'show']);
+Route::put('/{id}', [SalesController::class, 'update']);
+Route::delete('/{id}', [SalesController::class, 'destroy']);
