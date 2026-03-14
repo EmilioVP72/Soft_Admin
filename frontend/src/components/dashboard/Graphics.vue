@@ -50,11 +50,11 @@ onMounted(async () => {
             totalSales: item.total_sales
         }));
         chartData.value = {
-            labels: data.map(item => item.department),
+            labels: data.map((item: { department: string }) => item.department),
             datasets: [
                 {
                 label: 'Ingresos Totales',
-                data: data.map(item => item.totalSales),
+                data: data.map((item: { totalSales: number }) => item.totalSales),
                 backgroundColor: 'rgba(75, 192, 192, 0.5)',
                 borderColor: 'rgba(75, 192, 192, 1)',
                 borderWidth: 1
@@ -94,13 +94,13 @@ onMounted(async () => {
                     storeId: store.id,
                     storeName: store.name,
                     chartData: {
-                        labels: data.map(item => item.department),
+                        labels: data.map((item: { department: string }) => item.department),
                         datasets: [
                             {
                                 label: 'Ingresos Totales',
-                                data: data.map(item => item.totalSales),
-                                backgroundColor: colors[colorIndex].bg,
-                                borderColor: colors[colorIndex].border,
+                                data: data.map((item: { totalSales: number }) => item.totalSales),
+                                backgroundColor: colors[colorIndex]!.bg,
+                                borderColor: colors[colorIndex]!.border,
                                 borderWidth: 1
                             }
                         ]

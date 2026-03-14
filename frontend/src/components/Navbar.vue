@@ -1,7 +1,7 @@
 <script setup lang="ts">
 
 import { ref} from 'vue'
-import { RouterView, useRouter } from 'vue-router'
+import { useRouter } from 'vue-router'
 import { useAuthStore } from '@/stores/auth';
 import LoginServices from '@/services/LoginServices';
 
@@ -24,7 +24,7 @@ const logout = () => {
     LoginServices.logoutUser().then(() => {
         authStore.logout();
         router.push({ name: 'login' });
-    }).catch((error) => {
+    }).catch((error: unknown) => {
         console.error('Error during logout:', error);
     });
     

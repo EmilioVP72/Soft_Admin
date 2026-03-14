@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { ref, computed } from 'vue';
-import { CalculatePromotion, TotalySalesByPromotion } from '@/interfaces/CalculateInterfaces';
+import type { CalculatePromotion, TotalySalesByPromotion } from '@/interfaces/CalculateInterfaces';
 
 const formInput = ref({
     date: '',
@@ -91,7 +91,7 @@ const addRow = () => {
                 <tfoot v-if="calculateTable.length > 0">
                     <tr>
                         <td>Total Acumulado</td>
-                        <td>$ {{ calculateTable[calculateTable.length - 1].acumulated_sales.toFixed(2) }}</td>
+                        <td>$ {{ calculateTable[calculateTable.length - 1]?.acumulated_sales?.toFixed(2) }}</td>
                     </tr>
                 </tfoot>
             </table>
