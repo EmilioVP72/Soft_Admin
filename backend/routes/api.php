@@ -55,4 +55,19 @@ Route::middleware('auth:api')->group(function () {
     Route::prefix('outputs')->group(function () {
         require __DIR__ . '/Output/outputs.php';
     });
+
+    // Rutas de Metodos de Pago/Payments
+    Route::prefix('payments')->group(function () {
+        require __DIR__ . '/Payment/payments.php';
+    });
+
+    // Rutas de Departamentos Generales/General Departments
+    Route::prefix('general-departments')->group(function () {
+        require __DIR__ . '/GeneralDepartment/general_departments.php';
+    });
+
+    // Rutas de Departamentos por Tienda/Store Departments
+    Route::prefix('departments')->group(function () {
+        require __DIR__ . '/Department/departments.php';
+    });
 });
