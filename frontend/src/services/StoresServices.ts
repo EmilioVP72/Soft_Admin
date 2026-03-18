@@ -7,32 +7,38 @@ import type { Store } from "../interfaces/StoresInterfaces";
 // Seccion: "Consultas de ventas y sucursales"
 // Explicacion: Expone los endpoints de ventas por departamento, ventas por sucursal
 //              y listado de sucursales; aun no incluye CRUD completo de sucursales
-export default{
-    getSalesByDepartment(){
+export default {
+    getSalesByDepartment() {
         return apiClient.get<any>('/sales/byDepartment');
     },
 
-    getSalesByDepartmentByStore(storeId: number){
+    getSalesByDepartmentByStore(storeId: number) {
         return apiClient.get<any>(`/sales/byStore/${storeId}`);
     },
 
-    getStores(){
+    getStores() {
         return apiClient.get<any>('/stores/all');
     },
 
-    createStore(storeData: Partial<Store>){
+    createStore(storeData: Partial<Store>) {
         return apiClient.post('/stores/StoreStore', storeData);
     },
 
-    getOneStore(storeId: number){
+    getOneStore(storeId: number) {
         return apiClient.get(`/stores/OneStore/${storeId}`);
     },
 
-    updateStore(storeId: number, storeData: Partial<Store>){
+    updateStore(storeId: number, storeData: Partial<Store>) {
         return apiClient.put(`/stores/UpdateStore/${storeId}`, storeData);
     },
 
-    deleteStore(storeId: number){
+    deleteStore(storeId: number) {
         return apiClient.delete(`/stores/DeleteStore/${storeId}`);
+    },
+
+    //update api sales
+
+    getSalesbyDepartmentForStore() {
+        return apiClient.get<any>('/sales');
     }
 }

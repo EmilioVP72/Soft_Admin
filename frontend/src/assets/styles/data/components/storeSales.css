@@ -7,6 +7,14 @@
     --c-select-bg:        #f4f9fc;
     --c-select-focus:     #1179a2;
     --c-select-focus-ring: rgba(17, 121, 162, 0.18);
+    --c-btn-primary-bg:    #1179a2;
+    --c-btn-primary-hover: #0e6a90;
+    --c-btn-danger-bg:     #b42d2d;
+    --c-btn-danger-hover:  #d23c3c;
+    --c-btn-pdf-bg:        #a26111;
+    --c-btn-pdf-hover:     #b46a14;
+    --c-btn-excel-bg:      #0a6f28;
+    --c-btn-excel-hover:   #1ca041;
 }
 
 *{
@@ -60,20 +68,105 @@
     color: white;
 }
 
+.table-container {
+    width: max-content;
+    max-width: 100%;
+    margin: 0 auto;
+    overflow-x: auto;
+    border: 1px solid var(--c-border);
+    border-radius: 8px;
+    background-color: white;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+}
+
+.table-section{
+    width: 100%;
+    border-collapse: collapse;
+}
+
 .table-header .table-row .table-cell{
     padding: clamp(0.5rem, 1.5vw, 0.7rem);
     border: 1px solid #000000;
     font-size: clamp(0.875rem, 2vw, 1rem);
+    white-space: nowrap;
 }
 
-.table-body .table-row .table-cell{
+.table-body .table-row .table-cell,
+.table-body .table-row td {
     padding: clamp(0.5rem, 1.5vw, 0.7rem);
     border: 1px solid #000000;
     font-size: clamp(0.875rem, 2vw, 1rem);
+    white-space: nowrap;
+}
+
+/* Estilos de botones de acción */
+.action-button.edit-button {
+    background-color: var(--c-btn-primary-bg); /* Puedes ajustar este color */
+    color: white;
+    border: none;
+    border-radius: 4px;
+    padding: 0.4rem 0.8rem;
+    margin: 0.2rem;
+    font-size: 0.85rem;
+    cursor: pointer;
+    transition: background-color 0.2s, transform 0.1s;
+}
+
+.action-button:active {
+    transform: translateY(0);
 }
 
 tr:nth-child(even) {
     background-color: var(--c-row-stripe);
+}
+
+.button-section{
+    display: flex;
+    justify-content: right;
+    margin: 1rem;
+    gap: 1rem;
+}
+
+.action-button.pdf-button {
+    background-color: var(--c-btn-pdf-bg); /* Puedes ajustar este color */
+    color: white;
+    border: none;
+    border-radius: 4px;
+    padding: 0.4rem 0.8rem;
+    margin: 0.2rem;
+    font-size: 0.85rem;
+    cursor: pointer;
+    transition: background-color 0.2s, transform 0.1s;
+}
+
+.action-button.pdf-button:hover {
+    background-color: var(--c-btn-pdf-hover); /* Puedes ajustar este color */
+    transform: translateY(-1px);
+}
+
+.action-button.pdf-button:active {
+    transform: translateY(0);
+}
+
+.action-button.excel-button {
+    background-color: var(--c-btn-excel-bg); /* Puedes ajustar este color */
+    color: white;
+    border: none;
+    border-radius: 4px;
+    padding: 0.4rem 0.8rem;
+    margin: 0.2rem;
+    font-size: 0.85rem;
+    cursor: pointer;
+    transition: background-color 0.2s, transform 0.1s;
+}
+
+.action-button.excel-button:hover {
+    background-color: var(--c-btn-excel-hover); /* Puedes ajustar este color */
+    transform: translateY(-1px);
+}
+
+.action-button.excel-button:active {
+    transform: translateY(0);
 }
 
 /* Media Queries para dispositivos pequeños */
