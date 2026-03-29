@@ -37,8 +37,19 @@ export default {
     },
 
     //update api sales
+    createSale(saleData: any) {
+        return apiClient.post('/sales', saleData);
+    },
 
     getSalesbyDepartmentForStore() {
         return apiClient.get<any>('/sales');
-    }
+    },
+
+    getDepartments() {
+        return apiClient.get<any>('/departments');
+    },
+
+    getDepartmentsByStore(storeId: number) {
+        return apiClient.get<any>(`/departments/${storeId}`);
+    },
 }

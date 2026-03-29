@@ -106,7 +106,6 @@ onMounted(async () => {
                         <th class="table-cell">Tipo de Venta</th>
                         <th class="table-cell">Usuario</th>
                         <th class="table-cell">Total de Ventas</th>
-                        <th class="table-cell">Acciones</th>
                     </tr>
                 </thead>
                 <tbody class="table-body">
@@ -136,9 +135,6 @@ onMounted(async () => {
                         <td class="table-cell">{{ sale.transaction_type }}</td>
                         <td class="table-cell">{{ sale.user_name }}</td>
                         <td class="table-cell">{{ sale.total_amount }}</td>
-                        <td class="table-cell">
-                            <button class="action-button edit-button">Editar</button>
-                        </td>
                     </tr>
                 </tbody>
             </section>
