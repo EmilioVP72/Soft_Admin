@@ -1,11 +1,10 @@
 <script setup lang="ts">
 import { onMounted, ref, computed, watch } from 'vue';
 import storesServices from '@/services/StoresServices';
-import router from '@/router';
+import ErrorMessage from '@/components/shared/Error.vue';
 
-
-const storesSales = ref<any>([]);
-const storesSalesByStore = ref<any>([]);
+const error_data = ref<boolean>(false);
+const storesSales = ref<Array<{ department: string; totalQuantity: number; totalSales: number }>>([]);
 const dataStore = ref<Array<{ storeId: number; storeName: string }>>([]);
 var selectedOption = ref<number>(0);
 
@@ -50,9 +49,9 @@ watch(selectedOption, async (_newValue) => {
 
 onMounted(async () => {
     try {
-        const storeData = await storesServices.getStores();
-        storesSales.value = storeData.data.data;
-        dataStore.value = storeData.data.data.map((store: { id: number; name: string }) => ({ 
+        const response = await storesServices.getStores();
+        storesSales.value = response.data.data;
+        dataStore.value = response.data.data.map((store: { id: number; name: string }) => ({ 
             storeId: store.id, 
             storeName: store.name 
         }));
@@ -60,12 +59,13 @@ onMounted(async () => {
         // Solo asigna a selectedOption, selectedStoreId se calcula automáticamente
         if (dataStore.value.length > 0) {
             selectedOption.value = dataStore.value[0]!.storeId;
-            
         }
 
         
 
     } catch (error) {
+        error_data.value = true;
+    }
 
     }
     
@@ -74,7 +74,11 @@ onMounted(async () => {
 </script>
 
 <template>
-    <div class="data-view">
+    <ErrorMessage v-if="error_data"
+        tittle="Error al cargar las ventas por sucursal"
+        message="Hubo un error al obtener los datos. Por favor, inténtalo de nuevo más tarde o contacta al soporte si el problema persiste."
+    />
+    <div v-else class="data-view">
         <h1>Ventas por Sucursal</h1>
         <section class="component-section">
             <label class="component-label">Seleccione la Sucursal</label>
