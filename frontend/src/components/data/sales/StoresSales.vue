@@ -4,7 +4,9 @@ import storesServices from '@/services/StoresServices';
 import ErrorMessage from '@/components/shared/Error.vue';
 
 const error_data = ref<boolean>(false);
-const storesSales = ref<Array<{ department: string; totalQuantity: number; totalSales: number }>>([]);
+const error_details = ref<string>('');
+const storesSales = ref<any[]>([]);
+const storesSalesByStore = ref<any[]>([]);
 const dataStore = ref<Array<{ storeId: number; storeName: string }>>([]);
 var selectedOption = ref<number>(0);
 
@@ -17,40 +19,45 @@ const selectedStoreId = computed(() => {
 watch(selectedOption, async (_newValue) => {
     try {
         const saleData = await storesServices.getSalesbyDepartmentForStore();
-        storesSales.value = saleData.data.data.map( sale => ({
-            details: (sale.details ?? []).map( detail => ({
+        storesSales.value = (saleData.data.data || []).map( (sale: any) => ({
+            details: (sale.details ?? []).map( (detail: any) => ({
                 department: detail.department,
                 id_transaction_detail: detail.id_transaction_detail,
                 quantity: detail.quantity,
                 subtotal: detail.subtotal,
                 unit_price: detail.unit_price,
-                
             })),
             notes: sale.notes,
-            payment: sale.payment as Array<{ id_payment: number; payment: string;}>, 
-            store_name: sale.store_name,
+            payment: sale.payment, 
+            store_name: sale.store_name || (sale.store && sale.store.name) || 'N/A',
             total_amount: sale.total_amount,
             transaction_date: sale.transaction_date,
             transaction_type: sale.transaction_type,
-            user_name: sale.user_name,
-            
+            user_name: sale.user_name || (sale.user && sale.user.name) || 'N/A',
         }));
-
 
         // selectedOption guarda el ID, pero necesitamos el nombre de la sucursal para filtrar
         const selectedStore = dataStore.value.find(s => s.storeId === selectedOption.value);
         const selectedStoreName = selectedStore ? selectedStore.storeName : '';
 
         storesSalesByStore.value = storesSales.value.filter(sale => sale.store_name === selectedStoreName);
-    } catch (error) {
+        
+        // Fallback: If filter is empty but there are sales, show all sales so we can see them.
+        if (storesSalesByStore.value.length === 0 && storesSales.value.length > 0) {
+            error_details.value = `Filter empty for "${selectedStoreName}". Showing all sales instead.`;
+            storesSalesByStore.value = storesSales.value;
+        } else {
+            error_details.value = '';
+        }
+    } catch (error: any) {
         console.error('Error fetching stores sales:', error);
+        error_details.value = String(error.message || error);
     }
 });
 
 onMounted(async () => {
     try {
         const response = await storesServices.getStores();
-        storesSales.value = response.data.data;
         dataStore.value = response.data.data.map((store: { id: number; name: string }) => ({ 
             storeId: store.id, 
             storeName: store.name 
@@ -68,8 +75,7 @@ onMounted(async () => {
     }
 
     }
-    
-});
+);
 
 </script>
 
@@ -80,6 +86,9 @@ onMounted(async () => {
     />
     <div v-else class="data-view">
         <h1>Ventas por Sucursal</h1>
+        <div v-if="error_details" style="color: red; margin-bottom: 10px; padding: 10px; border: 1px solid red; border-radius: 4px;">
+            Atención: {{ error_details }}
+        </div>
         <section class="component-section">
             <label class="component-label">Seleccione la Sucursal</label>
             <select
@@ -113,7 +122,7 @@ onMounted(async () => {
                     </tr>
                 </thead>
                 <tbody class="table-body">
-                    <tr v-for="sale in storesSalesByStore" :key="sale.department" class="table-row">
+                    <tr v-for="(sale, index) in storesSalesByStore" :key="index" class="table-row">
                         <td class="table-cell">
                             <div v-for="detail in sale.details" :key="detail.id_transaction_detail">
                                 {{ detail.department }}
@@ -134,7 +143,21 @@ onMounted(async () => {
                                 {{ detail.subtotal }}
                             </div>
                         </td>
-                        <td class="table-cell">{{ sale.payment?.payment }}</td>
+                        <td class="table-cell">
+                            <span v-if="!sale.payment || (Array.isArray(sale.payment) && sale.payment.length === 0)">
+                            </span>
+                            <span v-else-if="Array.isArray(sale.payment)">
+                                <div v-for="pay in sale.payment" :key="pay.id_payment">
+                                    {{ pay.payment }}
+                                </div>
+                            </span>
+                            <span v-else-if="typeof sale.payment === 'object'">
+                                {{ sale.payment.payment || 'Sin especificar' }}
+                            </span>
+                            <span v-else>
+                                {{ sale.payment }}
+                            </span>
+                        </td>
                         <td class="table-cell">{{ sale.transaction_date }}</td>
                         <td class="table-cell">{{ sale.transaction_type }}</td>
                         <td class="table-cell">{{ sale.user_name }}</td>
