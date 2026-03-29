@@ -1,6 +1,7 @@
 <script setup lang="ts">
-import { ref, computed } from 'vue';
+import { ref, computed, onMounted } from 'vue';
 import type { CalculatePromotion, TotalySalesByPromotion } from '@/interfaces/CalculateInterfaces';
+import SuppliersServices from '@/services/SuppliersServices';
 
 const formInput = ref({
     date: '',
@@ -8,6 +9,9 @@ const formInput = ref({
 });
 
 const dataList = ref<CalculatePromotion[]>([]);
+const suppliers = ref<any[]>([]);
+const selectedSupplier = ref('');
+const error = ref(false);
 
 const calculateTable = computed<TotalySalesByPromotion[]>(() => {
     let temporalTotaly = 0;
@@ -36,9 +40,23 @@ const addRow = () => {
     formInput.value.totaly_sales = 0;
 };
 
+onMounted( async() => {
+    try {
+        const response = await SuppliersServices.getAllSuppliers();
+        suppliers.value = response.data.data.map((supplier: any) => {
+            return {
+                id: supplier.id_supplier,
+                name: supplier.supplier
+            };
+        });
+    } catch (error) {
+        console.error('Error al obtener los proveedores:', error);
+    }
+});
 </script>
 
 <template>
+    
     <div class="promotions-view">
         <h1>Calculadora de Promociones</h1>
 
