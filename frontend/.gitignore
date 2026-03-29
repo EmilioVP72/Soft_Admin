@@ -6,7 +6,7 @@ yarn-debug.log*
 yarn-error.log*
 pnpm-debug.log*
 lerna-debug.log*
-
+.env
 node_modules
 dist
 dist-ssr
@@ -23,6 +23,7 @@ dist-ssr
 *.sln
 *.sw?
 .env
+.env.production
 
 #guias
 documentation/VUE_PERSONAL_GUIDE.md

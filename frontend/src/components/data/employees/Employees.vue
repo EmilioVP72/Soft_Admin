@@ -12,7 +12,6 @@ import ErrorMessage from '@/components/shared/Error.vue';
 // Explicacion: Variables que controlan la lista de empleados, la visibilidad del formulario
 //              y el estado del modal de confirmacion antes de eliminar
 const employeeData = ref<any[]>([]);
-const error_data = ref<boolean>(false);
 const showForm = ref(false);
 const selectedEmployeeId = ref<number | undefined>(undefined);
 const showConfirm = ref(false);

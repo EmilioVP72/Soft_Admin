@@ -40,4 +40,34 @@ Route::middleware('auth:api')->group(function () {
     Route::prefix('localities')->group(function () {
         require __DIR__ . '/Locality/localities.php';
     });
+
+    // Rutas de Proveedores/Suppliers
+    Route::prefix('suppliers')->group(function () {
+        require __DIR__ . '/Supplier/suppliers.php';
+    });
+
+    // Rutas de Entradas/Inputs
+    Route::prefix('inputs')->group(function () {
+        require __DIR__ . '/Input/inputs.php';
+    });
+
+    // Rutas de Salidas/Outputs
+    Route::prefix('outputs')->group(function () {
+        require __DIR__ . '/Output/outputs.php';
+    });
+
+    // Rutas de Metodos de Pago/Payments
+    Route::prefix('payments')->group(function () {
+        require __DIR__ . '/Payment/payments.php';
+    });
+
+    // Rutas de Departamentos Generales/General Departments
+    Route::prefix('general-departments')->group(function () {
+        require __DIR__ . '/GeneralDepartment/general_departments.php';
+    });
+
+    // Rutas de Departamentos por Tienda/Store Departments
+    Route::prefix('departments')->group(function () {
+        require __DIR__ . '/Department/departments.php';
+    });
 });

@@ -189,6 +189,42 @@
     color: var(--color-text-white);
 }
 
+.supplier-section {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    background-color: var(--color-bg-card);
+    border: 1px solid var(--color-border);
+    border-radius: var(--border-radius-md);
+    padding: clamp(1rem, 3vw, 1.5rem);
+    box-shadow: 0 2px 8px var(--color-shadow);
+}
+
+.supplier-section label {
+    font-size: clamp(0.875rem, 1.5vw, 1rem);
+    font-weight: 600;
+    color: var(--color-primary);
+    white-space: nowrap;
+}
+
+.supplier-section select {
+    padding: clamp(0.4rem, 1vw, 0.55rem) clamp(0.75rem, 1.5vw, 1rem);
+    font-size: clamp(0.875rem, 1.5vw, 0.95rem);
+    border: 1px solid var(--color-border-dark);
+    border-radius: var(--border-radius-sm);
+    min-width: clamp(10rem, 25vw, 14rem);
+    color: var(--color-primary);
+    cursor: pointer;
+    transition: border-color var(--transition-base), box-shadow var(--transition-base);
+    font-family: inherit;
+}
+
+.supplier-section select:focus {
+    outline: none;
+    border-color: var(--color-button-background);
+    box-shadow: 0 0 0 3px rgba(17, 121, 162, 0.15);
+}
+
 /* ── Media Queries ── */
 @media screen and (max-width: 600px) {
     .promotions-view .form-section form {

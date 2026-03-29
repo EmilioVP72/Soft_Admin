@@ -42,6 +42,16 @@ const addRow = () => {
     <div class="promotions-view">
         <h1>Calculadora de Promociones</h1>
 
+        <section class="supplier-section">
+            <label for="supplier" class="label-supplier">Proveedor:</label>
+            <select name="supplier" id="supplier" v-model="selectedSupplier" class="select-supplier">
+                <option value="">Seleccionar Proveedor</option>
+                <option v-for="supplier in suppliers" :key="supplier.id" :value="supplier.id">
+                    {{ supplier.name }}
+                </option>
+            </select>
+        </section>
+
         <div class="form-section">
             <h2>Agregar Registro de Ventas</h2>
 
