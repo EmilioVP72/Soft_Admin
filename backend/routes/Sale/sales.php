@@ -17,6 +17,7 @@ Route::get('/transactions/department/{departmentId}', [SalesController::class, '
 
 // CRUD Ventas
 Route::get('/', [SalesController::class, 'index']);
+// ARREGLAR ESTA API YA QUE CUANDO EN EL FRONT SE AGREGA MAS DE UNA VENTA SALEN LAS DOS EN UNA CELDA 
 Route::post('/', [SalesController::class, 'store']);
 Route::get('/{id}', [SalesController::class, 'show']);
 Route::put('/{id}', [SalesController::class, 'update']);
