@@ -5,6 +5,7 @@
 import { ref, onMounted, computed } from 'vue';
 import EmployeeServices from '../../../services/EmployeeServices';
 import StoresServices from '../../../services/StoresServices';
+import ErrorMessage from '@/components/shared/Error.vue';
 
 // Seccion: "Props y eventos"
 // Explicacion: employeeId es opcional; si se recibe el componente actua en modo edicion,
@@ -26,6 +27,7 @@ const isEditMode = computed(() => !!props.employeeId);
 const loading = ref(false);
 const saving = ref(false);
 const errorMsg = ref('');
+const error_load = ref<boolean>(false);
 const stores = ref<Array<{ id_store: number; store: string }>>([]);
 
 const form = ref({
@@ -51,7 +53,7 @@ onMounted(async () => {
         const res = await StoresServices.getStores();
         stores.value = res.data.data;
     } catch {
-        errorMsg.value = 'No se pudieron cargar las sucursales.';
+        error_load.value = true;
     }
 
     if (isEditMode.value) {
@@ -117,7 +119,11 @@ async function handleSubmit() {
                 <button class="close-btn" @click="emit('cancel')">✕</button>
             </div>
 
-            <div v-if="loading" class="loading-msg">Cargando datos...</div>
+            <ErrorMessage v-if="error_load"
+                tittle="Error al cargar los datos"
+                message="No se pudieron cargar los datos del formulario. Por favor, cierra e intenta de nuevo."
+            />
+            <div v-else-if="loading" class="loading-msg">Cargando datos...</div>
 
             <form v-else @submit.prevent="handleSubmit" class="employee-form">
                 <div class="form-grid">

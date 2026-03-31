@@ -91,6 +91,10 @@
     box-shadow: 0 2px 8px var(--color-shadow);
 }
 
+
+
+
+
 /* ── Media Queries ── */
 @media screen and (max-width: 768px) {
     .calculate-view .component-section {

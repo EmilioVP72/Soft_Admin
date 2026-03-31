@@ -41,11 +41,20 @@ const router = createRouter({
         showNavbar: true,
         requiresAuth: true 
        }
+    },
+    {
+      path: '/data/form-sales',
+      name: 'form-sales',
+      component: () => import('@/components/data/sales/StoreSalesForm.vue'),
+      meta : { 
+        showNavbar: true, 
+        requiresAuth: true 
+       }
     }
   ]
 })
 
-router.beforeEach((to, from, next) => {
+router.beforeEach((to, _from, next) => {
   const authStore = useAuthStore();
   if(to.meta.requiresAuth) {
     if (authStore.token) {

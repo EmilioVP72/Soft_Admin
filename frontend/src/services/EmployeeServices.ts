@@ -1,7 +1,7 @@
 // Seccion: "Importaciones"
 // Explicacion: Se importa el cliente HTTP configurado y los tipos de datos que usa el servicio
 import apiClient from "@/api/employee";
-import type { Employee, PostEmployee } from "@/interfaces/EmployeeInterfaces";
+import type { PostEmployee } from "@/interfaces/EmployeeInterfaces";
 
 // Seccion: "CRUD de Empleados"
 // Explicacion: Expone las peticiones HTTP para listar, obtener, crear, actualizar y eliminar empleados;

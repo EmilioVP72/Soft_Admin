@@ -17,6 +17,7 @@
     margin: 0 auto;
 }
 
+
 @media (max-width: 768px) {
     .dashboard-view {
         padding: 1rem 0.5rem;

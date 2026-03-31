@@ -1,13 +1,13 @@
 <script setup lang="ts">
-import StoresServices from '@/services/StoresServices';
 import { onMounted, ref, computed, watch } from 'vue';
-import axios from 'axios';
 import storesServices from '@/services/StoresServices';
+import ErrorMessage from '@/components/shared/Error.vue';
 
-
-const storesSales = ref<Array<{ department: string; totalQuantity: number; totalSales: number }>>([]);
+const error_data = ref<boolean>(false);
+const error_details = ref<string>('');
+const storesSales = ref<any[]>([]);
+const storesSalesByStore = ref<any[]>([]);
 const dataStore = ref<Array<{ storeId: number; storeName: string }>>([]);
-const dataVentas = ref([]);
 var selectedOption = ref<number>(0);
 
 // selectedStoreId es computed, se calcula automáticamente cuando selectedOption cambia
@@ -16,23 +16,48 @@ const selectedStoreId = computed(() => {
 });
 
 // Watch para ver los cambios cuando seleccionas otra sucursal
-watch(selectedOption, async (newValue) => {
+watch(selectedOption, async (_newValue) => {
     try {
-        const response = await storesServices.getSalesByDepartmentByStore(selectedStoreId.value);
-        storesSales.value = response.data.data.map((sale: { department: string; total_quantity: number; total_sales: number }) => ({
-            department: sale.department,
-            totalQuantity: sale.total_quantity,
-            totalSales: sale.total_sales
+        const saleData = await storesServices.getSalesbyDepartmentForStore();
+        storesSales.value = (saleData.data.data || []).map( (sale: any) => ({
+            details: (sale.details ?? []).map( (detail: any) => ({
+                department: detail.department,
+                id_transaction_detail: detail.id_transaction_detail,
+                quantity: detail.quantity,
+                subtotal: detail.subtotal,
+                unit_price: detail.unit_price,
+            })),
+            notes: sale.notes,
+            payment: sale.payment, 
+            store_name: sale.store_name || (sale.store && sale.store.name) || 'N/A',
+            total_amount: sale.total_amount,
+            transaction_date: sale.transaction_date,
+            transaction_type: sale.transaction_type,
+            user_name: sale.user_name || (sale.user && sale.user.name) || 'N/A',
         }));
-    } catch (error) {
+
+        // selectedOption guarda el ID, pero necesitamos el nombre de la sucursal para filtrar
+        const selectedStore = dataStore.value.find(s => s.storeId === selectedOption.value);
+        const selectedStoreName = selectedStore ? selectedStore.storeName : '';
+
+        storesSalesByStore.value = storesSales.value.filter(sale => sale.store_name === selectedStoreName);
         
+        // Fallback: If filter is empty but there are sales, show all sales so we can see them.
+        if (storesSalesByStore.value.length === 0 && storesSales.value.length > 0) {
+            error_details.value = `Filter empty for "${selectedStoreName}". Showing all sales instead.`;
+            storesSalesByStore.value = storesSales.value;
+        } else {
+            error_details.value = '';
+        }
+    } catch (error: any) {
+        console.error('Error fetching stores sales:', error);
+        error_details.value = String(error.message || error);
     }
 });
 
 onMounted(async () => {
     try {
-        const response = await StoresServices.getStores();
-        storesSales.value = response.data.data;
+        const response = await storesServices.getStores();
         dataStore.value = response.data.data.map((store: { id: number; name: string }) => ({ 
             storeId: store.id, 
             storeName: store.name 
@@ -40,23 +65,30 @@ onMounted(async () => {
 
         // Solo asigna a selectedOption, selectedStoreId se calcula automáticamente
         if (dataStore.value.length > 0) {
-            selectedOption.value = dataStore.value[0].storeId;
+            selectedOption.value = dataStore.value[0]!.storeId;
         }
 
         
 
     } catch (error) {
-        console.error('Error fetching stores sales:', error);
+        error_data.value = true;
     }
 
-    
-});
+    }
+);
 
 </script>
 
 <template>
-    <div class="data-view">
+    <ErrorMessage v-if="error_data"
+        tittle="Error al cargar las ventas por sucursal"
+        message="Hubo un error al obtener los datos. Por favor, inténtalo de nuevo más tarde o contacta al soporte si el problema persiste."
+    />
+    <div v-else class="data-view">
         <h1>Ventas por Sucursal</h1>
+        <div v-if="error_details" style="color: red; margin-bottom: 10px; padding: 10px; border: 1px solid red; border-radius: 4px;">
+            Atención: {{ error_details }}
+        </div>
         <section class="component-section">
             <label class="component-label">Seleccione la Sucursal</label>
             <select
@@ -67,23 +99,73 @@ onMounted(async () => {
                 </option>
             </select>
         </section>
-        
-        <section class="table-section">
-            <thead class="table-header">
-                <tr class="table-row">
-                    <th class="table-cell">Departamento</th>
-                    <th class="table-cell">Cantidad Vendida</th>
-                    <th class="table-cell">Total de Ventas</th>
-                </tr>
-            </thead>
-            <tbody class="table-body">
-                <tr v-for="sale in storesSales" :key="sale.department" class="table-row">
-                    <td class="table-cell">{{ sale.department }}</td>
-                    <td class="table-cell">{{ sale.totalQuantity }}</td>
-                    <td class="table-cell">$ {{ sale.totalSales }}</td>
-                </tr>
-            </tbody>
+
+        <section class="button-section">
+            <router-link to="/data/form-sales" class="action-button edit-button">Agregar Venta</router-link>
+            <button class="action-button pdf-button">Exportar PDF</button>
+            <button class="action-button excel-button">Exportar Excel</button>
         </section>
+        
+        <div class="table-container">
+            <section class="table-section">
+                <thead class="table-header">
+                    <tr class="table-row">
+                        <th class="table-cell">Departamento</th>
+                        <th class="table-cell">Cantidad Vendida</th>
+                        <th class="table-cell">Precio Unitario</th>
+                        <th class="table-cell">Subtotal</th>
+                        <th class="table-cell">Metodo de Pago</th>
+                        <th class="table-cell">Fecha de la Venta</th>
+                        <th class="table-cell">Tipo de Venta</th>
+                        <th class="table-cell">Usuario</th>
+                        <th class="table-cell">Total de Ventas</th>
+                    </tr>
+                </thead>
+                <tbody class="table-body">
+                    <tr v-for="(sale, index) in storesSalesByStore" :key="index" class="table-row">
+                        <td class="table-cell">
+                            <div v-for="detail in sale.details" :key="detail.id_transaction_detail">
+                                {{ detail.department }}
+                            </div>
+                        </td>
+                        <td class="table-cell">
+                            <div v-for="detail in sale.details" :key="detail.id_transaction_detail">
+                                {{ detail.quantity }}
+                            </div>
+                        </td>
+                        <td class="table-cell">
+                            <div v-for="detail in sale.details" :key="detail.id_transaction_detail">
+                                {{ detail.unit_price }}
+                            </div>
+                        </td>
+                        <td class="table-cell">
+                            <div v-for="detail in sale.details" :key="detail.id_transaction_detail">
+                                {{ detail.subtotal }}
+                            </div>
+                        </td>
+                        <td class="table-cell">
+                            <span v-if="!sale.payment || (Array.isArray(sale.payment) && sale.payment.length === 0)">
+                            </span>
+                            <span v-else-if="Array.isArray(sale.payment)">
+                                <div v-for="pay in sale.payment" :key="pay.id_payment">
+                                    {{ pay.payment }}
+                                </div>
+                            </span>
+                            <span v-else-if="typeof sale.payment === 'object'">
+                                {{ sale.payment.payment || 'Sin especificar' }}
+                            </span>
+                            <span v-else>
+                                {{ sale.payment }}
+                            </span>
+                        </td>
+                        <td class="table-cell">{{ sale.transaction_date }}</td>
+                        <td class="table-cell">{{ sale.transaction_type }}</td>
+                        <td class="table-cell">{{ sale.user_name }}</td>
+                        <td class="table-cell">{{ sale.total_amount }}</td>
+                    </tr>
+                </tbody>
+            </section>
+        </div>
     </div>
 </template>
 

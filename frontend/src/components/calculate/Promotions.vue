@@ -1,6 +1,7 @@
 <script setup lang="ts">
-import { ref, computed } from 'vue';
-import { CalculatePromotion, TotalySalesByPromotion } from '@/interfaces/CalculateInterfaces';
+import { ref, computed, onMounted } from 'vue';
+import type { CalculatePromotion, TotalySalesByPromotion } from '@/interfaces/CalculateInterfaces';
+import SuppliersServices from '@/services/SuppliersServices';
 
 const formInput = ref({
     date: '',
@@ -8,6 +9,9 @@ const formInput = ref({
 });
 
 const dataList = ref<CalculatePromotion[]>([]);
+const suppliers = ref<any[]>([]);
+const selectedSupplier = ref('');
+const error = ref(false);
 
 const calculateTable = computed<TotalySalesByPromotion[]>(() => {
     let temporalTotaly = 0;
@@ -36,11 +40,35 @@ const addRow = () => {
     formInput.value.totaly_sales = 0;
 };
 
+onMounted( async() => {
+    try {
+        const response = await SuppliersServices.getAllSuppliers();
+        suppliers.value = response.data.data.map((supplier: any) => {
+            return {
+                id: supplier.id_supplier,
+                name: supplier.supplier
+            };
+        });
+    } catch (error) {
+        console.error('Error al obtener los proveedores:', error);
+    }
+});
 </script>
 
 <template>
+    
     <div class="promotions-view">
         <h1>Calculadora de Promociones</h1>
+
+        <section class="supplier-section">
+            <label for="supplier" class="label-supplier">Proveedor:</label>
+            <select name="supplier" id="supplier" v-model="selectedSupplier" class="select-supplier">
+                <option value="">Seleccionar Proveedor</option>
+                <option v-for="supplier in suppliers" :key="supplier.id" :value="supplier.id">
+                    {{ supplier.name }}
+                </option>
+            </select>
+        </section>
 
         <div class="form-section">
             <h2>Agregar Registro de Ventas</h2>
@@ -91,7 +119,7 @@ const addRow = () => {
                 <tfoot v-if="calculateTable.length > 0">
                     <tr>
                         <td>Total Acumulado</td>
-                        <td>$ {{ calculateTable[calculateTable.length - 1].acumulated_sales.toFixed(2) }}</td>
+                        <td>$ {{ calculateTable[calculateTable.length - 1]?.acumulated_sales?.toFixed(2) }}</td>
                     </tr>
                 </tfoot>
             </table>

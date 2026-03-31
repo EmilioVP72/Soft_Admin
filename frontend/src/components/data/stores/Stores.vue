@@ -6,6 +6,7 @@ import StoresServices from '@/services/StoresServices';
 import LocalitiesServices from '@/services/LocalitiesServices';
 import StoreForm from './StoreForm.vue';
 import { onMounted, ref } from 'vue';
+import ErrorMessage from '@/components/shared/Error.vue';
 
 // Seccion: "Estado reactivo"
 // Explicacion: storeData almacena la lista de sucursales mostrada en la tabla;
@@ -19,6 +20,7 @@ const selectedStoreId = ref<number | undefined>(undefined);
 const showDeleteConfirm = ref(false);
 const deleteTargetId = ref<number | null>(null);
 const deleting = ref(false);
+const error_data = ref<boolean>(false);
 
 // Seccion: "Carga de datos"
 // Explicacion: Llama al endpoint para obtener todas las sucursales y mapea
@@ -44,9 +46,10 @@ async function fetchStores() {
             locality: loc.locality,
         }));
         
-
+        error_data.value = false;
     } catch (error) {
         console.error('Error fetching store data:', error);
+        error_data.value = true;
     }
 }
 
@@ -124,7 +127,10 @@ onMounted(fetchStores);
 
 </script>
 <template>
-    <div class="data-view">
+
+    <ErrorMessage v-if="error_data" tittle="Error al cargar los datos de las sucursales" message="No se pudieron cargar los datos de las sucursales. Por favor, intenta de nuevo más tarde. Si el problema persiste, contacta al soporte." />
+
+    <div v-else class="data-view">
         <div class="toolbar">
             <h1>Datos de las Sucursales</h1>
             <div class="toolbar-actions">
