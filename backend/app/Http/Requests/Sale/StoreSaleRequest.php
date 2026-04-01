@@ -14,18 +14,18 @@ class StoreSaleRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'fk1_id_store' => 'required|exists:stores,id_store',
-            'fk2_id_user' => 'required|exists:users,id_user',
-            'fk3_id_payment' => 'required|exists:payments,id_payment',
-            'total_amount' => 'required|numeric|min:0',
-            'notes' => 'nullable|string',
-            'transaction_date' => 'nullable|date',
-            
-            'details' => 'required|array|min:1',
-            'details.*.fk2_id_department' => 'required|exists:departments,id_department',
-            'details.*.quantity' => 'required|numeric|min:0.01',
-            'details.*.unit_price' => 'required|numeric|min:0',
-            'details.*.subtotal' => 'required|numeric|min:0',
+            'sales' => 'required|array|min:1',
+            'sales.*.fk1_id_store' => 'required|exists:stores,id_store',
+            'sales.*.fk2_id_user' => 'required|exists:users,id_user',
+            'sales.*.fk3_id_payment' => 'required|exists:payments,id_payment',
+            'sales.*.total_amount' => 'required|numeric|min:0',
+            'sales.*.notes' => 'nullable|string',
+            'sales.*.transaction_date' => 'nullable|date',
+            'sales.*.details' => 'required|array|min:1',
+            'sales.*.details.*.fk2_id_department' => 'required|exists:departments,id_department',
+            'sales.*.details.*.quantity' => 'required|numeric|min:0.01',
+            'sales.*.details.*.unit_price' => 'required|numeric|min:0',
+            'sales.*.details.*.subtotal' => 'required|numeric|min:0',
         ];
     }
 }

@@ -6,6 +6,7 @@ use App\Models\Store;
 use App\Models\Department;
 use App\Http\Controllers\Controller;
 use App\Http\Repositories\Sale\SalesRepository;
+use App\Http\Requests\Sale\StoreSaleRequest;
 use App\Http\Requests\Sale\SalesFilterRequest;
 use App\Http\Resources\Sale\DepartmentSalesResource;
 use App\Http\Resources\Sale\GeneralDepartmentSalesResource;
@@ -201,17 +202,23 @@ class SalesController extends Controller
         }
     }
 
-    public function store(\App\Http\Requests\Sale\StoreSaleRequest $request): JsonResponse
+    public function store(StoreSaleRequest $request): JsonResponse
     {
         try {
-            $sale = $this->salesRepository->create($request->validated());
+            $createdSales = [];
+            $data = $request->validated();
+
+            foreach ($data['sales'] as $saleData) {
+                $createdSales[] = $this->salesRepository->create($saleData);
+            }
+
             return $this->successResponse(
-                new TransactionResource($sale),
-                'Venta creada correctamente',
+                TransactionResource::collection(collect($createdSales)),
+                'Ventas creadas correctamente',
                 201
             );
         } catch (\Exception $e) {
-            return $this->errorResponse('Error al crear la venta: ' . $e->getMessage(), 500);
+            return $this->errorResponse('Error: ' . $e->getMessage(), 500);
         }
     }
 
