@@ -101,7 +101,9 @@ const saveTransaction = async () => {
     
 
     try {
-        const response = await storesServices.createSale(transactionData);
+        await storesServices.createSale({
+            sales: [transactionData]
+        });
         
         alert("¡Transacción guardada exitosamente!");
         

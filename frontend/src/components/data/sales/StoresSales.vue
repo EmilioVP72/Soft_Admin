@@ -19,22 +19,43 @@ const selectedStoreId = computed(() => {
 watch(selectedOption, async (_newValue) => {
     try {
         const saleData = await storesServices.getSalesbyDepartmentForStore();
-        storesSales.value = (saleData.data.data || []).map( (sale: any) => ({
-            details: (sale.details ?? []).map( (detail: any) => ({
-                department: detail.department,
-                id_transaction_detail: detail.id_transaction_detail,
-                quantity: detail.quantity,
-                subtotal: detail.subtotal,
-                unit_price: detail.unit_price,
-            })),
-            notes: sale.notes,
-            payment: sale.payment, 
-            store_name: sale.store_name || (sale.store && sale.store.name) || 'N/A',
-            total_amount: sale.total_amount,
-            transaction_date: sale.transaction_date,
-            transaction_type: sale.transaction_type,
-            user_name: sale.user_name || (sale.user && sale.user.name) || 'N/A',
-        }));
+        
+        let flattenedSales: any[] = [];
+        (saleData.data.data || []).forEach((sale: any) => {
+            const baseSale = {
+                notes: sale.notes,
+                payment: sale.payment, 
+                store_name: sale.store_name || (sale.store && sale.store.name) || 'N/A',
+                total_amount: sale.total_amount,
+                transaction_date: sale.transaction_date,
+                transaction_type: sale.transaction_type,
+                user_name: sale.user_name || (sale.user && sale.user.name) || 'N/A',
+            };
+            
+            if (sale.details && sale.details.length > 0) {
+                sale.details.forEach((detail: any) => {
+                    flattenedSales.push({
+                        ...baseSale,
+                        department: detail.department,
+                        id_transaction_detail: detail.id_transaction_detail,
+                        quantity: detail.quantity,
+                        subtotal: detail.subtotal,
+                        unit_price: detail.unit_price,
+                    });
+                });
+            } else {
+                flattenedSales.push({
+                    ...baseSale,
+                    department: 'N/A',
+                    id_transaction_detail: null,
+                    quantity: 0,
+                    subtotal: 0,
+                    unit_price: 0,
+                });
+            }
+        });
+        
+        storesSales.value = flattenedSales;
 
         // selectedOption guarda el ID, pero necesitamos el nombre de la sucursal para filtrar
         const selectedStore = dataStore.value.find(s => s.storeId === selectedOption.value);
@@ -123,26 +144,10 @@ onMounted(async () => {
                 </thead>
                 <tbody class="table-body">
                     <tr v-for="(sale, index) in storesSalesByStore" :key="index" class="table-row">
-                        <td class="table-cell">
-                            <div v-for="detail in sale.details" :key="detail.id_transaction_detail">
-                                {{ detail.department }}
-                            </div>
-                        </td>
-                        <td class="table-cell">
-                            <div v-for="detail in sale.details" :key="detail.id_transaction_detail">
-                                {{ detail.quantity }}
-                            </div>
-                        </td>
-                        <td class="table-cell">
-                            <div v-for="detail in sale.details" :key="detail.id_transaction_detail">
-                                {{ detail.unit_price }}
-                            </div>
-                        </td>
-                        <td class="table-cell">
-                            <div v-for="detail in sale.details" :key="detail.id_transaction_detail">
-                                {{ detail.subtotal }}
-                            </div>
-                        </td>
+                        <td class="table-cell">{{ sale.department }}</td>
+                        <td class="table-cell">{{ sale.quantity }}</td>
+                        <td class="table-cell">{{ sale.unit_price }}</td>
+                        <td class="table-cell">{{ sale.subtotal }}</td>
                         <td class="table-cell">
                             <span v-if="!sale.payment || (Array.isArray(sale.payment) && sale.payment.length === 0)">
                             </span>
