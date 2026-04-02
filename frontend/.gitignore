@@ -22,7 +22,5 @@ dist-ssr
 *.njsproj
 *.sln
 .env
-.env.production
-
 #guias
 documentation/VUE_PERSONAL_GUIDE.md
