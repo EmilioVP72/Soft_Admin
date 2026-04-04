@@ -116,9 +116,9 @@ function onCancel() {
 }
 
 // Seccion: "Impresion"
-// Explicacion: Abre el dialogo de impresion nativo del navegador con la vista actual
+// Explicacion: Abre el reporte PDF de sucursales en una nueva pestaña
 function printReport() {
-    window.print();
+    window.open('http://localhost:8000/api/reports/stores', '_blank');
 }
 
 // Seccion: "Inicializacion"

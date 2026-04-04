@@ -15,9 +15,19 @@ Route::prefix('auth')->group(function () {
     });
 });
 
+use App\Http\Controllers\Api\ReportController;
+
 Route::get('/user', function (Request $request) {
     return $request->user();
 })->middleware('auth:api');
+
+// Rutas de Reportes
+Route::prefix('reports')->group(function () {
+    Route::get('/sales/general', [ReportController::class, 'salesGeneral']);
+    Route::get('/sales/store/{store_id}', [ReportController::class, 'salesStore']);
+    Route::get('/employees', [ReportController::class, 'employees']);
+    Route::get('/stores', [ReportController::class, 'stores']);
+});
 
 
 Route::middleware('auth:api')->group(function () {
