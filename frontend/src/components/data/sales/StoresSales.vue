@@ -98,6 +98,11 @@ onMounted(async () => {
     }
 );
 
+function downloadPdf() {
+    if (selectedOption.value) {
+        window.open(`http://localhost:8000/api/reports/sales/store/${selectedOption.value}`, '_blank');
+    }
+}
 </script>
 
 <template>
@@ -123,7 +128,7 @@ onMounted(async () => {
 
         <section class="button-section">
             <router-link to="/data/form-sales" class="action-button edit-button">Agregar Venta</router-link>
-            <button class="action-button pdf-button">Exportar PDF</button>
+            <button class="action-button pdf-button" @click="downloadPdf">Exportar PDF</button>
             <button class="action-button excel-button">Exportar Excel</button>
         </section>
         
