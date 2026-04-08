@@ -1,6 +1,6 @@
 // Seccion: "Importaciones"
 // Explicacion: Se importa el cliente HTTP de sucursales y el tipo de respuesta Store
-import apiClient from "../api/stores";
+import apiClient from "@/api/axios";
 import type { Store } from "../interfaces/StoresInterfaces";
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 

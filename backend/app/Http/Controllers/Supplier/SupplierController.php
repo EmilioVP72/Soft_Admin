@@ -22,12 +22,12 @@ class SupplierController extends Controller
         $this->supplierRepository = $supplierRepository;
     }
 
-    public function index(): JsonResponse 
+    public function index(): JsonResponse
     {
         try {
             $suppliers = $this->supplierRepository->getAll();
             return $this->successResponse(
-                SupplierResource::collection($suppliers), 
+                SupplierResource::collection($suppliers),
                 'Proveedores obtenidos correctamente'
             );
         } catch (\Exception $e) {
@@ -35,7 +35,7 @@ class SupplierController extends Controller
         }
     }
 
-    public function show($id): JsonResponse 
+    public function show($id): JsonResponse
     {
         try {
             $supplier = $this->supplierRepository->find($id);
@@ -43,7 +43,7 @@ class SupplierController extends Controller
                 return $this->errorResponse('Proveedor no encontrado', 404);
             }
             return $this->successResponse(
-                new SupplierResource($supplier), 
+                new SupplierResource($supplier),
                 'Proveedor obtenido correctamente'
             );
         } catch (\Exception $e) {
@@ -51,13 +51,13 @@ class SupplierController extends Controller
         }
     }
 
-    public function store(StoreSupplierRequest $request): JsonResponse 
+    public function store(StoreSupplierRequest $request): JsonResponse
     {
         try {
             $supplier = $this->supplierRepository->create($request->validated());
             return $this->successResponse(
-                new SupplierResource($supplier), 
-                'Proveedor creado correctamente', 
+                new SupplierResource($supplier),
+                'Proveedor creado correctamente',
                 201
             );
         } catch (\Exception $e) {
@@ -65,7 +65,7 @@ class SupplierController extends Controller
         }
     }
 
-    public function update(UpdateSupplierRequest $request, $id): JsonResponse 
+    public function update(UpdateSupplierRequest $request, $id): JsonResponse
     {
         try {
             $supplier = $this->supplierRepository->find($id);
@@ -74,7 +74,7 @@ class SupplierController extends Controller
             }
             $supplier = $this->supplierRepository->update($supplier, $request->validated());
             return $this->successResponse(
-                new SupplierResource($supplier), 
+                new SupplierResource($supplier),
                 'Proveedor actualizado correctamente'
             );
         } catch (\Exception $e) {
@@ -82,7 +82,7 @@ class SupplierController extends Controller
         }
     }
 
-    public function destroy($id): JsonResponse 
+    public function destroy($id): JsonResponse
     {
         try {
             $supplier = $this->supplierRepository->find($id);
@@ -96,21 +96,21 @@ class SupplierController extends Controller
         }
     }
 
-    public function storePayment(StoreSupplierPaymentRequest $request, $id): JsonResponse 
+    public function storePayment(StoreSupplierPaymentRequest $request, $id): JsonResponse
     {
         try {
             $supplier = $this->supplierRepository->find($id);
             if (!$supplier) {
                 return $this->errorResponse('Proveedor no encontrado', 404);
             }
-            
+
             $data = $request->validated();
             $data['fk1_id_supplier'] = $id;
-            
+
             $payment = $this->supplierRepository->createPayment($data);
             return $this->successResponse(
-                new SupplierPaymentResource($payment), 
-                'Pago a proveedor registrado correctamente', 
+                new SupplierPaymentResource($payment),
+                'Pago a proveedor registrado correctamente',
                 201
             );
         } catch (\Exception $e) {
@@ -118,12 +118,12 @@ class SupplierController extends Controller
         }
     }
 
-    public function getAllPayments(): JsonResponse 
+    public function getAllPayments(): JsonResponse
     {
         try {
             $payments = $this->supplierRepository->getAllPayments();
             return $this->successResponse(
-                SupplierPaymentResource::collection($payments), 
+                SupplierPaymentResource::collection($payments),
                 'Pagos obtenidos correctamente'
             );
         } catch (\Exception $e) {
@@ -131,7 +131,7 @@ class SupplierController extends Controller
         }
     }
 
-    public function getSupplierPayments($id): JsonResponse 
+    public function getSupplierPayments($id): JsonResponse
     {
         try {
             $supplier = $this->supplierRepository->find($id);
@@ -140,7 +140,7 @@ class SupplierController extends Controller
             }
             $payments = $this->supplierRepository->getPaymentsBySupplier($id);
             return $this->successResponse(
-                SupplierPaymentResource::collection($payments), 
+                SupplierPaymentResource::collection($payments),
                 'Pagos del proveedor obtenidos correctamente'
             );
         } catch (\Exception $e) {

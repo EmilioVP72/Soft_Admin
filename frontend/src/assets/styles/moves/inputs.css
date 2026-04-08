@@ -1,52 +1,12 @@
-/* ── Variables locales ── */
-* {
+.data-view {
+    --c-toolbar-bg:        #1e293b;
+    --c-toolbar-bg-hover:  #2d4a6e;
     --c-table-head-bg:     #1e293b;
-    --c-table-head-hover:  #2d4a6e;
-    --c-row-stripe:        #ddeef8;
     --c-btn-primary-bg:    #1179a2;
+    --c-btn-primary-hover: #0e6689;
+    --c-row-stripe:        #ddeef8;
 }
 
-*{
-    padding: 0;
-    margin: 0;
-    box-sizing: border-box;
-}
-
-.sales-table {
-    width: 100%;
-    border-collapse: collapse;
-    overflow-x: auto;
-    display: block;
-}
-
-.table-header {
-    background: linear-gradient(135deg, var(--c-table-head-bg) 0%, var(--c-table-head-hover) 100%);
-}
-
-.header-row {
-    color: white;
-    font-size: clamp(0.875rem, 1.5vw + 0.5rem, 1.2rem);
-}
-
-.header-cell {
-    padding: clamp(0.5rem, 2vw, 1rem);
-    text-align: center;
-    border: 1px solid black;
-    white-space: nowrap;
-}
-
-.data-cell {
-    padding: clamp(0.5rem, 1.5vw, 0.75rem);
-    text-align: center;
-    border: 1px solid black;
-    font-size: clamp(0.75rem, 1.2vw + 0.3rem, 1rem);
-}
-
-.data-row:nth-child(even){
-    background-color: var(--c-row-stripe);
-}
-
-/* ── Toolbar ── */
 .toolbar {
     display: flex;
     align-items: center;
@@ -55,7 +15,7 @@
     gap: 0.75rem;
     width: 100%;
     padding: 0.75rem 1rem;
-    background: linear-gradient(135deg, var(--c-table-head-bg) 0%, var(--c-table-head-hover) 100%);
+    background: linear-gradient(135deg, var(--c-toolbar-bg) 0%, var(--c-toolbar-bg-hover) 100%);
     border-radius: 8px;
     margin-bottom: 0.5rem;
 }
@@ -68,12 +28,18 @@
 
 .toolbar-actions {
     display: flex;
-    gap: 0.6rem;
+    gap: 1rem;
     flex-wrap: wrap;
+    align-items: center;
+}
+
+.toolbar-actions section {
+    display: flex;
+    gap: 0.5rem;
+    align-items: center;
 }
 
 .btn-new {
-    display: inline-block;
     padding: 0.45rem 1.1rem;
     background-color: white;
     color: var(--c-btn-primary-bg);
@@ -83,7 +49,6 @@
     font-weight: 700;
     cursor: pointer;
     transition: background-color 0.2s ease, color 0.2s ease;
-    text-decoration: none;
 }
 
 .btn-new:hover {
@@ -109,12 +74,64 @@
     color: var(--c-btn-primary-bg);
 }
 
-/* Media Queries para ajustes específicos */
+.form-control {
+    padding: 0.45rem;
+    border-radius: 4px;
+    border: 1px solid #ccc;
+    outline: none;
+}
+
+.inputs-body {
+    width: 100%;
+}
+
+.table-section {
+    margin-top: 20px;
+    border-radius: 8px;
+    overflow-x: auto;
+    overflow-y: visible;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    width: 100%;
+}
+
+.moves-table {
+    width: 100%;
+    min-width: 640px;
+    border-collapse: collapse;
+}
+
+.table-header {
+    background: linear-gradient(135deg, var(--c-table-head-bg) 0%, var(--c-toolbar-bg-hover) 100%);
+}
+
+.header-row {
+    color: white;
+    font-size: clamp(0.875rem, 1.5vw + 0.5rem, 1.2rem);
+}
+
+.header-cell {
+    padding: clamp(0.5rem, 2vw, 1rem);
+    text-align: center;
+    border: 1px solid black;
+    white-space: nowrap;
+}
+
+.data-cell {
+    padding: clamp(0.5rem, 1.5vw, 0.75rem);
+    text-align: center;
+    border: 1px solid black;
+    font-size: clamp(0.75rem, 1.2vw + 0.3rem, 1rem);
+    white-space: nowrap;
+}
+
+.data-row:nth-child(even) {
+    background-color: var(--c-row-stripe);
+}
+
 @media (max-width: 768px) {
-    .sales-table {
+    .moves-table {
         font-size: 0.875rem;
     }
-    
     .header-cell,
     .data-cell {
         min-width: 80px;
@@ -122,17 +139,15 @@
 }
 
 @media (max-width: 480px) {
-    .sales-table {
+    .moves-table {
         font-size: 0.75rem;
     }
-    
     .header-cell {
         padding: 0.4rem;
         font-size: 0.8rem;
     }
-    
     .data-cell {
-        padding: 0.35rem;
-        min-width: 60px;
+        padding: 0.4rem;
+        font-size: 0.75rem;
     }
 }

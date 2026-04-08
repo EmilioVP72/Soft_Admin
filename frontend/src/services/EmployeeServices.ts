@@ -1,6 +1,6 @@
 // Seccion: "Importaciones"
 // Explicacion: Se importa el cliente HTTP configurado y los tipos de datos que usa el servicio
-import apiClient from "@/api/employee";
+import apiClient from "@/api/axios";
 import type { PostEmployee } from "@/interfaces/EmployeeInterfaces";
 
 // Seccion: "CRUD de Empleados"

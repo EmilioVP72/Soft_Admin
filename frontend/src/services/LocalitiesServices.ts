@@ -1,4 +1,4 @@
-import apiClient from "@/api/localities";
+import apiClient from "@/api/axios";
 
 export default {
     getLocalities(){

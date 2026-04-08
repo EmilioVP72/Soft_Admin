@@ -32,7 +32,7 @@ class SupplierRepository
     {
         $supplier->delete();
     }
-    
+
     public function createPayment(array $data)
     {
         return SupplierPayment::create($data);
@@ -46,6 +46,6 @@ class SupplierRepository
     public function getPaymentsBySupplier($supplierId)
     {
         return SupplierPayment::with(['supplier', 'department'])
-                ->where('fk1_id_supplier', $supplierId)->get();
+            ->where('fk1_id_supplier', $supplierId)->get();
     }
 }

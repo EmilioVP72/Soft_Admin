@@ -3,6 +3,7 @@ import { onMounted, ref, computed, watch } from 'vue';
 import storesServices from '@/services/StoresServices';
 import LoginServices from '@/services/LoginServices';
 import paymentServices from '@/services/PaymentServices';
+import departmentsServices from '@/services/DepartmentsServices';
 
 const stores = ref<any>([]);
 const user = ref<string>('');
@@ -31,7 +32,7 @@ const salesDetails = ref<any>([]);
 
 watch(selectStoreOption, async (newValue: number) => {
     if (newValue === 0) return;
-    const response = await storesServices.getSalesByDepartmentByStore(newValue);
+    const response = await departmentsServices.getDepartmentsByStore(newValue);
     departments.value = response.data.data.map((department: any) => ({
         department: department.department,
         id: department.id_department

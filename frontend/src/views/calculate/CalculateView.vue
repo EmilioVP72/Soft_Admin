@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import {ref, computed} from 'vue';
+import {ref, computed, watch} from 'vue';
 import Promotions from '@/components/calculate/Promotions.vue';
 
 
@@ -12,7 +12,11 @@ const options = [
 
 ];
 
-const selectedOption = ref('promociones');
+const selectedOption = ref(localStorage.getItem('calculateViewOption') || 'promociones');
+
+watch(selectedOption, (newValue: string) => {
+    localStorage.setItem('calculateViewOption', newValue);
+});
 
 const activeComponent = computed(() => {
     return (componentsMap as Record<string, any>)[selectedOption.value] || null;
