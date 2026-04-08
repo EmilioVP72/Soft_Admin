@@ -33,6 +33,19 @@ class GeneralDepartmentController extends Controller
         }
     }
 
+    public function getByStore($storeId): JsonResponse 
+    {
+        try {
+            $generalDeps = $this->generalDepartmentRepository->getByStore($storeId);
+            return $this->successResponse(
+                GeneralDepartmentResource::collection($generalDeps), 
+                'Departamentos generales obtenidos correctamente'
+            );
+        } catch (\Exception $e) {
+            return $this->errorResponse('Error al obtener departamentos generales: ' . $e->getMessage(), 500);
+        }
+    }
+
     public function show($id): JsonResponse 
     {
         try {
