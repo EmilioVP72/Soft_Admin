@@ -11,6 +11,15 @@ class DepartmentRepository
         return Department::with('generalDep')->get();
     }
 
+    public function getByStore($storeId)
+    {
+        return Department::with('generalDep')
+            ->whereHas('generalDep', function ($query) use ($storeId) {
+                $query->where('fkl_id_tienda', $storeId);
+            })
+            ->get();
+    }
+
     public function find($id)
     {
         return Department::with('generalDep')->find($id);

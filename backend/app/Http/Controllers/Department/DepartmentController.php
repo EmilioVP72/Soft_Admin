@@ -33,6 +33,19 @@ class DepartmentController extends Controller
         }
     }
 
+    public function getByStore($storeId): JsonResponse 
+    {
+        try {
+            $departments = $this->departmentRepository->getByStore($storeId);
+            return $this->successResponse(
+                DepartmentResource::collection($departments), 
+                'Departamentos obtenidos correctamente'
+            );
+        } catch (\Exception $e) {
+            return $this->errorResponse('Error al obtener departamentos: ' . $e->getMessage(), 500);
+        }
+    }
+
     public function show($id): JsonResponse 
     {
         try {
