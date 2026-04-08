@@ -1,11 +1,12 @@
 <script setup lang="ts">
-
-import { ref} from 'vue'
-import { useRouter } from 'vue-router'
+import { ref } from 'vue';
+import { useRouter } from 'vue-router';
+import { useNotification } from '@/composables/useNotification';
 import { useAuthStore } from '@/stores/auth';
 import LoginServices from '@/services/LoginServices';
 
 const router = useRouter();
+const { showError } = useNotification();
 const authStore = useAuthStore();
 const isMenuOpen = ref(false);
 
@@ -25,8 +26,8 @@ const logout = () => {
     LoginServices.logoutUser().then(() => {
         authStore.logout();
         router.push({ name: 'login' });
-    }).catch((error: unknown) => {
-        console.error('Error during logout:', error);
+    }).catch(() => {
+        showError('Error', 'No se pudo cerrar la sesión correctamente.');
     });
     
     

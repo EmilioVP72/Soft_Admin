@@ -17,16 +17,16 @@ const componentsMap = {
 };
 
 const options = [
+    { value: 'ventas', label: 'Ventas Generales' },
     { value: 'sucursal', label: 'Sucursales' },
     { value: 'empleados', label: 'Empleados' },
-    { value: 'ventas', label: 'Ventas Generales' },
     { value: 'ventas_sucursal', label: 'Ventas por Sucursal' },
     { value: 'departamentos', label: 'Departamentos' },
     { value: 'proveedores', label: 'Proveedores' },
 
 ];
 
-const selectedOption = ref(localStorage.getItem('dataViewOption') || 'sucursal');
+const selectedOption = ref(localStorage.getItem('dataViewOption') || 'ventas');
 
 watch(selectedOption, (newValue: string) => {
     localStorage.setItem('dataViewOption', newValue);

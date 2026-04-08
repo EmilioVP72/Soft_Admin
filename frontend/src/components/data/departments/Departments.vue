@@ -4,6 +4,7 @@ import DepartmentsServices from '@/services/DepartmentsServices';
 import StoresServices from '@/services/StoresServices';
 import DepartmentsForm from './DepartmentsForm.vue';
 import ConfirmModal from '@/components/shared/ConfirmModal.vue';
+import { useNotification } from '@/composables/useNotification';
 
 const departments = ref<any[]>([]);
 const stores = ref<any[]>([]);
@@ -12,13 +13,16 @@ const selectedStoreId = ref<number | ''>('');
 const showModal = ref(false);
 const showDeleteConfirm = ref(false);
 const selectedDepartment = ref<any>(null);
+const { showWarning, showError } = useNotification();
 
 const loadStores = async () => {
     try {
         const response = await StoresServices.getStores();
-        stores.value = response.data.data || response.data;
+        stores.value = [...(response.data.data || response.data || [])].sort((a: any, b: any) =>
+            Number(a.id_store || a.id || 0) - Number(b.id_store || b.id || 0)
+        );
     } catch (error) {
-        console.error("Error al cargar tiendas:", error);
+        showError('Error al cargar', 'No se pudieron cargar las tiendas.');
     }
 };
 
@@ -29,9 +33,11 @@ const loadDepartments = async () => {
     }
     try {
         const response = await DepartmentsServices.getDepartmentsByStore(Number(selectedStoreId.value));
-        departments.value = response.data.data || response.data;
+        departments.value = [...(response.data.data || response.data || [])].sort((a: any, b: any) =>
+            Number(a.id_department || a.id || 0) - Number(b.id_department || b.id || 0)
+        );
     } catch (error) {
-        console.error("Error al cargar departamentos:", error);
+        showError('Error al cargar', 'No se pudieron cargar los departamentos.');
     }
 };
 
@@ -45,7 +51,7 @@ onMounted(() => {
 
 const openAddModal = () => {
     if (!selectedStoreId.value) {
-        alert("Primero selecciona una tienda para poder agregarle un departamento.");
+        showWarning('Selección Requerida', 'Primero selecciona una tienda para poder agregarle un departamento.');
         return;
     }
     selectedDepartment.value = null;
@@ -74,7 +80,7 @@ const handleDelete = async () => {
         showDeleteConfirm.value = false;
         loadDepartments();
     } catch (error) {
-        console.error("Error eliminando el departamento:", error);
+        showError('Error', 'No se pudo eliminar el departamento.');
     }
 };
 </script>

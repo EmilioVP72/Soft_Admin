@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { ref, onMounted } from 'vue';
 import SuppliersServices from '@/services/SuppliersServices';
+import { useNotification } from '@/composables/useNotification';
 
 const props = defineProps({
     supplier: {
@@ -10,6 +11,7 @@ const props = defineProps({
 });
 
 const emit = defineEmits(['close', 'saved']);
+const { showWarning, showError } = useNotification();
 
 const supplierForm = ref({
     supplier: ''
@@ -22,27 +24,32 @@ onMounted(() => {
 });
 
 const isSubmitting = ref(false);
-const errorMessage = ref('');
+
+const sanitizeText = (value: string) => String(value || '').trim();
 
 const submitForm = async () => {
-    if (!supplierForm.value.supplier.trim()) {
-        errorMessage.value = 'El nombre del proveedor es obligatorio';
+    const supplierName = sanitizeText(supplierForm.value.supplier);
+    if (!supplierName) {
+        showWarning('Campo obligatorio', 'El nombre del proveedor es obligatorio.');
+        return;
+    }
+
+    if (supplierName.length < 3 || supplierName.length > 120) {
+        showWarning('Dato inválido', 'El nombre del proveedor debe tener entre 3 y 120 caracteres.');
         return;
     }
 
     isSubmitting.value = true;
-    errorMessage.value = '';
     
     try {
         if (props.supplier) {
-            await SuppliersServices.updateSupplier(props.supplier.id, { supplier: supplierForm.value.supplier });
+            await SuppliersServices.updateSupplier(props.supplier.id, { supplier: supplierName });
         } else {
-            await SuppliersServices.createSupplier({ supplier: supplierForm.value.supplier });
+            await SuppliersServices.createSupplier({ supplier: supplierName });
         }
         emit('saved');
     } catch (error: any) {
-        errorMessage.value = error.response?.data?.message || 'Error al guardar el proveedor. Puede que ya exista.';
-        console.error(error);
+        showError('Error al guardar', error.response?.data?.message || 'Error al guardar el proveedor. Puede que ya exista.');
     } finally {
         isSubmitting.value = false;
     }
@@ -69,14 +76,6 @@ const closeForm = () => {
             <!-- Body -->
             <div class="p-6">
                 <form @submit.prevent="submitForm" class="space-y-4">
-                    <!-- Errores -->
-                    <div v-if="errorMessage" class="p-3 text-sm text-red-600 bg-red-100 rounded-lg flex items-center mt-2">
-                        <svg class="w-5 h-5 mr-2 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
-                            <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clip-rule="evenodd"></path>
-                        </svg>
-                        {{ errorMessage }}
-                    </div>
-                    
                     <div>
                         <label class="block text-sm font-semibold text-slate-700 mb-1">Nombre del Proveedor <span class="text-red-500">*</span></label>
                         <input 
@@ -84,6 +83,8 @@ const closeForm = () => {
                             v-model="supplierForm.supplier" 
                             required 
                             placeholder="Ej. Coca-Cola, Bimbo, Lala..."
+                            minlength="3"
+                            maxlength="120"
                             class="w-full px-4 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-[#1179a2] focus:border-[#1179a2] outline-none transition-all"
                         >
                     </div>

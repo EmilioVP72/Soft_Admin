@@ -53,6 +53,12 @@
     align-items: center;
 }
 
+.header-buttons section {
+    display: flex;
+    gap: 0.5rem;
+    align-items: center;
+}
+
 .btn-new,
 .btn-pdf,
 .btn-excel {
@@ -93,6 +99,19 @@
 .btn-excel:active,
 .btn-pdf:active {
     transform: scale(0.96);
+}
+
+.form-control {
+    padding: 0.45rem;
+    border-radius: 4px;
+    border: 1px solid #ccc;
+    outline: none;
+    color: white;
+}
+
+.form-control option {
+    background-color: #1e293b;
+    color: white;
 }
 
 /* Seccion: "Tabla de datos" */

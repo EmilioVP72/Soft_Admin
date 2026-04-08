@@ -6,6 +6,7 @@ import axios from 'axios';
 import ErrorMessage from '@/components/shared/Error.vue';
 import type { ChartData, ChartOptions } from 'chart.js';
 import BarGraph from '@/components/dashboard/graphics/BarGraph.vue';
+import { useNotification } from '@/composables/useNotification';
 
 // Variables para la gráfica general
 const message = ref('');
@@ -35,6 +36,7 @@ const chartOptions = ref<ChartOptions<'bar'>>({
 // Variables para las gráficas por sucursal
 const message2 = ref('');
 const isValid2 = ref(false);
+const { showError } = useNotification();
 const storeCharts = ref<Array<{
   storeId: number;
   storeName: string;
@@ -49,7 +51,9 @@ onMounted(async () => {
         const data = response.data.data.map((item: { general_department: string; total_sales: number; }) => ({
             department: item.general_department,
             totalSales: item.total_sales
-        }));
+        })).sort((a: { department: string }, b: { department: string }) =>
+            String(a.department || '').localeCompare(String(b.department || ''), 'es', { sensitivity: 'base' })
+        );
         chartData.value = {
             labels: data.map((item: { department: string }) => item.department),
             datasets: [
@@ -76,7 +80,9 @@ onMounted(async () => {
     // Cargar gráficas por sucursal
     try {
         const storesResponse = await StoresServices.getStores();
-        const stores = storesResponse.data.data;
+        const stores = [...(storesResponse.data.data || [])].sort((a: any, b: any) =>
+            String(a?.name || '').localeCompare(String(b?.name || ''), 'es', { sensitivity: 'base' })
+        );
 
         // Crear una gráfica por cada sucursal
         for (let i = 0; i < stores.length; i++) {
@@ -86,7 +92,9 @@ onMounted(async () => {
                 const data = response.data.data.map((item: { department: string; total_sales: number; }) => ({
                     department: item.department,
                     totalSales: item.total_sales
-                }));
+                })).sort((a: { department: string }, b: { department: string }) =>
+                    String(a.department || '').localeCompare(String(b.department || ''), 'es', { sensitivity: 'base' })
+                );
                 
 
                 const colorIndex = i % colors.length;
@@ -116,7 +124,7 @@ onMounted(async () => {
                     }
                 });
             } catch (error) {
-                console.error(`Error al cargar datos de la sucursal ${store.name}:`, error);
+                showError('Error al cargar', `No se pudieron cargar los datos de la sucursal ${store.name}.`);
             }
         }
         isValid2.value = storeCharts.value.length === 0;
