@@ -5,7 +5,7 @@
 import { ref, onMounted, computed } from 'vue';
 import StoresServices from '@/services/StoresServices';
 import LocalitiesServices from '@/services/LocalitiesServices';
-import ErrorMessage from '@/components/shared/Error.vue';
+import { useNotification } from '@/composables/useNotification';
 
 // Seccion: "Props y eventos"
 // Explicacion: storeId es opcional; si se recibe el componente actua en modo edicion,
@@ -25,9 +25,8 @@ const emit = defineEmits<{
 const isEditMode = computed(() => !!props.storeId);
 const loading = ref(false);
 const saving = ref(false);
-const errorMsg = ref('');
-const error_load = ref<boolean>(false);
 const localities = ref<Array<{ id_locality: number; locality: string }>>([]);
+const { showWarning, showError } = useNotification();
 
 const form = ref({
     store: '',
@@ -39,24 +38,61 @@ const form = ref({
     fk1_id_locality: '' as string | number,
 });
 
+const sanitizeText = (value: string | null | undefined) => String(value || '').trim();
+
+function validateForm() {
+    const store = sanitizeText(form.value.store);
+    const street = sanitizeText(form.value.street);
+    const colony = sanitizeText(form.value.colony);
+    const reference = sanitizeText(form.value.reference);
+    const exterior = sanitizeText(form.value.exterior_number);
+
+    if (!store || !street || !colony || !exterior || !form.value.fk1_id_locality) {
+        showWarning('Datos incompletos', 'Completa los campos obligatorios: sucursal, calle, número exterior, colonia y localidad.');
+        return false;
+    }
+
+    if (store.length < 3 || store.length > 120) {
+        showWarning('Nombre inválido', 'El nombre de la sucursal debe tener entre 3 y 120 caracteres.');
+        return false;
+    }
+
+    if (street.length < 3 || street.length > 120) {
+        showWarning('Calle inválida', 'La calle debe tener entre 3 y 120 caracteres.');
+        return false;
+    }
+
+    if (colony.length < 2 || colony.length > 120) {
+        showWarning('Colonia inválida', 'La colonia debe tener entre 2 y 120 caracteres.');
+        return false;
+    }
+
+    if (reference.length > 255) {
+        showWarning('Referencia demasiado larga', 'La referencia no debe exceder 255 caracteres.');
+        return false;
+    }
+
+    return true;
+}
+
 // Seccion: "Inicializacion del formulario"
 // Explicacion: Si es modo edicion carga los datos de la sucursal desde el backend
 //              y los rellena en el formulario para que el usuario los modifique
 onMounted(async () => {
     try {
         const res = await LocalitiesServices.getLocalities();
-        localities.value = res.data.data;
+        localities.value = [...(res.data.data || [])].sort((a: any, b: any) =>
+            Number(a.id_locality || a.id || 0) - Number(b.id_locality || b.id || 0)
+        );
     } catch {
-        error_load.value = true;
+        showError('Error al cargar', 'No se pudieron cargar las localidades del formulario.');
     }
 
     if (isEditMode.value) {
         loading.value = true;
         try {
-            console.log('Cargando datos para la sucursal con ID:', props.storeId);
             const response = await StoresServices.getOneStore(props.storeId!);
             const d = response.data.data;
-            console.log('Datos de la sucursal obtenidos:', d.fk1_id_locality);
             form.value = {
                 store: d.store ?? d.name ?? '',
                 street: d.street ?? '',
@@ -67,7 +103,7 @@ onMounted(async () => {
                 fk1_id_locality: d.fk1_id_locality ?? '',
             };
         } catch {
-            errorMsg.value = 'No se pudo cargar la sucursal.';
+            showError('Error al cargar', 'No se pudo cargar la sucursal.');
         } finally {
             loading.value = false;
         }
@@ -79,12 +115,20 @@ onMounted(async () => {
 //              emite 'saved' si tiene exito o muestra el mensaje de error si falla
 async function handleSubmit() {
     saving.value = true;
-    errorMsg.value = '';
+    if (!validateForm()) {
+        saving.value = false;
+        return;
+    }
+
     try {
         const payload = {
             ...form.value,
-            exterior_number: String(form.value.exterior_number),
-            interior_number: form.value.interior_number ? String(form.value.interior_number) : null,
+            store: sanitizeText(form.value.store),
+            street: sanitizeText(form.value.street),
+            colony: sanitizeText(form.value.colony),
+            reference: sanitizeText(form.value.reference),
+            exterior_number: sanitizeText(form.value.exterior_number),
+            interior_number: sanitizeText(form.value.interior_number) || null,
         };
         if (isEditMode.value) {
             await StoresServices.updateStore(props.storeId!, payload as any);
@@ -93,7 +137,7 @@ async function handleSubmit() {
         }
         emit('saved');
     } catch {
-        errorMsg.value = 'Error al guardar. Verifica los datos e intenta de nuevo.';
+        showError('Error al guardar', 'Error al guardar. Verifica los datos e intenta de nuevo.');
     } finally {
         saving.value = false;
     }
@@ -108,35 +152,31 @@ async function handleSubmit() {
                 <button class="close-btn" @click="emit('cancel')">✕</button>
             </div>
 
-            <ErrorMessage v-if="error_load"
-                tittle="Error al cargar los datos"
-                message="No se pudieron cargar los datos del formulario. Por favor, cierra e intenta de nuevo."
-            />
-            <div v-else-if="loading" class="loading-msg">Cargando datos...</div>
+            <div v-if="loading" class="loading-msg">Cargando datos...</div>
 
             <form v-else @submit.prevent="handleSubmit" class="store-form">
                 <div class="form-grid">
                     <div class="form-group form-group--full">
                         <label>Nombre de la Sucursal</label>
-                        <input v-model="form.store" type="text" required placeholder="Ej. Sucursal Centro" />
+                        <input v-model="form.store" type="text" required placeholder="Ej. Sucursal Centro" minlength="3" maxlength="120" />
                     </div>
                     <div class="form-group">
                         <label>Calle</label>
-                        <input v-model="form.street" type="text" required placeholder="Nombre de la calle" />
+                        <input v-model="form.street" type="text" required placeholder="Nombre de la calle" minlength="3" maxlength="120" />
                     </div>
                     <div class="form-numbers">
                         <div class="form-group">
                             <label>Número Exterior</label>
-                            <input v-model="form.exterior_number" type="text" required placeholder="Ej. 123" />
+                            <input v-model="form.exterior_number" type="text" required placeholder="Ej. 123" maxlength="20" />
                         </div>
                         <div class="form-group">
                             <label>Número Interior</label>
-                            <input v-model="form.interior_number " type="text" placeholder="Ej. 4-B (opcional)" />
+                            <input v-model="form.interior_number" type="text" placeholder="Ej. 4-B (opcional)" maxlength="20" />
                         </div>
                     </div>
                     <div class="form-group">
                         <label>Colonia</label>
-                        <input v-model="form.colony" type="text" required placeholder="Nombre de la colonia" />
+                        <input v-model="form.colony" type="text" required placeholder="Nombre de la colonia" minlength="2" maxlength="120" />
                     </div>
                     <div class="form-group">
                         <label>Localidad</label>
@@ -149,11 +189,9 @@ async function handleSubmit() {
                     </div>
                     <div class="form-group form-group--full">
                         <label>Referencia</label>
-                        <textarea v-model="form.reference" rows="2" placeholder="Ej. Frente al parque central..."></textarea>
+                        <textarea v-model="form.reference" rows="2" placeholder="Ej. Frente al parque central..." maxlength="255"></textarea>
                     </div>
                 </div>
-
-                <p v-if="errorMsg" class="error-msg">{{ errorMsg }}</p>
 
                 <div class="form-actions">
                     <button type="button" class="btn-cancel" @click="emit('cancel')">Cancelar</button>

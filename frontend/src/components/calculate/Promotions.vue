@@ -2,6 +2,8 @@
 import { ref, computed, onMounted } from 'vue';
 import type { CalculatePromotion, TotalySalesByPromotion } from '@/interfaces/CalculateInterfaces';
 import SuppliersServices from '@/services/SuppliersServices';
+import { useNotification } from '@/composables/useNotification';
+import { formatDateOnly } from '@/utils/datetime';
 
 const formInput = ref({
     date: '',
@@ -12,6 +14,7 @@ const dataList = ref<CalculatePromotion[]>([]);
 const suppliers = ref<any[]>([]);
 const selectedSupplier = ref('');
 const error = ref(false);
+const { showWarning, showError } = useNotification();
 
 const calculateTable = computed<TotalySalesByPromotion[]>(() => {
     let temporalTotaly = 0;
@@ -26,7 +29,7 @@ const calculateTable = computed<TotalySalesByPromotion[]>(() => {
 
 const addRow = () => {
     if (!formInput.value.date || formInput.value.totaly_sales <= 0) {
-        alert('Por favor, ingresa una fecha y un valor de ventas válido.');
+        showWarning('Datos Inválidos', 'Por favor, ingresa una fecha y un valor de ventas válido.');
         return;
     }
 
@@ -48,9 +51,9 @@ onMounted( async() => {
                 id: supplier.id_supplier,
                 name: supplier.supplier
             };
-        });
+        }).sort((a: any, b: any) => Number(a.id || 0) - Number(b.id || 0));
     } catch (error) {
-        console.error('Error al obtener los proveedores:', error);
+        showError('Error', 'No se pudieron cargar los proveedores.');
     }
 });
 </script>
@@ -111,7 +114,7 @@ onMounted( async() => {
                     </tr>
 
                     <tr v-for="row in calculateTable" :key="row.id">
-                        <td>{{ row.date }}</td>
+                        <td>{{ formatDateOnly(row.date) }}</td>
                         <td>$ {{ row.totaly_sales.toFixed(2) }}</td>
                     </tr>
                 </tbody>

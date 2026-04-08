@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { ref, onMounted } from 'vue';
 import DepartmentsServices from '@/services/DepartmentsServices';
+import { useNotification } from '@/composables/useNotification';
 
 const props = defineProps({
     department: {
@@ -21,11 +22,13 @@ const formData = ref({
     description: '',
     fk1_id_general_dep: '' as number | string
 });
-const errorMsg = ref('');
 const isSubmitting = ref(false);
 
 const generalDepartments = ref<any[]>([]);
 const isLoadingDeps = ref(false);
+const { showWarning, showError } = useNotification();
+
+const sanitizeText = (value: string) => String(value || '').trim();
 
 const loadGeneralDepartments = async () => {
     if (!props.storeId) return;
@@ -33,9 +36,11 @@ const loadGeneralDepartments = async () => {
     isLoadingDeps.value = true;
     try {
         const response = await DepartmentsServices.getGeneralDepartmentsByStore(Number(props.storeId));
-        generalDepartments.value = response.data.data || response.data;
+        generalDepartments.value = [...(response.data.data || response.data || [])].sort((a: any, b: any) =>
+            Number(a.id_general_dep || a.id || 0) - Number(b.id_general_dep || b.id || 0)
+        );
     } catch (error) {
-        console.error("Error cargando departamentos generales:", error);
+        showError('Error al cargar', 'No se pudieron cargar los departamentos generales.');
     } finally {
         isLoadingDeps.value = false;
     }
@@ -62,25 +67,42 @@ const closeModal = () => {
 };
 
 const handleSubmit = async () => {
-    if (!formData.value.department || !formData.value.description || !formData.value.fk1_id_general_dep) {
-        errorMsg.value = 'Por favor, completa todos los campos requeridos.';
+    const department = sanitizeText(formData.value.department);
+    const description = sanitizeText(formData.value.description);
+
+    if (!department || !description || !formData.value.fk1_id_general_dep) {
+        showWarning('Datos incompletos', 'Por favor, completa todos los campos requeridos.');
         return;
     }
 
-    errorMsg.value = '';
+    if (department.length < 3 || department.length > 120) {
+        showWarning('Nombre inválido', 'El nombre del departamento debe tener entre 3 y 120 caracteres.');
+        return;
+    }
+
+    if (description.length < 5 || description.length > 255) {
+        showWarning('Descripción inválida', 'La descripción debe tener entre 5 y 255 caracteres.');
+        return;
+    }
+
     isSubmitting.value = true;
+
+    const payload = {
+        ...formData.value,
+        department,
+        description,
+    };
 
     try {
         if (isEditing.value && props.department) {
-            await DepartmentsServices.updateDepartment(props.department.id_department, formData.value);
+            await DepartmentsServices.updateDepartment(props.department.id_department, payload);
         } else {
             // El store_id no se envía al API ya que la relación principal es hacia general_deps
-            await DepartmentsServices.createDepartment(formData.value);
+            await DepartmentsServices.createDepartment(payload);
         }
         emit('saved');
     } catch (error: any) {
-        console.error("Error guardando el departamento:", error);
-        errorMsg.value = error.response?.data?.message || 'Ocurrió un error al guardar el departamento. Intenta de nuevo.';
+        showError('Error', error.response?.data?.message || 'Ocurrió un error al guardar el departamento. Intenta de nuevo.');
     } finally {
         isSubmitting.value = false;
     }
@@ -123,6 +145,8 @@ const handleSubmit = async () => {
                         v-model="formData.department" 
                         placeholder="Ej. Reclutamiento" 
                         required 
+                        minlength="3"
+                        maxlength="120"
                         :disabled="isSubmitting"
                     />
                 </div>
@@ -134,13 +158,12 @@ const handleSubmit = async () => {
                         v-model="formData.description" 
                         placeholder="Funciones del departamento..." 
                         required 
+                        minlength="5"
+                        maxlength="255"
                         :disabled="isSubmitting"
                         rows="3"
                     ></textarea>
                 </div>
-
-                <!-- Mensaje de error -->
-                <p v-if="errorMsg" class="error-msg">{{ errorMsg }}</p>
 
                 <div class="form-actions">
                     <button type="button" class="btn-cancel" @click="closeModal" :disabled="isSubmitting">Cancelar</button>
