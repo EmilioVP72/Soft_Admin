@@ -45,9 +45,9 @@ const storeCharts = ref<Array<{
 onMounted(async () => {
     // Cargar gráfica general
     try {
-        const response = await StoresServices.getSalesByDepartment();  
-        const data = response.data.data.map((item: { department: string; total_sales: number; }) => ({
-            department: item.department,
+        const response = await StoresServices.getSalesByGeneralDepartment();  
+        const data = response.data.data.map((item: { general_department: string; total_sales: number; }) => ({
+            department: item.general_department,
             totalSales: item.total_sales
         }));
         chartData.value = {

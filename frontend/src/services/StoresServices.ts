@@ -12,6 +12,10 @@ export default {
         return apiClient.get<any>('/sales/byDepartment');
     },
 
+    getSalesByGeneralDepartment() {
+        return apiClient.get<any>('/sales/byGeneralDepartment');
+    },
+
     getSalesByDepartmentByStore(storeId: number) {
         return apiClient.get<any>(`/sales/byStore/${storeId}`);
     },
