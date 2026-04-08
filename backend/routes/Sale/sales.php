@@ -11,6 +11,7 @@ use App\Http\Controllers\Sale\SalesController;
 */
 
 Route::get('/byDepartment', [SalesController::class, 'getSalesByDepartmentGeneral']);
+Route::get('/byGeneralDepartment', [SalesController::class, 'getSalesByGeneralDepartment']);
 Route::get('/byStore/{storeId}', [SalesController::class, 'getSalesByDepartmentByStore']);
 Route::get('/byStore/{storeId}/filtered', [SalesController::class, 'getSalesByDepartmentStoreWithDates']);
 Route::get('/transactions/department/{departmentId}', [SalesController::class, 'getTransactionsByDepartment']);

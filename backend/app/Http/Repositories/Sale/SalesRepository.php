@@ -79,7 +79,7 @@ class SalesRepository
     public function getSalesByGeneralDepartment()
     {
         return TransactionDetail::selectRaw('
-            gd.id_general_dep,
+            MAX(gd.id_general_dep) as id_general_dep,
             gd.g_departament,
             SUM(td.subtotal) as total_sales,
             COUNT(DISTINCT t.id_transaction) as total_transactions,
@@ -89,7 +89,7 @@ class SalesRepository
         ->join('transactions as t', 'td.fk1_id_transaction', '=', 't.id_transaction')
         ->join('departments as d', 'td.fk2_id_department', '=', 'd.id_department')
         ->join('general_deps as gd', 'd.fk1_id_general_dep', '=', 'gd.id_general_dep')
-        ->groupBy('gd.id_general_dep', 'gd.g_departament')
+        ->groupBy('gd.g_departament')
         ->orderByDesc('total_sales')
         ->get();
     }
