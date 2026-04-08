@@ -23,7 +23,9 @@ class DatabaseSeeder extends Seeder
             StoreRelationSeeder::class,
             DepartmentSeeder::class,
             EmployeeSeeder::class,
-            TransactionSeeder::class
+            TransactionSeeder::class,
+            InputSeeder::class,
+            OutputSeeder::class,
         ]);
     }
 }
