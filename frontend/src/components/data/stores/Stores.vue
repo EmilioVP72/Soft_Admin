@@ -135,7 +135,7 @@ onMounted(fetchStores);
             <h1>Datos de las Sucursales</h1>
             <div class="toolbar-actions">
                 <button class="btn-new" @click="openInsert">+ Nueva Sucursal</button>
-                <button class="btn-print" @click="printReport">Imprimir Reporte</button>
+                <button class="btn-print">Imprimir Reporte</button>
             </div>
         </div>
 

@@ -17,6 +17,7 @@ const selectedEmployeeId = ref<number | undefined>(undefined);
 const showConfirm = ref(false);
 const pendingDeleteId = ref<number | null>(null);
 const pendingDeleteName = ref('');
+const error_data = ref(false);
 
 // Seccion: "Carga de datos"
 // Explicacion: Llama al endpoint para obtener todos los empleados, mapea la respuesta
@@ -122,7 +123,7 @@ onMounted(fetchEmployees);
             <h1>Datos de los Empleados</h1>
             <div class="toolbar-actions">
                 <button class="btn-new" @click="openInsert">+ Nuevo Empleado</button>
-                <button class="btn-print" @click="printReport">Imprimir Reporte</button>
+                <button class="btn-print">Imprimir Reporte</button>
             </div>
         </div>
 

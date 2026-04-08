@@ -50,6 +50,15 @@ const router = createRouter({
         showNavbar: true, 
         requiresAuth: true 
        }
+    }, 
+    {
+      path: '/moves',
+      name: 'moves',
+      component: () => import('@/views/moves/Moves.vue'),
+      meta : { 
+        showNavbar: true, 
+        requiresAuth: true 
+       }
     }
   ]
 })

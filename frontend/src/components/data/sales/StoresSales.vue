@@ -8,7 +8,7 @@ const error_details = ref<string>('');
 const storesSales = ref<any[]>([]);
 const storesSalesByStore = ref<any[]>([]);
 const dataStore = ref<Array<{ storeId: number; storeName: string }>>([]);
-var selectedOption = ref<number>(0);
+var selectedOption = ref<number>(Number(localStorage.getItem('storesSalesOption')) || 0);
 
 // selectedStoreId es computed, se calcula automáticamente cuando selectedOption cambia
 const selectedStoreId = computed(() => {
@@ -17,6 +17,7 @@ const selectedStoreId = computed(() => {
 
 // Watch para ver los cambios cuando seleccionas otra sucursal
 watch(selectedOption, async (_newValue) => {
+    localStorage.setItem('storesSalesOption', String(_newValue));
     try {
         const saleData = await storesServices.getSalesbyDepartmentForStore();
         
@@ -86,7 +87,12 @@ onMounted(async () => {
 
         // Solo asigna a selectedOption, selectedStoreId se calcula automáticamente
         if (dataStore.value.length > 0) {
-            selectedOption.value = dataStore.value[0]!.storeId;
+            const savedOption = Number(localStorage.getItem('storesSalesOption'));
+            if (savedOption && dataStore.value.some((s: any) => s.storeId === savedOption)) {
+                selectedOption.value = savedOption;
+            } else {
+                selectedOption.value = dataStore.value[0]!.storeId;
+            }
         }
 
         
@@ -111,7 +117,12 @@ function downloadPdf() {
         message="Hubo un error al obtener los datos. Por favor, inténtalo de nuevo más tarde o contacta al soporte si el problema persiste."
     />
     <div v-else class="data-view">
-        <h1>Ventas por Sucursal</h1>
+        <div class="toolbar">
+            <h1>Ventas por Sucursal</h1>
+            <div class="toolbar-actions">
+                <router-link to="/data/form-sales" class="btn-new">+ Agregar Venta</router-link>
+            </div>
+        </div>
         <div v-if="error_details" style="color: red; margin-bottom: 10px; padding: 10px; border: 1px solid red; border-radius: 4px;">
             Atención: {{ error_details }}
         </div>
@@ -127,7 +138,6 @@ function downloadPdf() {
         </section>
 
         <section class="button-section">
-            <router-link to="/data/form-sales" class="action-button edit-button">Agregar Venta</router-link>
             <button class="action-button pdf-button" @click="downloadPdf">Exportar PDF</button>
             <button class="action-button excel-button">Exportar Excel</button>
         </section>
@@ -151,8 +161,8 @@ function downloadPdf() {
                     <tr v-for="(sale, index) in storesSalesByStore" :key="index" class="table-row">
                         <td class="table-cell">{{ sale.department }}</td>
                         <td class="table-cell">{{ sale.quantity }}</td>
-                        <td class="table-cell">{{ sale.unit_price }}</td>
-                        <td class="table-cell">{{ sale.subtotal }}</td>
+                        <td class="table-cell">$ {{ sale.unit_price }}</td>
+                        <td class="table-cell">$ {{ sale.subtotal }}</td>
                         <td class="table-cell">
                             <span v-if="!sale.payment || (Array.isArray(sale.payment) && sale.payment.length === 0)">
                             </span>
@@ -171,7 +181,7 @@ function downloadPdf() {
                         <td class="table-cell">{{ sale.transaction_date }}</td>
                         <td class="table-cell">{{ sale.transaction_type }}</td>
                         <td class="table-cell">{{ sale.user_name }}</td>
-                        <td class="table-cell">{{ sale.total_amount }}</td>
+                        <td class="table-cell">$ {{ sale.total_amount }}</td>
                     </tr>
                 </tbody>
             </section>

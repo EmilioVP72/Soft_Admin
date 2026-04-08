@@ -26,7 +26,13 @@ onMounted(async () => {
         message="Hubo un error al obtener los datos de ventas. Por favor, inténtalo de nuevo más tarde o contacta al soporte si el problema persiste."
     />
     <div v-else class="data-view">
-        <h1>Ventas Generales</h1>
+        <div class="toolbar">
+            <h1>Ventas Generales</h1>
+            <div class="toolbar-actions">
+                <button class="btn-print">Exportar PDF</button>
+                <button class="btn-print">Exportar Excel</button>
+            </div>
+        </div>
         <section class="table-section">
             <table class="sales-table">
                 <thead class="table-header">
