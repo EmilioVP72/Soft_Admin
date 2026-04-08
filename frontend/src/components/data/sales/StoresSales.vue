@@ -46,12 +46,10 @@ const loadSalesForSelectedStore = async () => {
         (saleData.data.data || []).forEach((sale: any) => {
             const baseSale = {
                 notes: sale.notes,
-                payment: sale.payment, 
                 store_name: sale.store_name || (sale.store && sale.store.name) || 'N/A',
                 total_amount: sale.total_amount,
                 transaction_date_raw: sale.transaction_date,
                 transaction_date: formatDateTime24(sale.transaction_date),
-                transaction_type: sale.transaction_type,
                 user_name: sale.user_name || (sale.user && sale.user.name) || 'N/A',
             };
             
@@ -210,9 +208,7 @@ function applyFilters() {
                 sale.quantity,
                 sale.unit_price,
                 sale.subtotal,
-                paymentText(sale.payment),
                 sale.transaction_date,
-                sale.transaction_type,
                 sale.user_name,
                 sale.total_amount,
                 sale.store_name,
@@ -327,9 +323,7 @@ function clearFilters() {
                         <th class="table-cell">Cantidad Vendida</th>
                         <th class="table-cell">Precio Unitario</th>
                         <th class="table-cell">Subtotal</th>
-                        <th class="table-cell">Metodo de Pago</th>
                         <th class="table-cell">Fecha de la Venta</th>
-                        <th class="table-cell">Tipo de Venta</th>
                         <th class="table-cell">Usuario</th>
                         <th class="table-cell">Total de Ventas</th>
                     </tr>
@@ -340,23 +334,7 @@ function clearFilters() {
                         <td class="table-cell">{{ sale.quantity }}</td>
                         <td class="table-cell">$ {{ sale.unit_price }}</td>
                         <td class="table-cell">$ {{ sale.subtotal }}</td>
-                        <td class="table-cell">
-                            <span v-if="!sale.payment || (Array.isArray(sale.payment) && sale.payment.length === 0)">
-                            </span>
-                            <span v-else-if="Array.isArray(sale.payment)">
-                                <div v-for="pay in sale.payment" :key="pay.id_payment">
-                                    {{ pay.payment }}
-                                </div>
-                            </span>
-                            <span v-else-if="typeof sale.payment === 'object'">
-                                {{ sale.payment.payment || 'Sin especificar' }}
-                            </span>
-                            <span v-else>
-                                {{ sale.payment }}
-                            </span>
-                        </td>
                         <td class="table-cell">{{ sale.transaction_date }}</td>
-                        <td class="table-cell">{{ sale.transaction_type }}</td>
                         <td class="table-cell">{{ sale.user_name }}</td>
                         <td class="table-cell">$ {{ sale.total_amount }}</td>
                     </tr>

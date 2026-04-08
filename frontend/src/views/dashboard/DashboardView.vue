@@ -16,6 +16,7 @@ const error_data = ref<boolean>(false);
 onMounted(async () => {
     try {
         const response = await LoginServices.meUser();
+        console.log(response.data);
         if(response.data.data.user === null){
             user_name.value = "Usuario";
         }else{
