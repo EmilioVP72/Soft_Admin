@@ -161,6 +161,12 @@ function downloadPdf() {
     }
 }
 
+function downloadExcel() {
+    if (selectedOption.value) {
+        window.open(`http://localhost:8000/api/reports/sales/store/${selectedOption.value}/excel`, '_blank');
+    }
+}
+
 function paymentText(payment: any): string {
     if (!payment) return '';
     if (Array.isArray(payment)) {
@@ -263,7 +269,7 @@ function clearFilters() {
 
                     <section class="filters-export">
                         <button class="btn-print" @click="downloadPdf">Exportar PDF</button>
-                        <button class="btn-print">Exportar Excel</button>
+                        <button class="btn-print" @click="downloadExcel">Exportar Excel</button>
                     </section>
 
                     <section class="filters-select" style="display: flex; gap: 10px; flex-wrap: wrap;">

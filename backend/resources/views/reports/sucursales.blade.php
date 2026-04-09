@@ -9,6 +9,7 @@
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
         
         @page {
+            size: A4 landscape;
             margin: 10mm; 
         }
         body {
@@ -55,10 +56,10 @@
             <table class="w-full text-left text-sm whitespace-nowrap">
                 <thead class="bg-slate-100 text-slate-600 border-b border-slate-200">
                     <tr>
-                        <th scope="col" class="px-5 py-4 font-bold uppercase tracking-wider text-xs">Identificador</th>
-                        <th scope="col" class="px-5 py-4 font-bold uppercase tracking-wider text-xs">Dirección</th>
-                        <th scope="col" class="px-5 py-4 font-bold uppercase tracking-wider text-xs">Referencia</th>
-                        <th scope="col" class="px-5 py-4 font-bold uppercase tracking-wider text-xs">Localidad</th>
+                        <th scope="col" class="px-5 py-4 font-bold uppercase tracking-wider text-[10px]">Identificador</th>
+                        <th scope="col" class="px-5 py-4 font-bold uppercase tracking-wider text-[10px]">Dirección</th>
+                        <th scope="col" class="px-5 py-4 font-bold uppercase tracking-wider text-[10px]">Referencia</th>
+                        <th scope="col" class="px-5 py-4 font-bold uppercase tracking-wider text-[10px]">Localidad</th>
                     </tr>
                 </thead>
                 <tbody class="divide-y divide-slate-100 bg-white">
