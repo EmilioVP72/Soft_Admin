@@ -13,9 +13,7 @@ class TransactionResource extends JsonResource
             'id_transaction' => $this->id_transaction,
             'id_store' => $this->fk1_id_store,
             'store_name' => $this->store?->store ?? null,
-            'user_name' => $this->user?->name ?? null,
             'total_amount' => (float) $this->total_amount,
-            'transaction_type' => $this->transaction_type,
             'notes' => $this->notes,
             'transaction_date' => $this->transaction_date?->format('Y-m-d H:i:s'),
             'details' => $this->details->map(function ($detail) {

@@ -1,8 +1,8 @@
 <script setup lang="ts">
 import { 
-  DocumentCurrencyDollarIcon,
   BanknotesIcon, 
-  TableCellsIcon
+  TableCellsIcon,
+  DocumentCurrencyDollarIcon
 } from '@heroicons/vue/24/outline';
 
 </script>
@@ -12,14 +12,14 @@ import {
         <section class="actions-container">
             <h2>Acciones Rápidas</h2>
             <section class="actions" >
-                <!--<section class="action" >
+                <section class="action" >
                     <DocumentCurrencyDollarIcon class="icon"/>
                     <h3>Realizar Factura</h3>
                     <p>Para crear una factura ingresando los datos necesarios</p>
                     <RouterLink to="" class="btn-action" >
                         Crear Factura
                     </RouterLink>
-                </section>  IGNORE -->     
+                </section>     
                 <section class="action">
                     <BanknotesIcon class="icon"/>
                     <h3>Verificar Promociones</h3>

@@ -6,6 +6,7 @@ use App\Models\Store;
 use App\Models\Department;
 use App\Http\Controllers\Controller;
 use App\Http\Repositories\Sale\SalesRepository;
+use App\Http\Requests\Sale\StoreSaleRequest;
 use App\Http\Requests\Sale\SalesFilterRequest;
 use App\Http\Resources\Sale\DepartmentSalesResource;
 use App\Http\Resources\Sale\GeneralDepartmentSalesResource;
@@ -168,6 +169,87 @@ class SalesController extends Controller
                 'Error al obtener las transacciones: ' . $e->getMessage(),
                 500
             );
+        }
+    }
+
+    // CRUD Methods
+    public function index(): JsonResponse
+    {
+        try {
+            $sales = $this->salesRepository->getAll();
+            return $this->successResponse(
+                TransactionResource::collection($sales),
+                'Ventas obtenidas correctamente'
+            );
+        } catch (\Exception $e) {
+            return $this->errorResponse('Error al obtener ventas: ' . $e->getMessage(), 500);
+        }
+    }
+
+    public function show($id): JsonResponse
+    {
+        try {
+            $sale = $this->salesRepository->find($id);
+            if (!$sale) {
+                return $this->errorResponse('Venta no encontrada', 404);
+            }
+            return $this->successResponse(
+                new TransactionResource($sale),
+                'Venta obtenida correctamente'
+            );
+        } catch (\Exception $e) {
+            return $this->errorResponse('Error al obtener la venta: ' . $e->getMessage(), 500);
+        }
+    }
+
+    public function store(StoreSaleRequest $request): JsonResponse
+    {
+        try {
+            $createdSales = [];
+            $data = $request->validated();
+
+            foreach ($data['sales'] as $saleData) {
+                $createdSales[] = $this->salesRepository->create($saleData);
+            }
+
+            return $this->successResponse(
+                TransactionResource::collection(collect($createdSales)),
+                'Ventas creadas correctamente',
+                201
+            );
+        } catch (\Exception $e) {
+            return $this->errorResponse('Error: ' . $e->getMessage(), 500);
+        }
+    }
+
+    public function update(\App\Http\Requests\Sale\UpdateSaleRequest $request, $id): JsonResponse
+    {
+        try {
+            $sale = $this->salesRepository->find($id);
+            if (!$sale) {
+                return $this->errorResponse('Venta no encontrada', 404);
+            }
+            $updatedSale = $this->salesRepository->update($sale, $request->validated());
+            return $this->successResponse(
+                new TransactionResource($updatedSale),
+                'Venta actualizada correctamente'
+            );
+        } catch (\Exception $e) {
+            return $this->errorResponse('Error al actualizar la venta: ' . $e->getMessage(), 500);
+        }
+    }
+
+    public function destroy($id): JsonResponse
+    {
+        try {
+            $sale = $this->salesRepository->find($id);
+            if (!$sale) {
+                return $this->errorResponse('Venta no encontrada', 404);
+            }
+            $this->salesRepository->delete($sale);
+            return $this->successResponse(null, 'Venta eliminada correctamente');
+        } catch (\Exception $e) {
+            return $this->errorResponse('Error al eliminar la venta: ' . $e->getMessage(), 500);
         }
     }
 }

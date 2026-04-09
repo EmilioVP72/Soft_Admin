@@ -14,6 +14,7 @@ services:
       DB_DATABASE: soft_admin
       DB_USERNAME: user
       DB_PASSWORD: devteam777
+      PUPPETEER_EXECUTABLE_PATH: /usr/bin/chromium-browser
     command: >
       sh -c "composer install && 
             php artisan key:generate &&

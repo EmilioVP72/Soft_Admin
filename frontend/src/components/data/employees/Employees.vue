@@ -5,18 +5,37 @@
 import { ref, onMounted } from 'vue';
 import EmployeeServices from '../../../services/EmployeeServices';
 import EmployeeForm from './EmployeeForm.vue';
+import { useNotification } from '@/composables/useNotification';
 import ConfirmModal from '../../shared/ConfirmModal.vue';
+import ErrorMessage from '@/components/shared/Error.vue';
+import { normalizeSearchText } from '@/utils/search';
+import { formatDateOnly, toDateInputValue } from '@/utils/datetime';
+import ReportsServices from '@/services/ReportsServices';
 
 // Seccion: "Estado reactivo"
 // Explicacion: Variables que controlan la lista de empleados, la visibilidad del formulario
 //              y el estado del modal de confirmacion antes de eliminar
-const employeeData = ref([]);
-const employeeDataStore = ref([]);
+const employeeData = ref<any[]>([]);
+const originalEmployeeData = ref<any[]>([]);
 const showForm = ref(false);
 const selectedEmployeeId = ref<number | undefined>(undefined);
 const showConfirm = ref(false);
 const pendingDeleteId = ref<number | null>(null);
 const pendingDeleteName = ref('');
+const error_data = ref(false);
+const { showError } = useNotification();
+
+const searchQuery = ref('');
+const filterStore = ref('');
+const filterStatus = ref('');
+const filterPosition = ref('');
+const filterSalaryMin = ref('');
+const filterSalaryMax = ref('');
+const filterHireDate = ref('');
+
+const storesOptions = ref<string[]>([]);
+const statusOptions = ref<string[]>([]);
+const positionOptions = ref<string[]>([]);
 
 // Seccion: "Carga de datos"
 // Explicacion: Llama al endpoint para obtener todos los empleados, mapea la respuesta
@@ -24,7 +43,7 @@ const pendingDeleteName = ref('');
 async function fetchEmployees() {
     try {
         const response = await EmployeeServices.getEmployees();
-        employeeData.value = response.data.data.map((employee: any) => ({
+        const mappedEmployees = response.data.data.map((employee: any) => ({
             id: employee.id,
             full_name: employee.full_name,
             email: employee.email,
@@ -32,18 +51,115 @@ async function fetchEmployees() {
             position: employee.position,
             salary: employee.salary,
             status: employee.status,
-            hire_date: employee.hire_date,
+            hire_date_raw: employee.hire_date,
+            hire_date: formatDateOnly(employee.hire_date),
             exit_date: employee.exit_date,
-            end_date: employee.end_date,
+            end_date_raw: employee.end_date,
+            end_date: formatDateOnly(employee.end_date),
             store: {
                 store: employee.store.store,
                 colony: employee.store.colony,
                 street: employee.store.street
             }
-        })).sort((a, b) => a.id - b.id);
+        })).sort((a: any, b: any) => a.id - b.id);
+
+        originalEmployeeData.value = mappedEmployees;
+        storesOptions.value = Array.from(new Set(mappedEmployees.map((employee: any) => employee.store?.store).filter(Boolean)));
+        statusOptions.value = Array.from(new Set(mappedEmployees.map((employee: any) => employee.status).filter(Boolean)));
+        positionOptions.value = Array.from(new Set(mappedEmployees.map((employee: any) => employee.position).filter(Boolean)));
+        applyFilters();
     } catch (error) {
-        console.error('Error fetching employee data:', error);
+        error_data.value = true;
     }
+}
+
+function applyFilters() {
+    let result = [...originalEmployeeData.value];
+
+    if (filterStore.value) {
+        result = result.filter((employee: any) => employee.store?.store === filterStore.value);
+    }
+
+    if (filterStatus.value) {
+        result = result.filter((employee: any) => employee.status === filterStatus.value);
+    }
+
+    if (filterPosition.value) {
+        result = result.filter((employee: any) => employee.position === filterPosition.value);
+    }
+
+    if (filterSalaryMin.value !== '' || filterSalaryMax.value !== '') {
+        result = result.filter((employee: any) => {
+            const salary = Number(employee.salary) || 0;
+            const min = filterSalaryMin.value !== '' ? Number(filterSalaryMin.value) : -Infinity;
+            const max = filterSalaryMax.value !== '' ? Number(filterSalaryMax.value) : Infinity;
+            return salary >= min && salary <= max;
+        });
+    }
+
+    if (filterHireDate.value) {
+        result = result.filter((employee: any) => {
+            const normalizedDate = toDateInputValue(employee.hire_date_raw || employee.hire_date);
+            if (!normalizedDate) return false;
+            return normalizedDate === filterHireDate.value;
+        });
+    }
+
+    const query = normalizeSearchText(searchQuery.value);
+    if (query !== '') {
+        result = result.filter((employee: any) => {
+            const searchableValues = [
+                employee.id,
+                employee.full_name,
+                employee.email,
+                employee.phone,
+                employee.position,
+                employee.salary,
+                employee.status,
+                employee.hire_date,
+                employee.end_date,
+                employee.store?.store,
+            ];
+
+            return searchableValues.some((value: any) => {
+                if (value === null || value === undefined) return false;
+                return normalizeSearchText(value).includes(query);
+            });
+        });
+    }
+
+    employeeData.value = result;
+}
+
+function searchEmployees() {
+    applyFilters();
+}
+
+function clearFilters() {
+    searchQuery.value = '';
+    filterStore.value = '';
+    filterStatus.value = '';
+    filterPosition.value = '';
+    filterSalaryMin.value = '';
+    filterSalaryMax.value = '';
+    filterHireDate.value = '';
+    applyFilters();
+}
+
+function translateEmployeeStatus(status: string) {
+    const normalized = String(status || '').trim().toLowerCase();
+
+    const statusMap: Record<string, string> = {
+        active: 'Activo',
+        inactive: 'Inactivo',
+        terminated: 'Terminado',
+        suspended: 'Suspendido',
+        'on leave': 'En licencia',
+        on_leave: 'En licencia',
+        resigned: 'Renunció',
+    };
+
+    return statusMap[normalized] || status;
 }
 
 // Seccion: "Control del formulario"
@@ -75,7 +191,7 @@ async function confirmDelete() {
         await EmployeeServices.deleteEmployee(pendingDeleteId.value);
         await fetchEmployees();
     } catch (error) {
-        console.error('Error al eliminar empleado:', error);
+        showError('Error', 'No se pudo eliminar el empleado.');
     } finally {
         showConfirm.value = false;
         pendingDeleteId.value = null;
@@ -102,9 +218,9 @@ function onCancel() {
 }
 
 // Seccion: "Impresion"
-// Explicacion: Abre el dialogo de impresion nativo del navegador con la vista actual
+// Explicacion: Abre el reporte PDF generado por el backend en una nueva pestaña
 function printReport() {
-    window.print();
+    ReportsServices.openEmployeesPdf();
 }
 
 // Seccion: "Inicializacion"
@@ -113,12 +229,74 @@ onMounted(fetchEmployees);
 </script>
 
 <template>
-    <div class="data-view">
+    <ErrorMessage v-if="error_data"
+        tittle="Error al cargar los datos de empleados"
+        message="Hubo un error al obtener los datos. Por favor, inténtalo de nuevo más tarde o contacta al soporte si el problema persiste."
+    />
+    <div v-else class="data-view">
         <div class="toolbar">
             <h1>Datos de los Empleados</h1>
             <div class="toolbar-actions">
-                <button class="btn-new" @click="openInsert">+ Nuevo Empleado</button>
-                <button class="btn-print" @click="printReport">Imprimir Reporte</button>
+                <div class="toolbar-groups">
+                    <section class="filters-search">
+                        <input
+                            v-model="searchQuery"
+                            @keyup.enter="searchEmployees"
+                            type="text"
+                            class="form-control"
+                            placeholder="Buscar"
+                        >
+                        <button class="btn-print" @click="searchEmployees">Buscar</button>
+                        <button class="btn-print" @click="clearFilters">Limpiar</button>
+                    </section>
+
+                    <section class="filters-export">
+                        <button class="btn-print" @click="printReport">Imprimir Reporte</button>
+                    </section>
+
+                    <section class="filters-select" style="display: flex; gap: 10px; flex-wrap: wrap;">
+                        <div style="display: flex; flex-direction: column;">
+                            <label for="employee-store-filter" style="color:white; font-size: 0.8rem;">Sucursal</label>
+                            <select id="employee-store-filter" class="form-control" v-model="filterStore" @change="applyFilters">
+                                <option value="">Todas</option>
+                                <option v-for="store in storesOptions" :key="store" :value="store">{{ store }}</option>
+                            </select>
+                        </div>
+
+                        <div style="display: flex; flex-direction: column;">
+                            <label for="employee-status-filter" style="color:white; font-size: 0.8rem;">Estado</label>
+                            <select id="employee-status-filter" class="form-control" v-model="filterStatus" @change="applyFilters">
+                                <option value="">Todos</option>
+                                <option v-for="status in statusOptions" :key="status" :value="status">{{ status }}</option>
+                            </select>
+                        </div>
+
+                        <div style="display: flex; flex-direction: column;">
+                            <label for="employee-position-filter" style="color:white; font-size: 0.8rem;">Puesto</label>
+                            <select id="employee-position-filter" class="form-control" v-model="filterPosition" @change="applyFilters">
+                                <option value="">Todos</option>
+                                <option v-for="position in positionOptions" :key="position" :value="position">{{ position }}</option>
+                            </select>
+                        </div>
+
+                        <div style="display: flex; flex-direction: column;">
+                            <label style="color:white; font-size: 0.8rem;">Salario (Mín - Máx)</label>
+                            <div style="display: flex; gap: 5px;">
+                                <input type="number" class="form-control" placeholder="Min" style="width: 80px;" v-model="filterSalaryMin" @input="applyFilters">
+                                <input type="number" class="form-control" placeholder="Máx" style="width: 80px;" v-model="filterSalaryMax" @input="applyFilters">
+                            </div>
+                        </div>
+
+                        <div style="display: flex; flex-direction: column;">
+                            <label for="employee-hire-date-filter" style="color:white; font-size: 0.8rem;">Fecha Ingreso</label>
+                            <input id="employee-hire-date-filter" type="date" class="form-control" v-model="filterHireDate" @change="applyFilters">
+                        </div>
+                    </section>
+                </div>
+
+                <div class="toolbar-primary-action">
+                    <button class="btn-new" @click="openInsert">+ Nuevo Empleado</button>
+                </div>
             </div>
         </div>
 
@@ -165,7 +343,7 @@ onMounted(fetchEmployees);
                     <td class="data-cell">{{ employee.position }}</td>
                     <td class="data-cell">$ {{ employee.salary }}</td>
                     <td class="data-cell">{{ employee.store.store }}</td>
-                    <td class="data-cell">{{ employee.status }}</td>
+                    <td class="data-cell">{{ translateEmployeeStatus(employee.status) }}</td>
                     <td class="data-cell">{{ employee.hire_date }}</td>
                     <td class="data-cell">{{ employee.end_date }}</td>
                     <td class="data-cell">

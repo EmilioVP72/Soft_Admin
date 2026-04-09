@@ -3,6 +3,7 @@
     --c-table-head-bg:     #1e293b;
     --c-table-head-hover:  #2d4a6e;
     --c-row-stripe:        #ddeef8;
+    --c-btn-primary-bg:    #1179a2;
 }
 
 *{
@@ -11,11 +12,20 @@
     box-sizing: border-box;
 }
 
+.data-view {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    max-width: 1400px;
+    margin: 0 auto;
+}
+
 .sales-table {
     width: 100%;
     border-collapse: collapse;
-    overflow-x: auto;
-    display: block;
+    display: table;
+    min-width: 760px;
+    margin: 0 auto;
 }
 
 .table-header {
@@ -45,10 +55,139 @@
     background-color: var(--c-row-stripe);
 }
 
+/* ── Toolbar ── */
+.toolbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+    width: 100%;
+    padding: 0.75rem 1rem;
+    background: linear-gradient(135deg, var(--c-table-head-bg) 0%, var(--c-table-head-hover) 100%);
+    border-radius: 8px;
+    margin-bottom: 0.5rem;
+}
+
+.toolbar h1 {
+    color: white;
+    font-size: clamp(1rem, 2vw + 0.5rem, 1.4rem);
+    margin: 0;
+}
+
+.toolbar-actions {
+    display: flex;
+    gap: 0.6rem;
+    flex-wrap: wrap;
+}
+
+.btn-new {
+    display: inline-block;
+    padding: 0.45rem 1.1rem;
+    background-color: white;
+    color: var(--c-btn-primary-bg);
+    border: 2px solid white;
+    border-radius: 6px;
+    font-size: 0.875rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: background-color 0.2s ease, color 0.2s ease;
+    text-decoration: none;
+}
+
+.btn-new:hover {
+    background-color: var(--c-btn-primary-bg);
+    color: white;
+    border-color: white;
+}
+
+.btn-print {
+    padding: 0.45rem 1.1rem;
+    background-color: transparent;
+    color: white;
+    border: 2px solid white;
+    border-radius: 6px;
+    font-size: 0.875rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+.btn-print:hover {
+    background-color: white;
+    color: var(--c-btn-primary-bg);
+}
+
+.summary-cards {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(180px, 1fr));
+    gap: 0.75rem;
+    margin: 0.75rem 0;
+}
+
+.summary-card {
+    background: linear-gradient(135deg, #f8fbfe 0%, #eef6fb 100%);
+    border: 1px solid #c8dbea;
+    border-left: 4px solid var(--c-btn-primary-bg);
+    border-radius: 8px;
+    padding: 0.85rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.35rem;
+}
+
+.summary-label {
+    color: #526172;
+    font-size: 0.8rem;
+    font-weight: 600;
+}
+
+.summary-title {
+    color: #0f172a;
+    font-size: 1rem;
+    line-height: 1.2;
+}
+
+.summary-value {
+    color: #0b5e7f;
+    font-size: 0.95rem;
+    font-weight: 700;
+}
+
+.chart-section {
+    margin: 0.85rem 0;
+    padding: 0.85rem;
+    border: 1px solid #d4e2ec;
+    border-radius: 8px;
+    background-color: #ffffff;
+    box-shadow: 0 4px 10px rgba(15, 23, 42, 0.06);
+}
+
+.chart-section h2 {
+    margin: 0 0 0.55rem;
+    color: #1e293b;
+    font-size: clamp(0.95rem, 1.1vw + 0.6rem, 1.2rem);
+}
+
+.table-section {
+    width: 100%;
+    overflow-x: auto;
+    border: 1px solid #d4e2ec;
+    border-radius: 8px;
+    background-color: #ffffff;
+    box-shadow: 0 4px 10px rgba(15, 23, 42, 0.06);
+    padding: 0.5rem;
+}
+
 /* Media Queries para ajustes específicos */
 @media (max-width: 768px) {
+    .summary-cards {
+        grid-template-columns: 1fr;
+    }
+
     .sales-table {
         font-size: 0.875rem;
+        min-width: 680px;
     }
     
     .header-cell,
@@ -58,8 +197,13 @@
 }
 
 @media (max-width: 480px) {
+    .summary-card {
+        padding: 0.7rem;
+    }
+
     .sales-table {
         font-size: 0.75rem;
+        min-width: 620px;
     }
     
     .header-cell {

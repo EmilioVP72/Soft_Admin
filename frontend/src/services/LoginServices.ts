@@ -1,5 +1,4 @@
 import apiClient from '@/api/axios';
-import type { LoginResponse } from '@/interfaces/AuthInterfaces';
 
 
 export default {

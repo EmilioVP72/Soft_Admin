@@ -1,28 +1,39 @@
 <script setup lang="ts">
-import {ref, computed} from 'vue';
+import {ref, computed, watch} from 'vue';
 import Employees from '@/components/data/employees/Employees.vue';
 import Stores from '@/components/data/stores/Stores.vue';
 import GeneralSales from '@/components/data/sales/GeneralSales.vue';
 import StoresSales from '@/components/data/sales/StoresSales.vue';
+import Departments from '@/components/data/departments/Departments.vue';
+import Suppliers from '@/components/data/suppliers/Suppliers.vue';
 const componentsMap = {
     'sucursal': Stores,
     'empleados': Employees,
     'ventas': GeneralSales,
-    'ventas_sucursal': StoresSales
+    'ventas_sucursal': StoresSales,
+    'departamentos': Departments,
+    'proveedores': Suppliers,
+    
 };
 
 const options = [
+    { value: 'ventas', label: 'Ventas Generales' },
     { value: 'sucursal', label: 'Sucursales' },
     { value: 'empleados', label: 'Empleados' },
-    { value: 'ventas', label: 'Ventas Generales' },
-    { value: 'ventas_sucursal', label: 'Ventas por Sucursal' }
+    { value: 'ventas_sucursal', label: 'Ventas por Sucursal' },
+    { value: 'departamentos', label: 'Departamentos' },
+    { value: 'proveedores', label: 'Proveedores' },
 
 ];
 
-const selectedOption = ref('sucursal');
+const selectedOption = ref(localStorage.getItem('dataViewOption') || 'ventas');
+
+watch(selectedOption, (newValue: string) => {
+    localStorage.setItem('dataViewOption', newValue);
+});
 
 const activeComponent = computed(() => {
-    return componentsMap[selectedOption.value] || null;
+    return (componentsMap as Record<string, any>)[selectedOption.value] || null;
 });
 </script>
 

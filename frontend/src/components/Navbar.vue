@@ -1,11 +1,12 @@
 <script setup lang="ts">
-
-import { ref} from 'vue'
-import { RouterView, useRouter } from 'vue-router'
+import { ref } from 'vue';
+import { useRouter } from 'vue-router';
+import { useNotification } from '@/composables/useNotification';
 import { useAuthStore } from '@/stores/auth';
 import LoginServices from '@/services/LoginServices';
 
 const router = useRouter();
+const { showError } = useNotification();
 const authStore = useAuthStore();
 const isMenuOpen = ref(false);
 
@@ -13,6 +14,7 @@ const menuItems = [
   { name: 'Inicio', path: '/dashboard' },
   { name: 'Datos', path: '/data' },
   { name: 'Calculos', path: '/calculate' },
+  { name: 'Movimientos', path: '/moves' },
   
   // Agrega más elementos del menú según sea necesario
 ];
@@ -24,8 +26,8 @@ const logout = () => {
     LoginServices.logoutUser().then(() => {
         authStore.logout();
         router.push({ name: 'login' });
-    }).catch((error) => {
-        console.error('Error during logout:', error);
+    }).catch(() => {
+        showError('Error', 'No se pudo cerrar la sesión correctamente.');
     });
     
     

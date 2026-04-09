@@ -2,6 +2,7 @@
 import { RouterView, useRoute } from 'vue-router'
 import NavBar from './components/Navbar.vue'
 import SessionModal from './components/SessionModal.vue'
+import NotificationCenter from './components/NotificationCenter.vue'
 import { useSessionWarning } from './composables/useSessionWarning'
 
 const route = useRoute()
@@ -16,6 +17,8 @@ const { showWarningModal, isLoading, refreshToken, logout } = useSessionWarning(
 
   <main>
     <RouterView />
+
+    <NotificationCenter />
 
     <Teleport to="body">
       <SessionModal 

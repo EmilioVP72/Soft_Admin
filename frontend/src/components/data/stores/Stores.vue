@@ -6,6 +6,9 @@ import StoresServices from '@/services/StoresServices';
 import LocalitiesServices from '@/services/LocalitiesServices';
 import StoreForm from './StoreForm.vue';
 import { onMounted, ref } from 'vue';
+import ErrorMessage from '@/components/shared/Error.vue';
+import { useNotification } from '@/composables/useNotification';
+import ReportsServices from '@/services/ReportsServices';
 
 // Seccion: "Estado reactivo"
 // Explicacion: storeData almacena la lista de sucursales mostrada en la tabla;
@@ -19,6 +22,8 @@ const selectedStoreId = ref<number | undefined>(undefined);
 const showDeleteConfirm = ref(false);
 const deleteTargetId = ref<number | null>(null);
 const deleting = ref(false);
+const error_data = ref<boolean>(false);
+const { showError } = useNotification();
 
 // Seccion: "Carga de datos"
 // Explicacion: Llama al endpoint para obtener todas las sucursales y mapea
@@ -36,17 +41,18 @@ async function fetchStores() {
             reference: store.reference,
             street: store.street,
             fk_locality: store.fk1_id_locality,
-        }));
+        })).sort((a: any, b: any) => Number(a.id || 0) - Number(b.id || 0));
 
         const responseLocalities = await LocalitiesServices.getLocalities();
         localities.value = responseLocalities.data.data.map((loc: { id_locality: number; locality: string }) => ({
             id_locality: loc.id_locality,
             locality: loc.locality,
-        }));
+        })).sort((a: any, b: any) => Number(a.id_locality || 0) - Number(b.id_locality || 0));
         
-
+        error_data.value = false;
     } catch (error) {
-        console.error('Error fetching store data:', error);
+        showError('Error al cargar', 'No se pudieron cargar las sucursales.');
+        error_data.value = true;
     }
 }
 
@@ -92,7 +98,7 @@ async function executeDelete() {
         deleteTargetId.value = null;
         await fetchStores();
     } catch (error) {
-        console.error('Error al eliminar la sucursal:', error);
+        showError('Error', 'No se pudo eliminar la sucursal.');
     } finally {
         deleting.value = false;
     }
@@ -113,9 +119,9 @@ function onCancel() {
 }
 
 // Seccion: "Impresion"
-// Explicacion: Abre el dialogo de impresion nativo del navegador con la vista actual
+// Explicacion: Abre el reporte PDF de sucursales en una nueva pestaña
 function printReport() {
-    window.print();
+    ReportsServices.openStoresPdf();
 }
 
 // Seccion: "Inicializacion"
@@ -124,7 +130,10 @@ onMounted(fetchStores);
 
 </script>
 <template>
-    <div class="data-view">
+
+    <ErrorMessage v-if="error_data" tittle="Error al cargar los datos de las sucursales" message="No se pudieron cargar los datos de las sucursales. Por favor, intenta de nuevo más tarde. Si el problema persiste, contacta al soporte." />
+
+    <div v-else class="data-view">
         <div class="toolbar">
             <h1>Datos de las Sucursales</h1>
             <div class="toolbar-actions">

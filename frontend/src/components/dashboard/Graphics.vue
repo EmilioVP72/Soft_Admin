@@ -3,8 +3,10 @@
 import StoresServices from '@/services/StoresServices';
 import { onMounted, ref } from 'vue';
 import axios from 'axios';
+import ErrorMessage from '@/components/shared/Error.vue';
 import type { ChartData, ChartOptions } from 'chart.js';
 import BarGraph from '@/components/dashboard/graphics/BarGraph.vue';
+import { useNotification } from '@/composables/useNotification';
 
 // Variables para la gráfica general
 const message = ref('');
@@ -34,6 +36,7 @@ const chartOptions = ref<ChartOptions<'bar'>>({
 // Variables para las gráficas por sucursal
 const message2 = ref('');
 const isValid2 = ref(false);
+const { showError } = useNotification();
 const storeCharts = ref<Array<{
   storeId: number;
   storeName: string;
@@ -44,17 +47,19 @@ const storeCharts = ref<Array<{
 onMounted(async () => {
     // Cargar gráfica general
     try {
-        const response = await StoresServices.getSalesByDepartment();  
-        const data = response.data.data.map((item: { department: string; total_sales: number; }) => ({
-            department: item.department,
+        const response = await StoresServices.getSalesByGeneralDepartment();  
+        const data = response.data.data.map((item: { general_department: string; total_sales: number; }) => ({
+            department: item.general_department,
             totalSales: item.total_sales
-        }));
+        })).sort((a: { department: string }, b: { department: string }) =>
+            String(a.department || '').localeCompare(String(b.department || ''), 'es', { sensitivity: 'base' })
+        );
         chartData.value = {
-            labels: data.map(item => item.department),
+            labels: data.map((item: { department: string }) => item.department),
             datasets: [
                 {
                 label: 'Ingresos Totales',
-                data: data.map(item => item.totalSales),
+                data: data.map((item: { totalSales: number }) => item.totalSales),
                 backgroundColor: 'rgba(75, 192, 192, 0.5)',
                 borderColor: 'rgba(75, 192, 192, 1)',
                 borderWidth: 1
@@ -75,7 +80,9 @@ onMounted(async () => {
     // Cargar gráficas por sucursal
     try {
         const storesResponse = await StoresServices.getStores();
-        const stores = storesResponse.data.data;
+        const stores = [...(storesResponse.data.data || [])].sort((a: any, b: any) =>
+            String(a?.name || '').localeCompare(String(b?.name || ''), 'es', { sensitivity: 'base' })
+        );
 
         // Crear una gráfica por cada sucursal
         for (let i = 0; i < stores.length; i++) {
@@ -85,7 +92,9 @@ onMounted(async () => {
                 const data = response.data.data.map((item: { department: string; total_sales: number; }) => ({
                     department: item.department,
                     totalSales: item.total_sales
-                }));
+                })).sort((a: { department: string }, b: { department: string }) =>
+                    String(a.department || '').localeCompare(String(b.department || ''), 'es', { sensitivity: 'base' })
+                );
                 
 
                 const colorIndex = i % colors.length;
@@ -94,13 +103,13 @@ onMounted(async () => {
                     storeId: store.id,
                     storeName: store.name,
                     chartData: {
-                        labels: data.map(item => item.department),
+                        labels: data.map((item: { department: string }) => item.department),
                         datasets: [
                             {
                                 label: 'Ingresos Totales',
-                                data: data.map(item => item.totalSales),
-                                backgroundColor: colors[colorIndex].bg,
-                                borderColor: colors[colorIndex].border,
+                                data: data.map((item: { totalSales: number }) => item.totalSales),
+                                backgroundColor: colors[colorIndex]!.bg,
+                                borderColor: colors[colorIndex]!.border,
                                 borderWidth: 1
                             }
                         ]
@@ -115,7 +124,7 @@ onMounted(async () => {
                     }
                 });
             } catch (error) {
-                console.error(`Error al cargar datos de la sucursal ${store.name}:`, error);
+                showError('Error al cargar', `No se pudieron cargar los datos de la sucursal ${store.name}.`);
             }
         }
         isValid2.value = storeCharts.value.length === 0;
@@ -143,13 +152,19 @@ onMounted(async () => {
 
             <section class="general-graphics">
                 <h2>Resumen General de Ventas - Todas las Sucursales</h2>
-                <p v-if="isValid" class="error-message">{{ message }}</p>
+                <ErrorMessage v-if="isValid"
+                    tittle="Error al cargar las gráficas de ventas"
+                    :message="message || 'Hubo un error al obtener los datos. Por favor, inténtalo de nuevo más tarde.'"
+                />
                 <BarGraph v-else :chartData="chartData" :chartOptions="chartOptions" />
             </section>
 
             <section class="graphics-for-stores">
                 <h2>Ventas por Departamento según Sucursal</h2>
-                <p v-if="isValid2" class="error-message">{{ message2 }}</p>
+                <ErrorMessage v-if="isValid2"
+                    tittle="Error al cargar las gráficas por sucursal"
+                    :message="message2 || 'Hubo un error al obtener los datos. Por favor, inténtalo de nuevo más tarde.'"
+                />
                 <div v-else class="store-charts-container">
                     <div v-for="chart in storeCharts" :key="chart.storeId" class="store-chart">
                         <BarGraph :chartData="chart.chartData" :chartOptions="chart.chartOptions" />

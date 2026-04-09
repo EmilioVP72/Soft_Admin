@@ -1,6 +1,5 @@
 import {defineStore} from 'pinia';
 import {ref} from 'vue';
-import type {LoginResponse} from '@/interfaces/AuthInterfaces';
 
 export const useAuthStore = defineStore('auth', () =>{
     const token = ref<string | null>(localStorage.getItem('token'));

@@ -15,9 +15,34 @@ Route::prefix('auth')->group(function () {
     });
 });
 
+use App\Http\Controllers\Api\ReportController;
+
 Route::get('/user', function (Request $request) {
     return $request->user();
 })->middleware('auth:api');
+
+// Rutas de Reportes
+Route::prefix('reports')->group(function () {
+    Route::get('/sales/general', [ReportController::class, 'salesGeneral']);
+    Route::get('/sales/general/excel', [ReportController::class, 'salesGeneralExcel']);
+    Route::get('/sales/store/{store_id}', [ReportController::class, 'salesStore']);
+    Route::get('/sales/store/{store_id}/excel', [ReportController::class, 'salesStoreExcel']);
+    Route::get('/employees', [ReportController::class, 'employees']);
+    Route::get('/employees/excel', [ReportController::class, 'employeesExcel']);
+    Route::get('/stores', [ReportController::class, 'stores']);
+
+    Route::post('/dynamic/promotions/pdf', [\App\Http\Controllers\Api\DynamicReportController::class, 'promotionsPdf']);
+    Route::post('/dynamic/promotions/excel', [\App\Http\Controllers\Api\DynamicReportController::class, 'promotionsExcel']);
+    Route::post('/dynamic/suppliers/pdf', [\App\Http\Controllers\Api\DynamicReportController::class, 'suppliersPdf']);
+    Route::post('/dynamic/suppliers/excel', [\App\Http\Controllers\Api\DynamicReportController::class, 'suppliersExcel']);
+    Route::post('/dynamic/departments/pdf', [\App\Http\Controllers\Api\DynamicReportController::class, 'departmentsPdf']);
+    Route::post('/dynamic/departments/excel', [\App\Http\Controllers\Api\DynamicReportController::class, 'departmentsExcel']);
+
+    Route::get('/inputs/pdf', [ReportController::class, 'inputsPdf']);
+    Route::get('/inputs/excel', [ReportController::class, 'inputsExcel']);
+    Route::get('/outputs/pdf', [ReportController::class, 'outputsPdf']);
+    Route::get('/outputs/excel', [ReportController::class, 'outputsExcel']);
+});
 
 
 Route::middleware('auth:api')->group(function () {
@@ -39,5 +64,35 @@ Route::middleware('auth:api')->group(function () {
     // Rutas de Localidades/Localities
     Route::prefix('localities')->group(function () {
         require __DIR__ . '/Locality/localities.php';
+    });
+
+    // Rutas de Proveedores/Suppliers
+    Route::prefix('suppliers')->group(function () {
+        require __DIR__ . '/Supplier/suppliers.php';
+    });
+
+    // Rutas de Entradas/Inputs
+    Route::prefix('inputs')->group(function () {
+        require __DIR__ . '/Input/inputs.php';
+    });
+
+    // Rutas de Salidas/Outputs
+    Route::prefix('outputs')->group(function () {
+        require __DIR__ . '/Output/outputs.php';
+    });
+
+    // Rutas de Metodos de Pago/Payments
+    Route::prefix('payments')->group(function () {
+        require __DIR__ . '/Payment/payments.php';
+    });
+
+    // Rutas de Departamentos Generales/General Departments
+    Route::prefix('general-departments')->group(function () {
+        require __DIR__ . '/GeneralDepartment/general_departments.php';
+    });
+
+    // Rutas de Departamentos por Tienda/Store Departments
+    Route::prefix('departments')->group(function () {
+        require __DIR__ . '/Department/departments.php';
     });
 });

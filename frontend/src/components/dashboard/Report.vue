@@ -4,6 +4,26 @@ import {
   BuildingStorefrontIcon,
   UserCircleIcon
 } from '@heroicons/vue/24/outline';
+import ReportsServices from '@/services/ReportsServices';
+
+function downloadGeneralPdf() {
+    ReportsServices.openGeneralSalesPdf();
+}
+function downloadGeneralExcel() {
+    ReportsServices.openGeneralSalesExcel();
+}
+function downloadStorePdf() {
+    ReportsServices.openStoreSalesPdf(1);
+}
+function downloadStoreExcel() {
+    ReportsServices.openStoreSalesExcel(1);
+}
+function downloadEmployeesPdf() {
+    ReportsServices.openEmployeesPdf();
+}
+function downloadEmployeesExcel() {
+    ReportsServices.openEmployeesExcel();
+}
 </script>
 
 <template>
@@ -16,10 +36,10 @@ import {
                     <h3>Reporte de Ventas General</h3>
                     <p>Genera un reporte en PDF o Excel de las ventas por cada departamento del negocio</p>
                     <div class="report-actions">
-                        <button class="btn-report">
+                        <button class="btn-report" @click="downloadGeneralPdf">
                             Generar PDF
                         </button>
-                        <button class="btn-excel">
+                        <button class="btn-excel" @click="downloadGeneralExcel">
                             Generar Excel
                         </button>
                     </div>
@@ -29,10 +49,10 @@ import {
                     <h3>Reporte de Ventas por Tienda</h3>
                     <p>Genera un reporte en PDF o Excel de las ventas por cada tienda del negocio</p>
                     <div class="report-actions">
-                        <button class="btn-report">
+                        <button class="btn-report" @click="downloadStorePdf">
                             Generar PDF
                         </button>
-                        <button class="btn-excel">
+                        <button class="btn-excel" @click="downloadStoreExcel">
                             Generar Excel
                         </button>
                     </div>
@@ -42,10 +62,10 @@ import {
                     <h3>Reporte de Empleados</h3>
                     <p>Genera un reporte en PDF o Excel datos relacionados con los empleados</p>
                     <div class="report-actions">
-                        <button class="btn-report">
+                        <button class="btn-report" @click="downloadEmployeesPdf">
                             Generar PDF
                         </button>
-                        <button class="btn-excel">
+                        <button class="btn-excel" @click="downloadEmployeesExcel">
                             Generar Excel
                         </button>
                     </div>
