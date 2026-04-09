@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { onMounted, ref, computed, watch } from 'vue';
+import { onMounted, ref, watch } from 'vue';
 import storesServices from '@/services/StoresServices';
 import ErrorMessage from '@/components/shared/Error.vue';
 import { useNotification } from '@/composables/useNotification';
@@ -24,11 +24,6 @@ const filterTotalMax = ref('');
 const filterDate = ref('');
 const departmentOptions = ref<string[]>([]);
 const paymentOptions = ref<string[]>([]);
-
-// selectedStoreId es computed, se calcula automáticamente cuando selectedOption cambia
-const selectedStoreId = computed(() => {
-    return selectedOption.value;
-});
 
 const loadSalesForSelectedStore = async () => {
     if (!selectedOption.value) {
@@ -82,10 +77,10 @@ const loadSalesForSelectedStore = async () => {
         );
 
         // selectedOption guarda el ID, pero necesitamos el nombre de la sucursal para filtrar
-        const selectedStore = dataStore.value.find(s => s.storeId === selectedOption.value);
+        const selectedStore = dataStore.value.find((s: { storeId: number; storeName: string }) => s.storeId === selectedOption.value);
         const selectedStoreName = selectedStore ? selectedStore.storeName : '';
 
-        storesSalesByStore.value = storesSales.value.filter(sale => sale.store_name === selectedStoreName);
+        storesSalesByStore.value = storesSales.value.filter((sale: any) => sale.store_name === selectedStoreName);
         
         // Fallback: If filter is empty but there are sales, show all sales so we can see them.
         if (storesSalesByStore.value.length === 0 && storesSales.value.length > 0) {
@@ -101,19 +96,23 @@ const loadSalesForSelectedStore = async () => {
                 .map((sale: any) => sale.department)
                 .filter((dep: any) => dep !== null && dep !== undefined && String(dep).trim() !== '')
         )).sort((a: any, b: any) => String(a).localeCompare(String(b), 'es', { sensitivity: 'base' }));
-        paymentOptions.value = Array.from(new Set(
-            originalStoresSalesByStore.value
-                .flatMap((sale: any) => {
-                    if (!sale.payment) return [];
-                    if (Array.isArray(sale.payment)) {
-                        return sale.payment.map((pay: any) => pay?.payment).filter(Boolean);
-                    }
-                    if (typeof sale.payment === 'object') {
-                        return [sale.payment.payment].filter(Boolean);
-                    }
-                    return [sale.payment].filter(Boolean);
-                })
-        ));
+        const paymentValues = originalStoresSalesByStore.value.reduce((acc: any[], sale: any) => {
+            if (!sale.payment) return acc;
+            if (Array.isArray(sale.payment)) {
+                sale.payment.forEach((pay: any) => {
+                    if (pay && pay.payment) acc.push(pay.payment);
+                });
+                return acc;
+            }
+            if (typeof sale.payment === 'object') {
+                if (sale.payment.payment) acc.push(sale.payment.payment);
+                return acc;
+            }
+            acc.push(sale.payment);
+            return acc;
+        }, []);
+
+        paymentOptions.value = Array.from(new Set(paymentValues));
         applyFilters();
     } catch (error: any) {
         showError('Error', 'No se pudieron cargar los datos de ventas por sucursal.');
@@ -122,7 +121,7 @@ const loadSalesForSelectedStore = async () => {
 };
 
 // Watch para ver los cambios cuando seleccionas otra sucursal
-watch(selectedOption, async (_newValue) => {
+watch(selectedOption, async (_newValue: number) => {
     localStorage.setItem('storesSalesOption', String(_newValue));
     await loadSalesForSelectedStore();
 });

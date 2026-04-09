@@ -5,7 +5,7 @@ function parseDate(value: unknown): Date | null {
 }
 
 function twoDigits(value: number): string {
-    return String(value).padStart(2, '0');
+    return value < 10 ? `0${value}` : String(value);
 }
 
 export function formatDateOnly(value: unknown): string {

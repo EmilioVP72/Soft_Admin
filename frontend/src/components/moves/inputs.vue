@@ -9,9 +9,20 @@ import ErrorComponent from '@/components/shared/Error.vue';
 import { normalizeSearchText } from '@/utils/search';
 import { formatDateTime24 } from '@/utils/datetime';
 
+interface MoveRow {
+    id_transaction: number;
+    store: string;
+    user: string;
+    payment: string;
+    total_amount: number;
+    transaction_type: string;
+    notes: string;
+    transaction_date: string;
+}
+
 const searchQuery = ref('');
-const dataInputs = ref([]);
-const originalData = ref([]);
+const dataInputs = ref<MoveRow[]>([]);
+const originalData = ref<MoveRow[]>([]);
 
 const filterStore = ref('');
 const filterPayment = ref('');
@@ -22,8 +33,8 @@ const filterTotalMin = ref('');
 const filterTotalMax = ref('');
 const filterDate = ref('');
 
-const storesOptions = ref([]);
-const paymentsOptions = ref([]);
+const storesOptions = ref<string[]>([]);
+const paymentsOptions = ref<string[]>([]);
 
 const isLoading = ref(false);
 const isInputFormOpen = ref(false);

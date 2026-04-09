@@ -72,12 +72,13 @@ const validateForm = () => {
 };
 
 const totalAmount = computed(() => {
-    return formData.value.details.reduce((acc, curr) => acc + (Number(curr.subtotal) || 0), 0);
+    return formData.value.details.reduce((acc: number, curr: any) => acc + (Number(curr.subtotal) || 0), 0);
 });
 
 // Calculate subtotal automatically
 const updateSubtotal = (index: number) => {
     const detail = formData.value.details[index];
+    if (!detail) return;
     detail.subtotal = (Number(detail.quantity) || 0) * (Number(detail.unit_price) || 0);
 };
 
@@ -92,7 +93,7 @@ const removeDetail = (index: number) => {
 };
 
 const onStoreChange = async () => {
-    formData.value.details.forEach(d => d.fk2_id_department = '');
+    formData.value.details.forEach((d: any) => d.fk2_id_department = '');
     if (!formData.value.fk1_id_store) {
         departmentsList.value = [];
         return;
@@ -135,7 +136,7 @@ const submitForm = async () => {
             total_amount: Number(totalAmount.value),
             notes: sanitizeText(formData.value.notes) || null,
             transaction_date: formData.value.transaction_date || null,
-            details: formData.value.details.map(d => ({
+            details: formData.value.details.map((d: any) => ({
                 fk2_id_department: d.fk2_id_department,
                 quantity: Number(d.quantity),
                 unit_price: Number(d.unit_price),

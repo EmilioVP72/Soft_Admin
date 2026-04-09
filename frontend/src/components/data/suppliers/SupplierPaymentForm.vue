@@ -17,7 +17,7 @@ const { showWarning, showError } = useNotification();
 const form = ref({
     fk2_id_department: '',
     amount_paid: '',
-    payment_date: new Date().toISOString().split('T')[0]
+    payment_date: new Date().toISOString().split('T')[0] || ''
 });
 
 const departments = ref<any[]>([]);
@@ -27,7 +27,7 @@ const sanitizeText = (value: string) => String(value || '').trim();
 
 const validateForm = () => {
     const amount = Number(form.value.amount_paid);
-    const today = new Date().toISOString().split('T')[0];
+    const today = new Date().toISOString().split('T')[0] || '';
 
     if (!form.value.fk2_id_department || !form.value.payment_date || Number.isNaN(amount)) {
         showWarning('Datos incompletos', 'Todos los campos son obligatorios.');

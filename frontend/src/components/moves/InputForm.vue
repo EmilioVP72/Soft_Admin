@@ -78,6 +78,7 @@ const totalAmount = computed(() => {
 // Calculate subtotal automatically
 const updateSubtotal = (index: number) => {
     const detail = formData.value.details[index];
+    if (!detail) return;
     detail.subtotal = (Number(detail.quantity) || 0) * (Number(detail.unit_price) || 0);
 };
 
