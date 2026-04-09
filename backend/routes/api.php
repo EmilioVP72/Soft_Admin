@@ -31,7 +31,6 @@ Route::prefix('reports')->group(function () {
     Route::get('/employees/excel', [ReportController::class, 'employeesExcel']);
     Route::get('/stores', [ReportController::class, 'stores']);
 
-    // Dynamic endpoints (POST based)
     Route::post('/dynamic/promotions/pdf', [\App\Http\Controllers\Api\DynamicReportController::class, 'promotionsPdf']);
     Route::post('/dynamic/promotions/excel', [\App\Http\Controllers\Api\DynamicReportController::class, 'promotionsExcel']);
     Route::post('/dynamic/suppliers/pdf', [\App\Http\Controllers\Api\DynamicReportController::class, 'suppliersPdf']);

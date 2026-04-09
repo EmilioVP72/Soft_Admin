@@ -24,7 +24,6 @@ class InputResource extends JsonResource
                 'payment' => $this->payment->payment ?? null,
             ],
             'total_amount' => $this->total_amount,
-            'transaction_type' => $this->transaction_type,
             'notes' => $this->notes,
             'transaction_date' => $this->transaction_date,
             'details' => InputDetailResource::collection($this->whenLoaded('details')),
