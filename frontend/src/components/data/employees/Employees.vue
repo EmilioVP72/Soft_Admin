@@ -10,6 +10,7 @@ import ConfirmModal from '../../shared/ConfirmModal.vue';
 import ErrorMessage from '@/components/shared/Error.vue';
 import { normalizeSearchText } from '@/utils/search';
 import { formatDateOnly, toDateInputValue } from '@/utils/datetime';
+import ReportsServices from '@/services/ReportsServices';
 
 // Seccion: "Estado reactivo"
 // Explicacion: Variables que controlan la lista de empleados, la visibilidad del formulario
@@ -219,7 +220,7 @@ function onCancel() {
 // Seccion: "Impresion"
 // Explicacion: Abre el reporte PDF generado por el backend en una nueva pestaña
 function printReport() {
-    window.open('http://localhost:8000/api/reports/employees', '_blank');
+    ReportsServices.openEmployeesPdf();
 }
 
 // Seccion: "Inicializacion"

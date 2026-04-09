@@ -8,6 +8,7 @@ import StoreForm from './StoreForm.vue';
 import { onMounted, ref } from 'vue';
 import ErrorMessage from '@/components/shared/Error.vue';
 import { useNotification } from '@/composables/useNotification';
+import ReportsServices from '@/services/ReportsServices';
 
 // Seccion: "Estado reactivo"
 // Explicacion: storeData almacena la lista de sucursales mostrada en la tabla;
@@ -120,7 +121,7 @@ function onCancel() {
 // Seccion: "Impresion"
 // Explicacion: Abre el reporte PDF de sucursales en una nueva pestaña
 function printReport() {
-    window.open('http://localhost:8000/api/reports/stores', '_blank');
+    ReportsServices.openStoresPdf();
 }
 
 // Seccion: "Inicializacion"

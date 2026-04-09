@@ -5,7 +5,7 @@ import StoresServices from '@/services/StoresServices';
 import DepartmentsForm from './DepartmentsForm.vue';
 import ConfirmModal from '@/components/shared/ConfirmModal.vue';
 import { useNotification } from '@/composables/useNotification';
-import axios from 'axios';
+import ReportsServices from '@/services/ReportsServices';
 
 const departments = ref<any[]>([]);
 const stores = ref<any[]>([]);
@@ -97,18 +97,7 @@ const exportPdf = async () => {
         return;
     }
     try {
-        const response = await axios.post('http://localhost:8000/api/reports/dynamic/departments/pdf', {
-            items: departments.value,
-            storeName: getSelectedStoreName()
-        }, { responseType: 'blob' });
-        
-        const url = window.URL.createObjectURL(new Blob([response.data]));
-        const link = document.createElement('a');
-        link.href = url;
-        link.setAttribute('download', 'Reporte_Departamentos.pdf');
-        document.body.appendChild(link);
-        link.click();
-        link.parentNode?.removeChild(link);
+        await ReportsServices.exportDynamicDepartmentsPdf(departments.value, getSelectedStoreName());
     } catch (error) {
         showError('Error', 'Fallo al generar el reporte PDF.');
     }
@@ -120,18 +109,7 @@ const exportExcel = async () => {
         return;
     }
     try {
-        const response = await axios.post('http://localhost:8000/api/reports/dynamic/departments/excel', {
-            items: departments.value,
-            storeName: getSelectedStoreName()
-        }, { responseType: 'blob' });
-        
-        const url = window.URL.createObjectURL(new Blob([response.data]));
-        const link = document.createElement('a');
-        link.href = url;
-        link.setAttribute('download', 'Reporte_Departamentos.xlsx');
-        document.body.appendChild(link);
-        link.click();
-        link.parentNode?.removeChild(link);
+        await ReportsServices.exportDynamicDepartmentsExcel(departments.value, getSelectedStoreName());
     } catch (error) {
         showError('Error', 'Fallo al generar el reporte Excel.');
     }

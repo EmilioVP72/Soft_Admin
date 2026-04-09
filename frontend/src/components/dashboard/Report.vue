@@ -4,24 +4,25 @@ import {
   BuildingStorefrontIcon,
   UserCircleIcon
 } from '@heroicons/vue/24/outline';
+import ReportsServices from '@/services/ReportsServices';
 
 function downloadGeneralPdf() {
-    window.open('http://localhost:8000/api/reports/sales/general', '_blank');
+    ReportsServices.openGeneralSalesPdf();
 }
 function downloadGeneralExcel() {
-    window.open('http://localhost:8000/api/reports/sales/general/excel', '_blank');
+    ReportsServices.openGeneralSalesExcel();
 }
 function downloadStorePdf() {
-    window.open('http://localhost:8000/api/reports/sales/store/1', '_blank');
+    ReportsServices.openStoreSalesPdf(1);
 }
 function downloadStoreExcel() {
-    window.open('http://localhost:8000/api/reports/sales/store/1/excel', '_blank');
+    ReportsServices.openStoreSalesExcel(1);
 }
 function downloadEmployeesPdf() {
-    window.open('http://localhost:8000/api/reports/employees', '_blank');
+    ReportsServices.openEmployeesPdf();
 }
 function downloadEmployeesExcel() {
-    window.open('http://localhost:8000/api/reports/employees/excel', '_blank');
+    ReportsServices.openEmployeesExcel();
 }
 </script>
 

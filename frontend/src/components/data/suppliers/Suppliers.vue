@@ -6,7 +6,7 @@ import SupplierPaymentForm from './SupplierPaymentForm.vue';
 import ConfirmModal from '@/components/shared/ConfirmModal.vue';
 import ErrorComponent from '@/components/shared/Error.vue';
 import { normalizeSearchText } from '@/utils/search';
-import axios from 'axios';
+import ReportsServices from '@/services/ReportsServices';
 
 const suppliers = ref<any[]>([]);
 const originalSuppliers = ref<any[]>([]);
@@ -169,17 +169,7 @@ const clearFilters = () => {
 
 async function exportPdf() {
     try {
-        const response = await axios.post('http://localhost:8000/api/reports/dynamic/suppliers/pdf', {
-            items: suppliers.value
-        }, { responseType: 'blob' });
-        
-        const url = window.URL.createObjectURL(new Blob([response.data]));
-        const link = document.createElement('a');
-        link.href = url;
-        link.setAttribute('download', 'Reporte_Proveedores.pdf');
-        document.body.appendChild(link);
-        link.click();
-        link.parentNode?.removeChild(link);
+        await ReportsServices.exportDynamicSuppliersPdf(suppliers.value);
     } catch (error) {
         errorData.value = { tittle: 'Error', message: 'Fallo al generar el reporte PDF.' };
         hasError.value = true;
@@ -188,17 +178,7 @@ async function exportPdf() {
 
 async function exportExcel() {
     try {
-        const response = await axios.post('http://localhost:8000/api/reports/dynamic/suppliers/excel', {
-            items: suppliers.value
-        }, { responseType: 'blob' });
-        
-        const url = window.URL.createObjectURL(new Blob([response.data]));
-        const link = document.createElement('a');
-        link.href = url;
-        link.setAttribute('download', 'Reporte_Proveedores.xlsx');
-        document.body.appendChild(link);
-        link.click();
-        link.parentNode?.removeChild(link);
+        await ReportsServices.exportDynamicSuppliersExcel(suppliers.value);
     } catch (error) {
         errorData.value = { tittle: 'Error', message: 'Fallo al generar el reporte Excel.' };
         hasError.value = true;

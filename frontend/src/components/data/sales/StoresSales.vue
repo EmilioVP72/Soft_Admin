@@ -5,6 +5,7 @@ import ErrorMessage from '@/components/shared/Error.vue';
 import { useNotification } from '@/composables/useNotification';
 import { normalizeSearchText } from '@/utils/search';
 import { formatDateTime24, toDateInputValue } from '@/utils/datetime';
+import ReportsServices from '@/services/ReportsServices';
 
 const error_data = ref<boolean>(false);
 const error_details = ref<string>('');
@@ -157,13 +158,13 @@ onMounted(async () => {
 
 function downloadPdf() {
     if (selectedOption.value) {
-        window.open(`http://localhost:8000/api/reports/sales/store/${selectedOption.value}`, '_blank');
+        ReportsServices.openStoreSalesPdf(selectedOption.value);
     }
 }
 
 function downloadExcel() {
     if (selectedOption.value) {
-        window.open(`http://localhost:8000/api/reports/sales/store/${selectedOption.value}/excel`, '_blank');
+        ReportsServices.openStoreSalesExcel(selectedOption.value);
     }
 }
 

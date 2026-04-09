@@ -4,7 +4,7 @@ import type { CalculatePromotion, TotalySalesByPromotion } from '@/interfaces/Ca
 import SuppliersServices from '@/services/SuppliersServices';
 import { useNotification } from '@/composables/useNotification';
 import { formatDateOnly } from '@/utils/datetime';
-import axios from 'axios';
+import ReportsServices from '@/services/ReportsServices';
 
 const formInput = ref({
     date: '',
@@ -60,17 +60,7 @@ onMounted( async() => {
 
 async function exportPdf() {
     try {
-        const response = await axios.post('http://localhost:8000/api/reports/dynamic/promotions/pdf', {
-            items: calculateTable.value
-        }, { responseType: 'blob' });
-        
-        const url = window.URL.createObjectURL(new Blob([response.data]));
-        const link = document.createElement('a');
-        link.href = url;
-        link.setAttribute('download', 'Reporte_Promociones.pdf');
-        document.body.appendChild(link);
-        link.click();
-        link.parentNode?.removeChild(link);
+        await ReportsServices.exportDynamicPromotionsPdf(calculateTable.value);
     } catch (error) {
         showError('Error', 'Fallo al generar el reporte PDF.');
     }
@@ -78,17 +68,7 @@ async function exportPdf() {
 
 async function exportExcel() {
     try {
-        const response = await axios.post('http://localhost:8000/api/reports/dynamic/promotions/excel', {
-            items: calculateTable.value
-        }, { responseType: 'blob' });
-        
-        const url = window.URL.createObjectURL(new Blob([response.data]));
-        const link = document.createElement('a');
-        link.href = url;
-        link.setAttribute('download', 'Reporte_Promociones.xlsx');
-        document.body.appendChild(link);
-        link.click();
-        link.parentNode?.removeChild(link);
+        await ReportsServices.exportDynamicPromotionsExcel(calculateTable.value);
     } catch (error) {
         showError('Error', 'Fallo al generar el reporte Excel.');
     }

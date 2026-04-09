@@ -206,7 +206,6 @@ onMounted(() => {
                         <th class="header-cell">Usuario</th>
                         <th class="header-cell">Pago</th>
                         <th class="header-cell">Total</th>
-                        <th class="header-cell">Tipo</th>
                         <th class="header-cell">Notas</th>
                         <th class="header-cell">Fecha</th>
                     </tr>
@@ -218,7 +217,6 @@ onMounted(() => {
                         <td class="data-cell">{{ data.user }}</td>
                         <td class="data-cell">{{ data.payment }}</td>
                         <td class="data-cell">$ {{ data.total_amount }}</td>
-                        <td class="data-cell">{{ data.transaction_type }}</td>
                         <td class="data-cell">{{ data.notes }}</td>
                         <td class="data-cell">{{ data.transaction_date }}</td>
                     </tr>
