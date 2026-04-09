@@ -145,8 +145,8 @@ async function exportExcel() {
         </div>
 
         <div class="actions">
-            <button class="btn-pdf" :disabled="calculateTable.length === 0" @click="exportPdf">Exportar PDF</button>
-            <button class="btn-excel" :disabled="calculateTable.length === 0" @click="exportExcel">Exportar Excel</button>
+            <button class="btn-pdf"  @click="exportPdf">Exportar PDF</button>
+            <button class="btn-excel"  @click="exportExcel">Exportar Excel</button>
         </div>
     </div>
 </template>
