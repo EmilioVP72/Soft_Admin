@@ -12,7 +12,7 @@ const user = ref<string>('');
 const userId = ref<number>(0);
 const payments = ref<any>([]);
 var selectedStore = ref<number>(0);
-var selectedDepartment = ref<number>(0);
+var selectedDepartment = ref<number | ''>('');
 var quantity = ref<number>(0);
 var unitPrice = ref<number>(0);
 
@@ -119,9 +119,10 @@ const validateTransaction = () => {
     return true;
 };
 
-watch(selectStoreOption, async (newValue: number) => {
-    if (newValue === 0) return;
-    const response = await departmentsServices.getDepartmentsByStore(newValue);
+watch(selectStoreOption, async (newValue: number | '') => {
+    const storeId = Number(newValue);
+    if (!storeId) return;
+    const response = await departmentsServices.getDepartmentsByStore(storeId);
     departments.value = response.data.data.map((department: any) => ({
         department: department.department,
         id: department.id_department
@@ -168,8 +169,8 @@ const addSale = () => {
     unitPrice.value = 0;
 }
 
-const removeSale = (index: number) => {
-    salesDetails.value.splice(index, 1);
+const removeSale = (index: number | string) => {
+    salesDetails.value.splice(Number(index), 1);
 }
 
 const goBack = () => {
@@ -186,7 +187,7 @@ const saveTransaction = async () => {
     const transactionData = {
         fk1_id_store: selectedStore.value,
         fk2_id_user: userId.value,
-        fk3_id_payment: selectedPayment.value,
+        fk3_id_payment: Number(selectedPayment.value),
         total_amount: totalSale.value,
         notes: sanitizeText(notes.value),
         details: salesDetails.value.map((detail: any) => ({

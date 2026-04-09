@@ -14,12 +14,11 @@ const formInput = ref({
 const dataList = ref<CalculatePromotion[]>([]);
 const suppliers = ref<any[]>([]);
 const selectedSupplier = ref('');
-const error = ref(false);
 const { showWarning, showError } = useNotification();
 
 const calculateTable = computed<TotalySalesByPromotion[]>(() => {
     let temporalTotaly = 0;
-    return dataList.value.map(item => {
+    return dataList.value.map((item: CalculatePromotion) => {
         temporalTotaly += item.totaly_sales;
         return {
             ...item,
