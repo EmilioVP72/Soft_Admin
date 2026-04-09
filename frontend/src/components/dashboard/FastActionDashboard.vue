@@ -16,9 +16,10 @@ import {
                     <DocumentCurrencyDollarIcon class="icon"/>
                     <h3>Realizar Factura</h3>
                     <p>Para crear una factura ingresando los datos necesarios</p>
-                    <RouterLink to="" class="btn-action" >
+                    <h3>En Construcción...</h3>
+                    <!-- <RouterLink to="" class="btn-action">
                         Crear Factura
-                    </RouterLink>
+                    </RouterLink> -->
                 </section>     
                 <section class="action">
                     <BanknotesIcon class="icon"/>
