@@ -5,6 +5,7 @@ import StoresServices from '@/services/StoresServices';
 import DepartmentsForm from './DepartmentsForm.vue';
 import ConfirmModal from '@/components/shared/ConfirmModal.vue';
 import { useNotification } from '@/composables/useNotification';
+import axios from 'axios';
 
 const departments = ref<any[]>([]);
 const stores = ref<any[]>([]);
@@ -83,6 +84,58 @@ const handleDelete = async () => {
         showError('Error', 'No se pudo eliminar el departamento.');
     }
 };
+
+const getSelectedStoreName = () => {
+    if (!selectedStoreId.value) return 'Todas las Sucursales';
+    const store = stores.value.find(s => String(s.id_store) === String(selectedStoreId.value));
+    return store ? store.name : 'Sucursal Desconocida';
+};
+
+const exportPdf = async () => {
+    if (!selectedStoreId.value) {
+        showWarning('Filtro Requerido', 'Selecciona una tienda para poder exportar los departamentos.');
+        return;
+    }
+    try {
+        const response = await axios.post('http://localhost:8000/api/reports/dynamic/departments/pdf', {
+            items: departments.value,
+            storeName: getSelectedStoreName()
+        }, { responseType: 'blob' });
+        
+        const url = window.URL.createObjectURL(new Blob([response.data]));
+        const link = document.createElement('a');
+        link.href = url;
+        link.setAttribute('download', 'Reporte_Departamentos.pdf');
+        document.body.appendChild(link);
+        link.click();
+        link.parentNode?.removeChild(link);
+    } catch (error) {
+        showError('Error', 'Fallo al generar el reporte PDF.');
+    }
+};
+
+const exportExcel = async () => {
+    if (!selectedStoreId.value) {
+        showWarning('Filtro Requerido', 'Selecciona una tienda para poder exportar los departamentos.');
+        return;
+    }
+    try {
+        const response = await axios.post('http://localhost:8000/api/reports/dynamic/departments/excel', {
+            items: departments.value,
+            storeName: getSelectedStoreName()
+        }, { responseType: 'blob' });
+        
+        const url = window.URL.createObjectURL(new Blob([response.data]));
+        const link = document.createElement('a');
+        link.href = url;
+        link.setAttribute('download', 'Reporte_Departamentos.xlsx');
+        document.body.appendChild(link);
+        link.click();
+        link.parentNode?.removeChild(link);
+    } catch (error) {
+        showError('Error', 'Fallo al generar el reporte Excel.');
+    }
+};
 </script>
 
 <template>
@@ -91,8 +144,8 @@ const handleDelete = async () => {
             <h1>Departamentos</h1>
             <div class="header-buttons">
                 <button class="btn-new" @click="openAddModal">Nuevo Departamento</button>
-                <button class="btn-pdf">Exportar a PDF</button>
-                <button class="btn-excel">Exportar a Excel</button>
+                <button class="btn-pdf" @click="exportPdf" :disabled="!selectedStoreId">Exportar a PDF</button>
+                <button class="btn-excel" @click="exportExcel" :disabled="!selectedStoreId">Exportar a Excel</button>
             </div>
         </section>
         

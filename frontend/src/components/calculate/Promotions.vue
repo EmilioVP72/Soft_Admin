@@ -4,6 +4,7 @@ import type { CalculatePromotion, TotalySalesByPromotion } from '@/interfaces/Ca
 import SuppliersServices from '@/services/SuppliersServices';
 import { useNotification } from '@/composables/useNotification';
 import { formatDateOnly } from '@/utils/datetime';
+import axios from 'axios';
 
 const formInput = ref({
     date: '',
@@ -56,6 +57,42 @@ onMounted( async() => {
         showError('Error', 'No se pudieron cargar los proveedores.');
     }
 });
+
+async function exportPdf() {
+    try {
+        const response = await axios.post('http://localhost:8000/api/reports/dynamic/promotions/pdf', {
+            items: calculateTable.value
+        }, { responseType: 'blob' });
+        
+        const url = window.URL.createObjectURL(new Blob([response.data]));
+        const link = document.createElement('a');
+        link.href = url;
+        link.setAttribute('download', 'Reporte_Promociones.pdf');
+        document.body.appendChild(link);
+        link.click();
+        link.parentNode?.removeChild(link);
+    } catch (error) {
+        showError('Error', 'Fallo al generar el reporte PDF.');
+    }
+}
+
+async function exportExcel() {
+    try {
+        const response = await axios.post('http://localhost:8000/api/reports/dynamic/promotions/excel', {
+            items: calculateTable.value
+        }, { responseType: 'blob' });
+        
+        const url = window.URL.createObjectURL(new Blob([response.data]));
+        const link = document.createElement('a');
+        link.href = url;
+        link.setAttribute('download', 'Reporte_Promociones.xlsx');
+        document.body.appendChild(link);
+        link.click();
+        link.parentNode?.removeChild(link);
+    } catch (error) {
+        showError('Error', 'Fallo al generar el reporte Excel.');
+    }
+}
 </script>
 
 <template>
@@ -129,8 +166,8 @@ onMounted( async() => {
         </div>
 
         <div class="actions">
-            <button disabled>Exportar PDF</button>
-            <button disabled>Exportar Excel</button>
+            <button class="btn-pdf" :disabled="calculateTable.length === 0" @click="exportPdf">Exportar PDF</button>
+            <button class="btn-excel" :disabled="calculateTable.length === 0" @click="exportExcel">Exportar Excel</button>
         </div>
     </div>
 </template>

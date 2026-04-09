@@ -6,6 +6,7 @@ import SupplierPaymentForm from './SupplierPaymentForm.vue';
 import ConfirmModal from '@/components/shared/ConfirmModal.vue';
 import ErrorComponent from '@/components/shared/Error.vue';
 import { normalizeSearchText } from '@/utils/search';
+import axios from 'axios';
 
 const suppliers = ref<any[]>([]);
 const originalSuppliers = ref<any[]>([]);
@@ -166,6 +167,44 @@ const clearFilters = () => {
     applyFilters();
 };
 
+async function exportPdf() {
+    try {
+        const response = await axios.post('http://localhost:8000/api/reports/dynamic/suppliers/pdf', {
+            items: suppliers.value
+        }, { responseType: 'blob' });
+        
+        const url = window.URL.createObjectURL(new Blob([response.data]));
+        const link = document.createElement('a');
+        link.href = url;
+        link.setAttribute('download', 'Reporte_Proveedores.pdf');
+        document.body.appendChild(link);
+        link.click();
+        link.parentNode?.removeChild(link);
+    } catch (error) {
+        errorData.value = { tittle: 'Error', message: 'Fallo al generar el reporte PDF.' };
+        hasError.value = true;
+    }
+}
+
+async function exportExcel() {
+    try {
+        const response = await axios.post('http://localhost:8000/api/reports/dynamic/suppliers/excel', {
+            items: suppliers.value
+        }, { responseType: 'blob' });
+        
+        const url = window.URL.createObjectURL(new Blob([response.data]));
+        const link = document.createElement('a');
+        link.href = url;
+        link.setAttribute('download', 'Reporte_Proveedores.xlsx');
+        document.body.appendChild(link);
+        link.click();
+        link.parentNode?.removeChild(link);
+    } catch (error) {
+        errorData.value = { tittle: 'Error', message: 'Fallo al generar el reporte Excel.' };
+        hasError.value = true;
+    }
+}
+
 </script>
 
 <template>
@@ -182,8 +221,8 @@ const clearFilters = () => {
                     </section>
 
                     <section class="filters-export">
-                        <button class="btn-pdf">Exportar a PDF</button>
-                        <button class="btn-excel">Exportar a Excel</button>
+                        <button class="btn-pdf" @click="exportPdf">Exportar a PDF</button>
+                        <button class="btn-excel" @click="exportExcel">Exportar a Excel</button>
                     </section>
 
                     <section class="filters-select" style="display: flex; gap: 10px; flex-wrap: wrap;">

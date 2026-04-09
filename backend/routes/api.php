@@ -24,9 +24,20 @@ Route::get('/user', function (Request $request) {
 // Rutas de Reportes
 Route::prefix('reports')->group(function () {
     Route::get('/sales/general', [ReportController::class, 'salesGeneral']);
+    Route::get('/sales/general/excel', [ReportController::class, 'salesGeneralExcel']);
     Route::get('/sales/store/{store_id}', [ReportController::class, 'salesStore']);
+    Route::get('/sales/store/{store_id}/excel', [ReportController::class, 'salesStoreExcel']);
     Route::get('/employees', [ReportController::class, 'employees']);
+    Route::get('/employees/excel', [ReportController::class, 'employeesExcel']);
     Route::get('/stores', [ReportController::class, 'stores']);
+
+    // Dynamic endpoints (POST based)
+    Route::post('/dynamic/promotions/pdf', [\App\Http\Controllers\Api\DynamicReportController::class, 'promotionsPdf']);
+    Route::post('/dynamic/promotions/excel', [\App\Http\Controllers\Api\DynamicReportController::class, 'promotionsExcel']);
+    Route::post('/dynamic/suppliers/pdf', [\App\Http\Controllers\Api\DynamicReportController::class, 'suppliersPdf']);
+    Route::post('/dynamic/suppliers/excel', [\App\Http\Controllers\Api\DynamicReportController::class, 'suppliersExcel']);
+    Route::post('/dynamic/departments/pdf', [\App\Http\Controllers\Api\DynamicReportController::class, 'departmentsPdf']);
+    Route::post('/dynamic/departments/excel', [\App\Http\Controllers\Api\DynamicReportController::class, 'departmentsExcel']);
 });
 
 

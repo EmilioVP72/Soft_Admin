@@ -10,6 +10,9 @@ use App\Models\Employee;
 use Spatie\Browsershot\Browsershot;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\View;
+use App\Services\SalesReportExcelService;
+use App\Services\GeneralReportExcelService;
+use App\Services\EmployeeReportExcelService;
 
 class ReportController extends Controller
 {
@@ -51,22 +54,40 @@ class ReportController extends Controller
     {
         [$startDate, $endDate] = $this->getDateLimits($request);
 
-        $ventas = Transaction::with(['store', 'payment'])
+        $ventas = Transaction::with(['details.department'])
+                    ->where('transaction_type', 'sale')
                     ->whereBetween('transaction_date', [$startDate, $endDate])
-                    ->orderBy('transaction_date', 'asc')
                     ->get();
         
-        $totalRecaudado = $ventas->sum('total_amount');
-        $operacionesCount = $ventas->count();
-        $ticketPromedio = $operacionesCount > 0 ? $totalRecaudado / $operacionesCount : 0;
+        $deptMap = [];
+        foreach ($ventas as $sale) {
+            if ($sale->details) {
+                foreach ($sale->details as $detail) {
+                    $deptName = $detail->department ? $detail->department->department : 'General';
+                    if (!isset($deptMap[$deptName])) {
+                        $deptMap[$deptName] = [
+                            'name' => $deptName,
+                            'quantity' => 0,
+                            'total' => 0
+                        ];
+                    }
+                    $deptMap[$deptName]['quantity'] += (float)$detail->quantity;
+                    $deptMap[$deptName]['total'] += (float)$detail->subtotal;
+                }
+            }
+        }
 
-        $html = View::make('reports.ventas', [
+        $totalRecaudado = array_sum(array_column($deptMap, 'total'));
+        $operacionesCount = array_sum(array_column($deptMap, 'quantity')); // En general sumamos cantidad
+        $ticketPromedio = 0; // Not applicable for department grouping directly, or overall avg
+
+        $html = View::make('reports.ventas_generales', [
             'empresa_nombre' => 'Reportes Corporativos',
             'empresa_direccion' => 'Reporte General de Operaciones',
             'titulo' => 'Ventas Generales',
             'fecha_inicio' => $startDate,
             'fecha_fin' => $endDate,
-            'ventas' => $ventas,
+            'departamentos' => $deptMap,
             'total_recaudado' => $totalRecaudado,
             'operaciones_count' => $operacionesCount,
             'ticket_promedio' => $ticketPromedio
@@ -85,6 +106,7 @@ class ReportController extends Controller
 
         $ventas = Transaction::with(['store', 'payment'])
                     ->where('fk1_id_store', $storeId)
+                    ->where('transaction_type', 'sale')
                     ->whereBetween('transaction_date', [$startDate, $endDate])
                     ->orderBy('transaction_date', 'asc')
                     ->get();
@@ -106,6 +128,85 @@ class ReportController extends Controller
         ])->render();
 
         return $this->generatePdf($html, 'reporte_ventas_tienda_' . $storeId . '.pdf');
+    }
+
+    /**
+     * Download sales report by store in Excel
+     */
+    public function salesStoreExcel(Request $request, $storeId, SalesReportExcelService $excelService)
+    {
+        try {
+            [$start, $end] = $this->getDateLimits($request);
+            $filters = [
+                'start_date' => $start->format('Y-m-d'),
+                'end_date' => $end->format('Y-m-d')
+            ];
+
+            $spreadsheet = $excelService->generateStoresSalesExcel($storeId, $filters);
+            
+            $store = Store::find($storeId);
+            $storeName = preg_replace('/[^a-zA-Z0-9_-]/', '_', $store ? $store->store : 'Desconocida');
+            $filename = 'Ventas_Sucursal_' . $storeName . '_' . date('Y-m-d_His') . '.xlsx';
+            
+            return response()->streamDownload(function () use ($spreadsheet) {
+                $writer = new \PhpOffice\PhpSpreadsheet\Writer\Xlsx($spreadsheet);
+                $writer->save('php://output');
+            }, $filename, [
+                'Content-Type' => 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+                'Cache-Control' => 'max-age=0',
+            ]);
+            
+        } catch (\Exception $e) {
+            return response()->json(['error' => 'Error generating Excel: ' . $e->getMessage()], 400);
+        }
+    }
+
+    /**
+     * Download general sales report in Excel
+     */
+    public function salesGeneralExcel(Request $request, GeneralReportExcelService $excelService)
+    {
+        try {
+            [$start, $end] = $this->getDateLimits($request);
+            $filters = [
+                'start_date' => $start->format('Y-m-d'),
+                'end_date' => $end->format('Y-m-d')
+            ];
+
+            $spreadsheet = $excelService->generateGeneralSalesExcel($filters);
+            $filename = 'Ventas_Generales_' . date('Y-m-d_His') . '.xlsx';
+            
+            return response()->streamDownload(function () use ($spreadsheet) {
+                $writer = new \PhpOffice\PhpSpreadsheet\Writer\Xlsx($spreadsheet);
+                $writer->save('php://output');
+            }, $filename, [
+                'Content-Type' => 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+            ]);
+            
+        } catch (\Exception $e) {
+            return response()->json(['error' => 'Error: ' . $e->getMessage()], 400);
+        }
+    }
+
+    /**
+     * Download employee list report in Excel
+     */
+    public function employeesExcel(Request $request, EmployeeReportExcelService $excelService)
+    {
+        try {
+            $spreadsheet = $excelService->generateEmployeeExcel();
+            $filename = 'Reporte_Empleados_' . date('Y-m-d_His') . '.xlsx';
+            
+            return response()->streamDownload(function () use ($spreadsheet) {
+                $writer = new \PhpOffice\PhpSpreadsheet\Writer\Xlsx($spreadsheet);
+                $writer->save('php://output');
+            }, $filename, [
+                'Content-Type' => 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+            ]);
+            
+        } catch (\Exception $e) {
+            return response()->json(['error' => 'Error: ' . $e->getMessage()], 400);
+        }
     }
 
     /**
@@ -134,7 +235,7 @@ class ReportController extends Controller
      */
     public function stores(Request $request)
     {
-        $sucursales = Store::with('locality')->orderBy('name')->get();
+        $sucursales = Store::with('locality')->orderBy('store')->get();
         
         $totalSucursales = $sucursales->count();
 

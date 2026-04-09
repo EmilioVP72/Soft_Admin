@@ -18,6 +18,14 @@ onMounted(async () => {
         error_data.value = true;
     }
 });
+
+function downloadPdf() {
+    window.open('http://localhost:8000/api/reports/sales/general', '_blank');
+}
+
+function dummyExcel() {
+    window.open('http://localhost:8000/api/reports/sales/general/excel', '_blank');
+}
 </script>
 
 <template>
@@ -29,8 +37,8 @@ onMounted(async () => {
         <div class="toolbar">
             <h1>Ventas Generales</h1>
             <div class="toolbar-actions">
-                <button class="btn-print">Exportar PDF</button>
-                <button class="btn-print">Exportar Excel</button>
+                <button class="btn-print" @click="downloadPdf">Exportar PDF</button>
+                <button class="btn-print" @click="dummyExcel">Exportar Excel</button>
             </div>
         </div>
         <section class="table-section">
