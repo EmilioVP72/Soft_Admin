@@ -7,8 +7,8 @@ function buildReportUrl(path: string): string {
     return `${reportsBaseUrl}/${path.replace(/^\/+/, '')}`;
 }
 
-function openReport(path: string): void {
-    window.open(buildReportUrl(path), '_blank');
+function openReport(path: string, target: '_blank' | '_self' = '_blank'): void {
+    window.open(buildReportUrl(path), target);
 }
 
 function downloadBlob(data: BlobPart, filename: string): void {
@@ -49,6 +49,22 @@ export default {
 
     openStoresPdf() {
         openReport('stores');
+    },
+
+    openInputsPdf() {
+        openReport('inputs/pdf');
+    },
+
+    openInputsExcel() {
+        openReport('inputs/excel', '_self');
+    },
+
+    openOutputsPdf() {
+        openReport('outputs/pdf');
+    },
+
+    openOutputsExcel() {
+        openReport('outputs/excel', '_self');
     },
 
     async exportDynamicSuppliersPdf(items: any[]) {

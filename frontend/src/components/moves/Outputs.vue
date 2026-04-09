@@ -3,6 +3,7 @@ import { onMounted, ref } from 'vue';
 import MovesServices from '@/services/MovesServices';
 import StoresServices from '@/services/StoresServices';
 import PaymentServices from '@/services/PaymentServices';
+import ReportsServices from '@/services/ReportsServices';
 import OutputForm from './OutputForm.vue';
 import ErrorComponent from '@/components/shared/Error.vue';
 import { normalizeSearchText } from '@/utils/search';
@@ -141,11 +142,11 @@ onMounted(() => {
 });
 
 const exportPdf = () => {
-    window.open('http://localhost:8000/api/reports/outputs/pdf', '_blank');
+    ReportsServices.openOutputsPdf();
 };
 
 const exportExcel = () => {
-    window.open('http://localhost:8000/api/reports/outputs/excel', '_self');
+    ReportsServices.openOutputsExcel();
 };
 </script>
 

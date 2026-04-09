@@ -20,7 +20,7 @@
         }
     </style>
 </head>
-<body class="p-8 max-w-5xl mx-auto">
+<body class="p-4">
 
     <header class="flex justify-between items-end border-b-2 border-slate-200 pb-6 mb-8">
         <div class="flex items-center gap-4">
@@ -43,16 +43,16 @@
         </div>
     </header>
 
-    <section class="grid grid-cols-3 gap-6 mb-8">
-        <div class="bg-slate-50 p-5 rounded-xl border border-slate-200 shadow-sm relative overflow-hidden">
+    <section class="grid grid-cols-3 gap-6 mb-8 w-full">
+        <div class="bg-slate-50 p-5 rounded-xl border border-slate-200 shadow-sm relative">
             <p class="text-sm text-slate-500 font-semibold mb-1 uppercase tracking-wide">Total Empleados</p>
             <p class="text-3xl font-bold text-slate-900">{{ $total_empleados }}</p>
         </div>
-        <div class="bg-indigo-50 p-5 rounded-xl border border-indigo-100 shadow-sm relative overflow-hidden">
+        <div class="bg-indigo-50 p-5 rounded-xl border border-indigo-100 shadow-sm relative">
             <p class="text-sm text-indigo-500 font-semibold mb-1 uppercase tracking-wide">Empleados Activos</p>
             <p class="text-3xl font-bold text-indigo-700">{{ $activos_count }}</p>
         </div>
-        <div class="bg-slate-50 p-5 rounded-xl border border-slate-200 shadow-sm relative overflow-hidden">
+        <div class="bg-slate-50 p-5 rounded-xl border border-slate-200 shadow-sm relative">
             <p class="text-sm text-slate-500 font-semibold mb-1 uppercase tracking-wide">Sucursales Activas</p>
             <p class="text-3xl font-bold text-slate-900">{{ $sucursales_count }}</p>
         </div>
@@ -60,7 +60,7 @@
 
     <main>
         <div class="rounded-xl border border-slate-200 overflow-hidden shadow-sm">
-            <table class="w-full text-left text-sm whitespace-nowrap">
+            <table class="w-full text-left text-sm">
                 <thead class="bg-slate-100 text-slate-600 border-b border-slate-200">
                     <tr>
                         <th scope="col" class="px-5 py-4 font-bold uppercase tracking-wider text-xs">Nombre Completo</th>
@@ -79,7 +79,7 @@
                             </td>
                             <td class="px-5 py-3.5">
                                 <div class="font-medium text-slate-700">{{ $empleado->phone }}</div>
-                                <div class="text-xs text-slate-500">{{ $empleado->email }}</div>
+                                <div class="text-xs text-slate-500 break-all">{{ $empleado->email }}</div>
                             </td>
                             <td class="px-5 py-3.5 font-medium text-slate-700">{{ $empleado->position ?? 'N/A' }}</td>
                             <td class="px-5 py-3.5 font-medium text-slate-700">{{ $empleado->store->store ?? 'Sin Asignar' }}</td>
