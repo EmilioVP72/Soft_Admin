@@ -139,6 +139,14 @@ onMounted(() => {
     fetchOutputs();
     fetchCatalogs();
 });
+
+const exportPdf = () => {
+    window.open('http://localhost:8000/api/reports/outputs/pdf', '_blank');
+};
+
+const exportExcel = () => {
+    window.open('http://localhost:8000/api/reports/outputs/excel', '_self');
+};
 </script>
 
 <template>
@@ -157,8 +165,8 @@ onMounted(() => {
                         <button class="btn-print" @click="clearSearch">Limpiar</button>
                     </section>
                     <section class="filters-export">
-                        <button class="btn-print">Exportar PDF</button>
-                        <button class="btn-print">Exportar Excel</button>
+                        <button class="btn-print" @click="exportPdf">Exportar PDF</button>
+                        <button class="btn-print" @click="exportExcel">Exportar Excel</button>
                     </section>
                     <section class="filters-select" style="display: flex; gap: 10px; flex-wrap: wrap;">
                         <div style="display: flex; flex-direction: column;">

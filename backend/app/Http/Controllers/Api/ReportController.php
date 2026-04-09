@@ -13,6 +13,8 @@ use Illuminate\Support\Facades\View;
 use App\Services\SalesReportExcelService;
 use App\Services\GeneralReportExcelService;
 use App\Services\EmployeeReportExcelService;
+use PhpOffice\PhpSpreadsheet\Spreadsheet;
+use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
 
 class ReportController extends Controller
 {
@@ -245,6 +247,138 @@ class ReportController extends Controller
         ])->render();
 
         return $this->generatePdf($html, 'reporte_sucursales.pdf');
+    }
+
+    public function inputsPdf(Request $request)
+    {
+        [$startDate, $endDate] = $this->getDateLimits($request);
+
+        $movimientos = Transaction::with(['store', 'user', 'payment'])
+                    ->where('transaction_type', 'input')
+                    ->whereBetween('transaction_date', [$startDate, $endDate])
+                    ->orderBy('transaction_date', 'asc')
+                    ->get();
+        
+        $montoTotal = $movimientos->sum('total_amount');
+        $operacionesCount = $movimientos->count();
+
+        $html = View::make('reports.entradas', [
+            'fecha_inicio' => $startDate,
+            'fecha_fin' => $endDate,
+            'movimientos' => $movimientos,
+            'monto_total' => $montoTotal,
+            'total_operaciones' => $operacionesCount
+        ])->render();
+
+        return $this->generatePdf($html, 'reporte_entradas.pdf');
+    }
+
+    public function inputsExcel(Request $request)
+    {
+        [$startDate, $endDate] = $this->getDateLimits($request);
+        $inputs = Transaction::with(['store', 'user', 'payment'])
+                    ->where('transaction_type', 'input')
+                    ->whereBetween('transaction_date', [$startDate, $endDate])
+                    ->orderBy('transaction_date', 'asc')
+                    ->get();
+                    
+        $spreadsheet = new Spreadsheet();
+        $sheet = $spreadsheet->getActiveSheet();
+        $sheet->setTitle('Entradas');
+        
+        $sheet->setCellValue('A1', 'ID');
+        $sheet->setCellValue('B1', 'Sucursal');
+        $sheet->setCellValue('C1', 'Usuario');
+        $sheet->setCellValue('D1', 'Pago');
+        $sheet->setCellValue('E1', 'Monto Total');
+        $sheet->setCellValue('F1', 'Notas');
+        $sheet->setCellValue('G1', 'Fecha');
+
+        $row = 2;
+        foreach ($inputs as $input) {
+            $sheet->setCellValue('A' . $row, $input->id_transaction);
+            $sheet->setCellValue('B' . $row, $input->store->store ?? 'N/A');
+            $sheet->setCellValue('C' . $row, $input->user->name ?? 'N/A');
+            $sheet->setCellValue('D' . $row, $input->payment->payment ?? 'N/A');
+            $sheet->setCellValue('E' . $row, $input->total_amount);
+            $sheet->setCellValue('F' . $row, $input->notes ?? '');
+            $sheet->setCellValue('G' . $row, \Carbon\Carbon::parse($input->transaction_date)->format('Y-m-d H:i'));
+            $row++;
+        }
+
+        $writer = new Xlsx($spreadsheet);
+        
+        return response()->streamDownload(function () use ($writer) {
+            $writer->save('php://output');
+        }, 'reporte_entradas.xlsx', [
+            'Content-Type' => 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+        ]);
+    }
+
+    public function outputsPdf(Request $request)
+    {
+        [$startDate, $endDate] = $this->getDateLimits($request);
+
+        $movimientos = Transaction::with(['store', 'user', 'payment'])
+                    ->where('transaction_type', 'output')
+                    ->whereBetween('transaction_date', [$startDate, $endDate])
+                    ->orderBy('transaction_date', 'asc')
+                    ->get();
+        
+        $montoTotal = $movimientos->sum('total_amount');
+        $operacionesCount = $movimientos->count();
+
+        $html = View::make('reports.salidas', [
+            'fecha_inicio' => $startDate,
+            'fecha_fin' => $endDate,
+            'movimientos' => $movimientos,
+            'monto_total' => $montoTotal,
+            'total_operaciones' => $operacionesCount
+        ])->render();
+
+        return $this->generatePdf($html, 'reporte_salidas.pdf');
+    }
+
+    public function outputsExcel(Request $request)
+    {
+        [$startDate, $endDate] = $this->getDateLimits($request);
+        $outputs = Transaction::with(['store', 'user', 'payment'])
+                    ->where('transaction_type', 'output')
+                    ->whereBetween('transaction_date', [$startDate, $endDate])
+                    ->orderBy('transaction_date', 'asc')
+                    ->get();
+                    
+        $spreadsheet = new Spreadsheet();
+        $sheet = $spreadsheet->getActiveSheet();
+        $sheet->setTitle('Salidas');
+        
+        $sheet->setCellValue('A1', 'ID');
+        $sheet->setCellValue('B1', 'Sucursal');
+        $sheet->setCellValue('C1', 'Usuario');
+        $sheet->setCellValue('D1', 'Pago');
+        $sheet->setCellValue('E1', 'Monto Total');
+        $sheet->setCellValue('F1', 'Notas');
+        $sheet->setCellValue('G1', 'Fecha');
+
+        $row = 2;
+        foreach ($outputs as $output) {
+            $sheet->setCellValue('A' . $row, $output->id_transaction);
+            $sheet->setCellValue('B' . $row, $output->store->store ?? 'N/A');
+            $sheet->setCellValue('C' . $row, $output->user->name ?? 'N/A');
+            $sheet->setCellValue('D' . $row, $output->payment->payment ?? 'N/A');
+            $sheet->setCellValue('E' . $row, $output->total_amount);
+            $sheet->setCellValue('F' . $row, $output->notes ?? '');
+            $sheet->setCellValue('G' . $row, \Carbon\Carbon::parse($output->transaction_date)->format('Y-m-d H:i'));
+            $row++;
+        }
+
+        $writer = new Xlsx($spreadsheet);
+        
+        return response()->streamDownload(function () use ($writer) {
+            $writer->save('php://output');
+        }, 'reporte_salidas.xlsx', [
+            'Content-Type' => 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+        ]);
     }
 
     /**

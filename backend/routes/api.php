@@ -37,6 +37,11 @@ Route::prefix('reports')->group(function () {
     Route::post('/dynamic/suppliers/excel', [\App\Http\Controllers\Api\DynamicReportController::class, 'suppliersExcel']);
     Route::post('/dynamic/departments/pdf', [\App\Http\Controllers\Api\DynamicReportController::class, 'departmentsPdf']);
     Route::post('/dynamic/departments/excel', [\App\Http\Controllers\Api\DynamicReportController::class, 'departmentsExcel']);
+
+    Route::get('/inputs/pdf', [ReportController::class, 'inputsPdf']);
+    Route::get('/inputs/excel', [ReportController::class, 'inputsExcel']);
+    Route::get('/outputs/pdf', [ReportController::class, 'outputsPdf']);
+    Route::get('/outputs/excel', [ReportController::class, 'outputsExcel']);
 });
 
 
