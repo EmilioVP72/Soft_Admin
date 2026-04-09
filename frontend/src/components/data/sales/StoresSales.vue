@@ -331,7 +331,6 @@ function clearFilters() {
                         <th class="table-cell">Precio Unitario</th>
                         <th class="table-cell">Subtotal</th>
                         <th class="table-cell">Fecha de la Venta</th>
-                        <th class="table-cell">Usuario</th>
                         <th class="table-cell">Total de Ventas</th>
                     </tr>
                 </thead>
@@ -342,7 +341,6 @@ function clearFilters() {
                         <td class="table-cell">$ {{ sale.unit_price }}</td>
                         <td class="table-cell">$ {{ sale.subtotal }}</td>
                         <td class="table-cell">{{ sale.transaction_date }}</td>
-                        <td class="table-cell">{{ sale.user_name }}</td>
                         <td class="table-cell">$ {{ sale.total_amount }}</td>
                     </tr>
                 </tbody>
