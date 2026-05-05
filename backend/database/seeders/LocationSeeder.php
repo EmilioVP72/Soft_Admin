@@ -16,14 +16,14 @@ class LocationSeeder extends Seeder
         ], 'id_country');
 
         $stateId = DB::table('states')->insertGetId([
-            'state' => 'Ciudad de México',
+            'state' => 'Guanajuato',
             'fk1_id_country' => $countryId,
             'created_at' => now(),
             'updated_at' => now(),
         ], 'id_state');
 
         $municipalityId = DB::table('municipalities')->insertGetId([
-            'municipality' => 'Cuauhtémoc',
+            'municipality' => 'San Miguel de Allende',
             'fk1_id_state' => $stateId,
             'created_at' => now(),
             'updated_at' => now(),
@@ -31,15 +31,15 @@ class LocationSeeder extends Seeder
 
         DB::table('localities')->insert([
             [
-                'locality' => 'Centro Histórico', 
-                'fk1_id_municipality' => $municipalityId, 
-                'created_at' => now(), 
+                'locality' => 'Zona Centro',
+                'fk1_id_municipality' => $municipalityId,
+                'created_at' => now(),
                 'updated_at' => now()
             ],
             [
-                'locality' => 'Roma Norte', 
-                'fk1_id_municipality' => $municipalityId, 
-                'created_at' => now(), 
+                'locality' => 'Guadalupe',
+                'fk1_id_municipality' => $municipalityId,
+                'created_at' => now(),
                 'updated_at' => now()
             ],
         ]);

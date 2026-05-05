@@ -384,16 +384,20 @@ class ReportController extends Controller
     /**
      * Reusable method to generate and download PDF
      */
-    private function generatePdf($html, $filename)
+     private function generatePdf($html, $filename)
     {
         $pdf = Browsershot::html($html)
-            ->setChromePath('/usr/bin/chromium-browser')
+            ->setChromePath('/usr/bin/chromium')
             ->noSandbox()
             ->addChromiumArguments([
                 'disable-gpu',
                 'disable-dev-shm-usage',
                 'disable-software-rasterizer',
-                'disable-extensions'
+                'disable-extensions',
+                'no-first-run',
+                'no-default-browser-check',
+		'crash-dumps-dir=/tmp/chromium-crashes',
+                'user-data-dir=/tmp/chrome-user-data',
             ])
             ->timeout(120)
             ->format('A4')

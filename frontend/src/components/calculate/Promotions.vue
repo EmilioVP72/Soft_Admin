@@ -90,7 +90,7 @@ async function exportExcel() {
         </section>
 
         <div class="form-section">
-            <h2>Agregar Registro de Ventas</h2>
+            <h2>Agregar Registro de Compras</h2>
 
             <form @submit.prevent="addRow">
                 <div>
@@ -102,7 +102,7 @@ async function exportExcel() {
                 </div>
 
                 <div>
-                    <label>Total Ventas ($)</label>
+                    <label>Total Compras ($)</label>
                     <input
                         v-model.number="formInput.totaly_sales"
                         type="number"
@@ -120,7 +120,7 @@ async function exportExcel() {
                 <thead>
                     <tr>
                         <th>Fecha</th>
-                        <th>Total Ventas</th>
+                        <th>Total Compras</th>
                     </tr>
                 </thead>
 

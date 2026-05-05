@@ -21,6 +21,5 @@ dist-ssr
 *.ntvs*
 *.njsproj
 *.sln
-.env
 #guias
 documentation/VUE_PERSONAL_GUIDE.md

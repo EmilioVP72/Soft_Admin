@@ -1,2 +1,0 @@
-ALTER USER "user" WITH PASSWORD 'devteam777';
-GRANT ALL PRIVILEGES ON DATABASE soft_admin TO "user";
