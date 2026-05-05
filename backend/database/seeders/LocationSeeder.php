@@ -34,6 +34,7 @@ class LocationSeeder extends Seeder
 
         $localities = [
             [
+<<<<<<< HEAD
                 'locality' => 'Zona Centro', 
                 'fk1_id_municipality' => $municipalityId, 
                 'created_at' => now(), 
@@ -43,6 +44,17 @@ class LocationSeeder extends Seeder
                 'locality' => 'Guadalupe', 
                 'fk1_id_municipality' => $municipalityId, 
                 'created_at' => now(), 
+=======
+                'locality' => 'Zona Centro',
+                'fk1_id_municipality' => $municipalityId,
+                'created_at' => now(),
+                'updated_at' => now()
+            ],
+            [
+                'locality' => 'Guadalupe',
+                'fk1_id_municipality' => $municipalityId,
+                'created_at' => now(),
+>>>>>>> d565b1c (Ultimos cambios en main desde servidor)
                 'updated_at' => now()
             ]
         ];
