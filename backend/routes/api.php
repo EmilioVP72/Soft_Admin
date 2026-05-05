@@ -95,4 +95,14 @@ Route::middleware('auth:api')->group(function () {
     Route::prefix('departments')->group(function () {
         require __DIR__ . '/Department/departments.php';
     });
+
+    // Rutas de Productos/Products
+    Route::prefix('products')->group(function () {
+        require __DIR__ . '/Product/products.php';
+    });
+
+    // Rutas de Inventario de Productos/Product Inventories
+    Route::prefix('product-inventories')->group(function () {
+        require __DIR__ . '/ProductInventory/product_inventories.php';
+    });
 });
