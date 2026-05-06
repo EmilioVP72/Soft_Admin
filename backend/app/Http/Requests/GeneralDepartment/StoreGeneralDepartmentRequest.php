@@ -24,7 +24,7 @@ class StoreGeneralDepartmentRequest extends FormRequest
         return [
             'g_departament' => 'required|string|max:255',
             'g_descripcion' => 'required|string',
-            'fkl_id_tienda' => 'required|integer|exists:stores,id_store',
+            'fkl_id_tienda' => 'integer|exists:stores,id_store',
         ];
     }
 
