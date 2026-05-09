@@ -2,12 +2,9 @@
 
 namespace Database\Seeders;
 
-use App\Models\Transaction;
-use App\Models\TransactionDetail;
-use App\Models\Store;
-use App\Models\User;
-use App\Models\Department;
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\DB;
+use Faker\Factory as Faker;
 
 class TransactionSeeder extends Seeder
 {
@@ -18,49 +15,60 @@ class TransactionSeeder extends Seeder
      */
     public function run(): void
     {
-        // Obtener datos existentes
-        $stores = Store::all();
-        $users = User::all();
-        $departments = Department::all();
+        $stores = DB::table('stores')->get();
+        $users = DB::table('users')->get();
+        $departments = DB::table('departments')->get();
+        $payments = DB::table('payments')->get();
+        $faker = Faker::create('es_MX');
 
-        if ($stores->isEmpty() || $users->isEmpty() || $departments->isEmpty()) {
-            $this->command->warn('Se requieren tiendas, usuarios y departamentos en la BD antes de ejecutar este seeder.');
+        if ($stores->isEmpty() || $users->isEmpty() || $departments->isEmpty() || $payments->isEmpty()) {
+            $this->command->warn('Se requieren tiendas, usuarios, departamentos y pagos en la BD antes de ejecutar este seeder.');
             return;
         }
 
         // Crear 50 transacciones de prueba
         for ($i = 0; $i < 50; $i++) {
-            $transaction = Transaction::create([
+            $transactionId = DB::table('transactions')->insertGetId([
                 'fk1_id_store' => $stores->random()->id_store,
                 'fk2_id_user' => $users->random()->id_user,
-                'total_amount' => rand(100, 5000),
+                'fk3_id_payment' => $payments->random()->id_payment,
+                'total_amount' => 0, // se actualiza despues
                 'transaction_type' => 'sale',
                 'notes' => 'Transacción de prueba #' . ($i + 1),
-                'transaction_date' => now()->subDays(rand(0, 30)),
-            ]);
+                'transaction_date' => $faker->dateTimeBetween('-1 year', 'now'),
+                'created_at' => now(),
+                'updated_at' => now(),
+            ], 'id_transaction');
 
             // Crear 2-5 detalles para cada transacción
             $detailCount = rand(2, 5);
             $totalSubtotal = 0;
 
+            $details = [];
             for ($j = 0; $j < $detailCount; $j++) {
                 $quantity = rand(1, 10);
                 $unitPrice = rand(10, 1000);
                 $subtotal = $quantity * $unitPrice;
 
-                TransactionDetail::create([
-                    'fk1_id_transaction' => $transaction->id_transaction,
+                $details[] = [
+                    'fk1_id_transaction' => $transactionId,
                     'fk2_id_department' => $departments->random()->id_department,
                     'quantity' => $quantity,
                     'unit_price' => $unitPrice,
                     'subtotal' => $subtotal,
-                ]);
+                    'created_at' => now(),
+                    'updated_at' => now(),
+                ];
 
                 $totalSubtotal += $subtotal;
             }
 
+            DB::table('transaction_details')->insert($details);
+
             // Actualizar el total de la transacción
-            $transaction->update(['total_amount' => $totalSubtotal]);
+            DB::table('transactions')
+                ->where('id_transaction', $transactionId)
+                ->update(['total_amount' => $totalSubtotal]);
         }
 
         $this->command->info('Se han creado 50 transacciones de prueba correctamente.');

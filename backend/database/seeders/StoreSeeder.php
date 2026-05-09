@@ -4,20 +4,22 @@ namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
+use Faker\Factory as Faker;
 
 class StoreSeeder extends Seeder
 {
     public function run(): void
     {
-        $locality = DB::table('localities')->first();
-        $allLocalities = DB::table('localities')->get();
+        $faker = Faker::create('es_MX');
         
-        if (!$locality) {
+        $localities = DB::table('localities')->pluck('id_locality')->toArray();
+        
+        if (empty($localities)) {
             $this->command->warn('No localities found. Skipping StoreSeeder.');
             return;
         }
 
-        DB::table('stores')->insert([
+        $stores = [
             [
                 'store' => 'Tienda Matriz',
                 'colony' => 'Centro',
@@ -25,7 +27,7 @@ class StoreSeeder extends Seeder
                 'exterior_number' => 10,
                 'interior_number' => null,
                 'reference' => 'Frente al parque',
-                'fk1_id_locality' => $locality->id_locality,
+                'fk1_id_locality' => $faker->randomElement($localities),
                 'created_at' => now(),
                 'updated_at' => now(),
             ],
@@ -36,10 +38,26 @@ class StoreSeeder extends Seeder
                 'exterior_number' => 200,
                 'interior_number' => 12,
                 'reference' => 'Edificio azul',
-                'fk1_id_locality' => count($allLocalities) > 1 ? $allLocalities[1]->id_locality : $locality->id_locality,
+                'fk1_id_locality' => $faker->randomElement($localities),
                 'created_at' => now(),
                 'updated_at' => now(),
             ]
-        ]);
+        ];
+
+        for ($i = 0; $i < 3; $i++) {
+            $stores[] = [
+                'store' => 'Sucursal ' . $faker->city,
+                'colony' => 'Colonia ' . $faker->lastName,
+                'street' => $faker->streetName,
+                'exterior_number' => $faker->buildingNumber,
+                'interior_number' => $faker->optional()->buildingNumber,
+                'reference' => 'Cerca de ' . $faker->company,
+                'fk1_id_locality' => $faker->randomElement($localities),
+                'created_at' => now(),
+                'updated_at' => now(),
+            ];
+        }
+
+        DB::table('stores')->insert($stores);
     }
 }
