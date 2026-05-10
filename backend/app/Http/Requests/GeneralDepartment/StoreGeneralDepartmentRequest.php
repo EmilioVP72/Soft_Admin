@@ -24,7 +24,7 @@ class StoreGeneralDepartmentRequest extends FormRequest
         return [
             'g_departament' => 'required|string|max:255',
             'g_descripcion' => 'required|string',
-            'fkl_id_tienda' => 'required|integer|exists:stores,id_store',
+            'fkl_id_tienda' => 'integer|exists:stores,id_store',
         ];
     }
 
@@ -41,7 +41,6 @@ class StoreGeneralDepartmentRequest extends FormRequest
             'g_departament.max' => 'El nombre del departamento general no debe exceder los 255 caracteres',
             'g_descripcion.required' => 'La descripción es obligatoria',
             'g_descripcion.string' => 'La descripción debe ser texto',
-            'fkl_id_tienda.required' => 'El ID de la tienda es obligatorio',
             'fkl_id_tienda.integer' => 'El ID de la tienda debe ser un número entero',
             'fkl_id_tienda.exists' => 'La tienda seleccionada no existe en la base de datos',
         ];

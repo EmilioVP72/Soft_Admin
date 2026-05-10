@@ -4,6 +4,7 @@ namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
+use Faker\Factory as Faker;
 
 class StoreRelationSeeder extends Seeder
 {
@@ -13,6 +14,7 @@ class StoreRelationSeeder extends Seeder
         $users = DB::table('users')->get();
         $payments = DB::table('payments')->get();
         $receipts = DB::table('receipts')->get();
+        $faker = Faker::create('es_MX');
 
         if ($stores->isEmpty()) {
             $this->command->warn('No stores found. Skipping StoreRelationSeeder.');
@@ -20,24 +22,33 @@ class StoreRelationSeeder extends Seeder
         }
 
         foreach ($stores as $store) {
-            // Relate with first user if exists
-            if ($users->isNotEmpty()) {
+            // Relate with random users
+            $randomUsers = $users->random(min(3, $users->count()));
+            
+            // Make sure admin (first user) has access to all stores
+            $adminUser = $users->first();
+            if (!$randomUsers->contains('id_user', $adminUser->id_user)) {
+                $randomUsers->push($adminUser);
+            }
+
+            foreach ($randomUsers as $user) {
                 $userStoreExists = DB::table('user_stores')
-                    ->where('fk1_id_user', $users->first()->id_user)
+                    ->where('fk1_id_user', $user->id_user)
                     ->where('fk2_id_store', $store->id_store)
                     ->exists();
                 
                 if (!$userStoreExists) {
                     DB::table('user_stores')->insert([
-                        'salary' => 15000.00,
-                        'fk1_id_user' => $users->first()->id_user,
+                        'salary' => $faker->randomFloat(2, 5000, 30000),
+                        'fk1_id_user' => $user->id_user,
                         'fk2_id_store' => $store->id_store,
                     ]);
                 }
             }
 
-            // Relate with payments
-            foreach ($payments as $payment) {
+            // Relate with random payments (at least 2)
+            $randomPayments = $payments->random(min(2, $payments->count()));
+            foreach ($randomPayments as $payment) {
                 $paymentTypeExists = DB::table('payment_types')
                     ->where('fkl_id_store', $store->id_store)
                     ->where('fk2_id_payment', $payment->id_payment)
@@ -52,7 +63,7 @@ class StoreRelationSeeder extends Seeder
                 }
             }
 
-            // Relate with receipts
+            // Relate with all receipts
             foreach ($receipts as $receipt) {
                 $receiptTypeExists = DB::table('receipt_types')
                     ->where('fkl_id_store', $store->id_store)
