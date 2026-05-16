@@ -25,7 +25,7 @@ class UserSeeder extends Seeder
 
         DB::table('users')->insert([
             'name' => 'Sergio',
-            'email' => 'Sergio.cortes.n290399@gmail.com',
+            'email' => 'sergio.cortes.n290399@gmail.com',
             'password' => Hash::make('ArchLinuxLoMejor100%'),
             'phone' => '+524613083341',
             'created_at' => now(),
