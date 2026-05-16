@@ -11,7 +11,7 @@ const props = defineProps({
 });
 
 const emit = defineEmits(['close', 'saved']);
-const { showWarning, showError } = useNotification();
+const { showWarning, handleApiError } = useNotification();
 
 const supplierForm = ref({
     supplier: ''
@@ -49,7 +49,7 @@ const submitForm = async () => {
         }
         emit('saved');
     } catch (error: any) {
-        showError('Error al guardar', error.response?.data?.message || 'Error al guardar el proveedor. Puede que ya exista.');
+        handleApiError(error);
     } finally {
         isSubmitting.value = false;
     }

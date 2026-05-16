@@ -13,10 +13,9 @@ const isMenuOpen = ref(false);
 const menuItems = [
   { name: 'Inicio', path: '/dashboard' },
   { name: 'Datos', path: '/data' },
-  { name: 'Calculos', path: '/calculate' },
+  { name: 'Cálculos', path: '/calculate' },
   { name: 'Movimientos', path: '/moves' },
-  
-  // Agrega más elementos del menú según sea necesario
+  { name: 'Inventario', path: '/inventory' }
 ];
 
 const toggleMenu = () => {  isMenuOpen.value = !isMenuOpen.value; };

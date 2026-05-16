@@ -1,4 +1,5 @@
 <script setup lang="ts">
+// --- IMPORTACIONES ---
 import { onMounted, ref, computed, watch } from 'vue';
 import { useRouter } from 'vue-router';
 import storesServices from '@/services/StoresServices';
@@ -7,6 +8,7 @@ import paymentServices from '@/services/PaymentServices';
 import departmentsServices from '@/services/DepartmentsServices';
 import { useNotification } from '@/composables/useNotification';
 
+// --- ESTADO GENERAL Y VARIABLES REACTIVAS ---
 const stores = ref<any>([]);
 const user = ref<string>('');
 const userId = ref<number>(0);
@@ -19,17 +21,38 @@ var unitPrice = ref<number>(0);
 const selectedPayment = ref<number | string>('');
 const totalSale = ref<number>(0);
 const notes = ref<string>('');
-const { showWarning, showError, showSuccess } = useNotification();
+const { showWarning, showError, showSuccess, handleApiError } = useNotification();
 const router = useRouter();
 
+// --- PROPIEDADES COMPUTADAS ---
+// Obtiene la opción seleccionada de sucursal
 const selectStoreOption = computed(() => {
     return selectedStore.value;
 });
 
+// AQUÍ SE CALCULA EL TOTAL ACUMULADO (Normal, sin comisiones)
+// Suma los subtotales de todas las partidas agregadas en la tabla de "Resumen de Ventas"
 const summaryTotal = computed(() => {
     return salesDetails.value.reduce((acc: number, detail: any) => acc + (Number(detail.subtotal) || 0), 0);
 });
 
+// Verifica dinámicamente si el método de pago seleccionado es tarjeta
+const isCardPayment = computed(() => {
+    const payment = payments.value.find((p: any) => (p.id_payment || p.id) === selectedPayment.value);
+    if (!payment) return false;
+    return String(payment.payment).toLowerCase().includes('tarjeta');
+});
+
+// Calcula el total final real (aplicando la comisión/descuento de tarjeta si aplica)
+const finalAmount = computed(() => {
+    const total = Number(totalSale.value) || 0;
+    if (isCardPayment.value) {
+        return total * 0.97; // 3% menos de comisión
+    }
+    return total;
+});
+
+// Calcula el subtotal actual del formulario de nueva partida (Cantidad * Precio Unitario)
 const currentSubtotal = computed(() => {
     return (Number(quantity.value) || 0) * (Number(unitPrice.value) || 0);
 });
@@ -39,6 +62,8 @@ const salesDetails = ref<any>([]);
 
 const sanitizeText = (value: string) => String(value || '').trim();
 
+// --- FUNCIONES DE VALIDACIÓN ---
+// Valida los datos de una partida individual antes de agregarla a la tabla
 const validateDetail = () => {
     if (!selectedStore.value) {
         showWarning('Sucursal requerida', 'Debes seleccionar una sucursal antes de agregar ventas.');
@@ -70,6 +95,7 @@ const validateDetail = () => {
     return true;
 };
 
+// Valida toda la transacción general antes de enviarla a la base de datos
 const validateTransaction = () => {
     if (!selectedStore.value) {
         showWarning('Sucursal requerida', 'Debes seleccionar una sucursal.');
@@ -119,6 +145,8 @@ const validateTransaction = () => {
     return true;
 };
 
+// --- OBSERVADORES (WATCHERS) Y CICLO DE VIDA (ONMOUNTED) ---
+// Observa cambios en la sucursal seleccionada para cargar sus departamentos correspondientes
 watch(selectStoreOption, async (newValue: number | '') => {
     const storeId = Number(newValue);
     if (!storeId) return;
@@ -129,6 +157,7 @@ watch(selectStoreOption, async (newValue: number | '') => {
     })).sort((a: any, b: any) => Number(a.id || 0) - Number(b.id || 0));
 });
 
+// Carga los datos iniciales al montar el componente (sucursales, usuario actual y métodos de pago)
 onMounted(async () => {
     try {
         const responseStores = await storesServices.getStores();
@@ -146,11 +175,13 @@ onMounted(async () => {
        
         
     } catch (error) {
-
+        handleApiError(error);
     }
     
 });
 
+// --- FUNCIONES PARA MANEJO DE LAS PARTIDAS (CARRITO) ---
+// Agrega una nueva partida a la tabla de resumen de ventas
 const addSale = () => {
     if (!validateDetail()) return;
 
@@ -169,6 +200,7 @@ const addSale = () => {
     unitPrice.value = 0;
 }
 
+// Elimina una partida de la tabla según su índice
 const removeSale = (index: number | string) => {
     salesDetails.value.splice(Number(index), 1);
 }
@@ -181,6 +213,8 @@ const goBack = () => {
     router.push('/data');
 };
 
+// --- FUNCIÓN PRINCIPAL DE GUARDADO ---
+// Construye el payload y envía la petición POST al backend para registrar la transacción
 const saveTransaction = async () => {
     if (!validateTransaction()) return;
 
@@ -188,7 +222,7 @@ const saveTransaction = async () => {
         fk1_id_store: selectedStore.value,
         fk2_id_user: userId.value,
         fk3_id_payment: Number(selectedPayment.value),
-        total_amount: totalSale.value,
+        total_amount: finalAmount.value, // Se envía el total con la comisión ya descontada
         notes: sanitizeText(notes.value),
         details: salesDetails.value.map((detail: any) => ({
             fk2_id_department: detail.fk2_id_department,
@@ -213,7 +247,7 @@ const saveTransaction = async () => {
         totalSale.value = 0;
         notes.value = '';
     } catch (error) {
-        showError('Error', 'Hubo un error al guardar la transacción.');
+        handleApiError(error);
     }
 }
 
@@ -224,12 +258,14 @@ const saveTransaction = async () => {
 <template>
 
 <div class="sales-form-container">
+    <!-- ENCABEZADO -->
     <div class="form-title-row">
         <h1 class="form-title">Agregar Ventas por Sucursal</h1>
         <button type="button" class="btn-back" @click="goBack">Regresar</button>
     </div>
 
     <form @submit.prevent="saveTransaction">
+        <!-- DATOS GENERALES DE LA TRANSACCIÓN -->
         <label for="store">Sucursal:</label>
         <select name="store" id="store" v-model.number="selectedStore" :disabled="salesDetails.length > 0">
             <option value="">Seleccionar Sucursal</option>
@@ -248,11 +284,17 @@ const saveTransaction = async () => {
         </select>
         <label for="totalSale">Total de la Venta (MXN):</label>
         <input type="number" step="0.01" min="0.01" placeholder="0.00" v-model.number="totalSale" required>
+        
+        <p v-if="isCardPayment" style="color: #d97706; font-size: 0.9em; margin-top: -10px; margin-bottom: 15px; font-weight: 500;">
+            Se registrará un total de <strong>$ {{ finalAmount.toFixed(2) }}</strong> (Total menos 3% de comisión por tarjeta).
+        </p>
+
         <label for="notes">Notas:</label>
         <input type="text" placeholder="Notas" v-model="notes" maxlength="500">
 
         <section class="details">
 
+            <!-- FORMULARIO PARA AGREGAR PARTIDAS INDIVIDUALES AL CARRITO -->
             <section>
                 <h3>Ventas Realizadas</h3>
                 <button @click.prevent="addSale">Agregar Venta</button>
@@ -264,13 +306,14 @@ const saveTransaction = async () => {
                     </option>
                 </select>
                 <label for="quantity">Cantidad:</label>
-                <input type="number" min="1" step="1" placeholder="Cantidad" v-model.number="quantity" required>
+                <input type="number" step="1" placeholder="Cantidad" v-model.number="quantity">
                 <label for="unitPrice">Precio Unitario (MXN):</label>
-                <input type="number" min="0.01" step="0.01" placeholder="0.00" v-model.number="unitPrice" required>
+                <input type="number" step="0.01" placeholder="0.00" v-model.number="unitPrice">
                 <label for="subtotal">Subtotal (MXN):</label>
                 <input id="subtotal" type="text" :value="`$ ${currentSubtotal.toFixed(2)}`" readonly>
             </section>
 
+            <!-- TABLA DE RESUMEN DE VENTAS (CARRITO Y TOTAL ACUMULADO) -->
             <section class="summary-section">
                 <h3>Resumen de Ventas</h3>
                 <div v-if="salesDetails.length === 0">
@@ -301,7 +344,12 @@ const saveTransaction = async () => {
                         <tfoot>
                             <tr>
                                 <td colspan="3" style="padding: 8px; text-align: right;"><strong>Total Acumulado:</strong></td>
-                                <td colspan="2" style="padding: 8px;"><strong>$ {{ Number(summaryTotal || 0).toFixed(2) }}</strong></td>
+                                <td colspan="2" style="padding: 8px;">
+                                    <strong>$ {{ Number(summaryTotal || 0).toFixed(2) }}</strong>
+                                    <div v-if="isCardPayment" style="color: #d97706; font-size: 0.85em; margin-top: 4px; font-weight: normal;">
+                                        Total con tarjeta: <strong>$ {{ (summaryTotal * 0.97).toFixed(2) }}</strong>
+                                    </div>
+                                </td>
                             </tr>
                         </tfoot>
                     </table>
@@ -310,6 +358,7 @@ const saveTransaction = async () => {
 
         </section>
 
+        <!-- BOTÓN FINAL DE ENVÍO -->
         <button type="submit">Agregar Transaccion</button>
 
     </form>

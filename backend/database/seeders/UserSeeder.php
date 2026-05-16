@@ -15,17 +15,17 @@ class UserSeeder extends Seeder
         $faker = Faker::create('es_MX');
 
         DB::table('users')->insert([
-            'name' => 'admin',
-            'email' => 'admin@gmail.com',
+            'name' => 'Guadalupe',
+            'email' => 'smariaguadalupe256@gmail.com',
             'password' => Hash::make('12345678'),
-            'phone' => '+524151805038',
+            'phone' => '+524151679796',
             'created_at' => now(),
             'updated_at' => now(),
         ]);
 
         DB::table('users')->insert([
             'name' => 'Sergio',
-            'email' => 'Sergio.cortes.n290399@gmail.com',
+            'email' => 'sergio.cortes.n290399@gmail.com',
             'password' => Hash::make('ArchLinuxLoMejor100%'),
             'phone' => '+524613083341',
             'created_at' => now(),

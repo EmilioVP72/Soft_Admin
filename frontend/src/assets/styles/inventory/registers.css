@@ -1,0 +1,445 @@
+* {    
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+.container {
+    padding: clamp(1rem, 3vw, 1.25rem);
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    width: 100%;
+    max-width: 100% !important;
+}
+
+/* ── Encabezado (Header) ── */
+.header {
+    --c-toolbar-bg:        #1e293b;
+    --c-toolbar-bg-hover:  #2d4a6e;
+    --c-btn-primary-bg:    #1179a2;
+    
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+    width: 100%;
+    padding: 0.75rem 1rem;
+    background: linear-gradient(135deg, var(--c-toolbar-bg) 0%, var(--c-toolbar-bg-hover) 100%);
+    border-radius: 8px;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+    margin-bottom: 20px;
+}
+
+.header h1 {
+    color: white;
+    font-size: clamp(1rem, 2vw + 0.5rem, 1.4rem);
+    margin: 0;
+}
+
+.header h1 span {
+    color: #55ffb0;
+    font-size: 1.8rem;
+    font-weight: bold;
+}
+
+.buttons {
+    display: flex;
+    gap: 0.75rem;
+    flex-wrap: wrap;
+    align-items: center;
+}
+
+.buttons button {
+    padding: 0.45rem 1.1rem;
+    border-radius: 6px;
+    font-size: 0.875rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: background-color 0.2s ease, color 0.2s ease, border-color 0.2s ease;
+    background-color: white;
+    color: var(--c-btn-primary-bg);
+    border: 2px solid white;
+}
+
+.buttons button:hover {
+    background-color: var(--c-btn-primary-bg);
+    color: white;
+    border-color: white;
+}
+
+/* Contenedor principal de tickets */
+.tickets {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    padding: 0.5rem 0 2rem 0;
+}
+
+/* Tarjeta de Ticket individual */
+.ticket {
+    background-color: var(--color-bg-card, #ffffff);
+    border: 1px solid var(--color-border, #e2e8f0);
+    border-radius: var(--border-radius-lg, 12px);
+    padding: clamp(1rem, 2vw, 1.5rem);
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    color: var(--color-text-primary, #333333);
+    box-shadow: 0 4px 12px var(--color-shadow, rgba(0,0,0,0.05));
+    transition: transform var(--transition-base, 0.3s ease), box-shadow var(--transition-base, 0.3s ease), border-color var(--transition-base, 0.3s ease);
+    position: relative;
+    overflow: hidden;
+}
+
+.ticket::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 4px;
+    height: 100%;
+    opacity: 0;
+    transition: opacity var(--transition-base, 0.3s ease);
+}
+
+/* Colores dinámicos del indicador según estado */
+.ticket.pending::before {
+    background: linear-gradient(180deg, var(--color-accent, #1179a2), var(--color-accent-light, #2ca9d4));
+}
+
+.ticket.verified::before {
+    background: linear-gradient(180deg, var(--color-modal-success, #10b981), #34d399);
+}
+
+.ticket.discrepancy::before {
+    background: linear-gradient(180deg, var(--color-danger, #ef4444), #f87171);
+}
+
+.ticket:hover {
+    transform: translateX(5px);
+    box-shadow: 0 10px 24px var(--color-shadow-hover, rgba(0,0,0,0.1));
+    border-color: var(--color-border-dark, #cbd5e1);
+}
+
+.ticket:hover::before {
+    opacity: 1;
+}
+
+/* Contenido del ticket */
+.ticket-data {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 1.5rem;
+    align-items: stretch;
+}
+
+/* Estado del ticket (Cabecera de la tarjeta) */
+.ticket-status {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    padding-bottom: 0;
+}
+
+.ticket-status h3:first-child {
+    font-weight: 700;
+    font-size: 1rem;
+    color: var(--color-primary, #1e293b);
+    margin: 0;
+    line-height: 1.3;
+}
+
+.ticket-status p {
+    font-size: 0.85rem;
+    font-style: italic;
+    color: #64748b;
+    margin: 0;
+}
+
+.status-container {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    margin-top: auto;
+    flex-wrap: wrap;
+}
+
+.status-badge {
+    align-self: flex-start;
+    font-size: 0.75rem;
+    padding: 0.35rem 0.85rem;
+    color: var(--color-text-white, white);
+    border-radius: 20px;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    font-weight: 700;
+    box-shadow: 0 2px 4px var(--color-shadow, rgba(0,0,0,0.1));
+}
+
+.btn-edit-status {
+    background-color: transparent;
+    color: var(--color-accent, #1179a2);
+    border: 1px solid var(--color-accent, #1179a2);
+    padding: 0.25rem 0.6rem;
+    font-size: 0.75rem;
+    font-weight: 600;
+    border-radius: 12px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+}
+
+.btn-edit-status:hover {
+    background-color: var(--color-accent, #1179a2);
+    color: white;
+}
+
+.status-badge.pending {
+    background-color: var(--color-accent, #1179a2);
+}
+
+.status-badge.verified {
+    background-color: var(--color-modal-success, #10b981);
+}
+
+.status-badge.discrepancy {
+    background-color: var(--color-danger, #ef4444);
+}
+
+/* Dependiendo del estado, se podría añadir clases .pending, .verified etc en el v-bind:class,
+   pero como es renderizado directo, al menos le damos un estilo base bonito */
+
+/* Sección de registro (Cantidad y Verificación) */
+.ticket-data-register {
+    background-color: #f8fafc;
+    border: 1px solid var(--color-border, #e2e8f0);
+    border-radius: var(--border-radius-md, 8px);
+    padding: 1rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 0.75rem;
+    box-shadow: inset 0 1px 3px rgba(0,0,0,0.02);
+}
+
+.ticket-data-register p {
+    font-size: 0.95rem;
+    margin: 0;
+    color: #475569;
+    font-weight: 600;
+}
+
+.ticket-data-register div {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+}
+
+.ticket-data-register input {
+    padding: 0.65rem;
+    border-radius: 6px;
+    border: 1px solid #cbd5e1;
+    font-size: 0.9rem;
+    outline: none;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+    width: 100%;
+}
+
+.ticket-data-register input:focus {
+    border-color: var(--color-accent, #1179a2);
+    box-shadow: 0 0 0 3px rgba(17, 121, 162, 0.1);
+}
+
+/* Se eliminó el botón de aquí ya que se movió a verificación */
+
+/* Fin del bloque register */
+
+/* Sección de verificación (Diferencia y Notas) */
+.ticket-data-verification {
+    background: linear-gradient(135deg, var(--color-primary, #1e293b) 0%, var(--color-primary-mid, #334155) 100%);
+    border-radius: var(--border-radius-md, 8px);
+    padding: 1rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 0.5rem;
+    color: var(--color-text-white, white);
+    box-shadow: 0 3px 6px rgba(0,0,0,0.15);
+}
+
+.ticket-data-verification p:first-child {
+    font-weight: 700;
+    font-size: 1rem;
+    color: var(--color-text-white, white);
+    margin: 0;
+}
+
+.ticket-data-verification p:last-child {
+    font-size: 0.85rem;
+    color: #cbd5e1;
+    margin: 0;
+    line-height: 1.4;
+    font-style: italic;
+}
+
+/* Formulario de notas y botón de verificación */
+.verification-actions {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    width: 100%;
+}
+
+.verification-actions textarea {
+    width: 100%;
+    padding: 0.65rem;
+    border-radius: 6px;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    background-color: rgba(0, 0, 0, 0.15);
+    color: white;
+    font-size: 0.85rem;
+    font-family: inherit;
+    outline: none;
+    resize: vertical;
+    min-height: 60px;
+    transition: border-color 0.2s ease, background-color 0.2s ease;
+}
+
+.verification-actions textarea::placeholder {
+    color: rgba(255, 255, 255, 0.5);
+}
+
+.verification-actions textarea:focus {
+    border-color: var(--color-accent-light, #2ca9d4);
+    background-color: rgba(0, 0, 0, 0.25);
+}
+
+.verification-actions button {
+    padding: 0.65rem;
+    font-size: 0.85rem;
+    font-weight: 700;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    background-color: var(--color-accent-light, #2ca9d4);
+    color: var(--color-primary, #1e293b);
+    border: none;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+    width: 100%;
+}
+
+.verification-actions button:hover {
+    background-color: white;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 10px rgba(255, 255, 255, 0.2);
+}
+
+/* Responsive */
+@media (max-width: 480px) {
+    .header {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+    .buttons {
+        width: 100%;
+    }
+    .buttons button {
+        width: 100%;
+    }
+}
+
+/* Modal styles */
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
+
+.modal-content {
+    background-color: var(--color-bg-card, #ffffff);
+    padding: 2rem;
+    border-radius: var(--border-radius-lg, 12px);
+    width: 90%;
+    max-width: 400px;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+}
+
+.modal-content h2 {
+    margin-top: 0;
+    margin-bottom: 1.5rem;
+    color: var(--color-primary, #1e293b);
+    font-size: 1.25rem;
+}
+
+.form-group {
+    margin-bottom: 1.25rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.form-group label {
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: #475569;
+}
+
+.form-group input {
+    padding: 0.65rem;
+    border-radius: 6px;
+    border: 1px solid #cbd5e1;
+    font-size: 0.95rem;
+    outline: none;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.form-group input:focus {
+    border-color: var(--color-accent, #1179a2);
+    box-shadow: 0 0 0 3px rgba(17, 121, 162, 0.1);
+}
+
+.modal-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 1rem;
+    margin-top: 2rem;
+}
+
+.modal-actions button {
+    padding: 0.5rem 1.25rem;
+    border-radius: 6px;
+    font-size: 0.9rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    border: none;
+}
+
+.btn-cancel {
+    background-color: #e2e8f0;
+    color: #475569;
+}
+
+.btn-cancel:hover {
+    background-color: #cbd5e1;
+}
+
+.btn-confirm {
+    background-color: var(--color-accent, #1179a2);
+    color: white;
+}
+
+.btn-confirm:hover {
+    background-color: var(--color-accent-hover, #0e6385);
+}

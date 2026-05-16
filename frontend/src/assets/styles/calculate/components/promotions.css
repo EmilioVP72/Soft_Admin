@@ -175,8 +175,25 @@
     font-size: 0.875rem;
     font-weight: 600;
     font-family: inherit;
-    cursor: not-allowed;
-    opacity: 0.55;
+    cursor: pointer;
+}
+
+.btn-pdf {
+    background-color: var(--color-pdf-button);
+    color: var(--color-text-white);
+}
+
+.btn-excel {
+    background-color: var(--color-excel-button);
+    color: var(--color-text-white);
+}
+
+.btn-pdf:hover {
+    background-color: #c53030;
+}
+
+.btn-excel:hover {
+    background-color: #2f855a;
 }
 
 .promotions-view .actions button:first-child {
@@ -184,9 +201,17 @@
     color: var(--color-text-white);
 }
 
+.promotions-view .actions button:first-child:hover {
+    background-color: #c53030;
+}
+
 .promotions-view .actions button:last-child {
     background-color: var(--color-excel-button);
     color: var(--color-text-white);
+}
+
+.promotions-view .actions button:last-child:hover {
+    background-color: #2f855a;
 }
 
 .supplier-section {
