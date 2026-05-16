@@ -6,11 +6,13 @@ import { useNotification } from '@/composables/useNotification';
 import { normalizeSearchText } from '@/utils/search';
 import { formatDateTime24, toDateInputValue } from '@/utils/datetime';
 import ReportsServices from '@/services/ReportsServices';
+import SkeletonTable from '@/components/shared/SkeletonTable.vue';
 
 const error_data = ref<boolean>(false);
 const error_details = ref<string>('');
 const storesSales = ref<any[]>([]);
-const { showError } = useNotification();
+const isLoading = ref(true);
+const { handleApiError } = useNotification();
 const storesSalesByStore = ref<any[]>([]);
 const originalStoresSalesByStore = ref<any[]>([]);
 const dataStore = ref<Array<{ storeId: number; storeName: string }>>([]);
@@ -26,6 +28,7 @@ const departmentOptions = ref<string[]>([]);
 const paymentOptions = ref<string[]>([]);
 
 const loadSalesForSelectedStore = async () => {
+    isLoading.value = true;
     if (!selectedOption.value) {
         storesSales.value = [];
         storesSalesByStore.value = [];
@@ -115,8 +118,9 @@ const loadSalesForSelectedStore = async () => {
         paymentOptions.value = Array.from(new Set(paymentValues));
         applyFilters();
     } catch (error: any) {
-        showError('Error', 'No se pudieron cargar los datos de ventas por sucursal.');
-        error_details.value = String(error.message || error);
+        handleApiError(error);
+    } finally {
+        isLoading.value = false;
     }
 };
 
@@ -150,6 +154,7 @@ onMounted(async () => {
 
     } catch (error) {
         error_data.value = true;
+        handleApiError(error);
     }
 
     }
@@ -318,11 +323,9 @@ function clearFilters() {
                 </div>
             </div>
         </div>
-        <div v-if="error_details" style="color: red; margin-bottom: 10px; padding: 10px; border: 1px solid red; border-radius: 4px;">
-            Atención: {{ error_details }}
-        </div>
         <div class="table-container">
-            <section class="table-section">
+            <SkeletonTable v-if="isLoading" :rows="5" :columns="6" />
+            <section v-else class="table-section">
                 <thead class="table-header">
                     <tr class="table-row">
                         <th class="table-cell">Departamento</th>

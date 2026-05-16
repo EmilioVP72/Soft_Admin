@@ -26,7 +26,7 @@ const isSubmitting = ref(false);
 
 const generalDepartments = ref<any[]>([]);
 const isLoadingDeps = ref(false);
-const { showWarning, showError } = useNotification();
+const { showWarning, handleApiError } = useNotification();
 
 const sanitizeText = (value: string) => String(value || '').trim();
 
@@ -40,7 +40,7 @@ const loadGeneralDepartments = async () => {
             Number(a.id_general_dep || a.id || 0) - Number(b.id_general_dep || b.id || 0)
         );
     } catch (error) {
-        showError('Error al cargar', 'No se pudieron cargar los departamentos generales.');
+        handleApiError(error);
     } finally {
         isLoadingDeps.value = false;
     }
@@ -102,7 +102,7 @@ const handleSubmit = async () => {
         }
         emit('saved');
     } catch (error: any) {
-        showError('Error', error.response?.data?.message || 'Ocurrió un error al guardar el departamento. Intenta de nuevo.');
+        handleApiError(error);
     } finally {
         isSubmitting.value = false;
     }

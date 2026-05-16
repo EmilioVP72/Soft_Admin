@@ -2,7 +2,6 @@
 
 import StoresServices from '@/services/StoresServices';
 import { onMounted, ref } from 'vue';
-import axios from 'axios';
 import ErrorMessage from '@/components/shared/Error.vue';
 import type { ChartData, ChartOptions } from 'chart.js';
 import BarGraph from '@/components/dashboard/graphics/BarGraph.vue';
@@ -67,14 +66,9 @@ onMounted(async () => {
             ]
         }
         isValid.value = false;
-    } catch (error) {
+    } catch (error: any) {
         isValid.value = true;
-        if(axios.isAxiosError(error)){
-            const status = error.response?.status;
-            if(status === 404){
-                message.value = error.response?.data?.message;
-            }
-        }
+        message.value = error?.response?.data?.message || error?.response?.data?.error || 'Hubo un error al obtener los datos generales. Por favor, inténtalo de nuevo más tarde.';
     }
 
     // Cargar gráficas por sucursal
@@ -123,24 +117,17 @@ onMounted(async () => {
                         }
                     }
                 });
-            } catch (error) {
-                showError('Error al cargar', `No se pudieron cargar los datos de la sucursal ${store.name}.`);
+            } catch (error: any) {
+                showError('Error al cargar', error?.response?.data?.message || error?.response?.data?.error || `No se pudieron cargar los datos de la sucursal ${store.name}.`);
             }
         }
         isValid2.value = storeCharts.value.length === 0;
         if (isValid2.value) {
             message2.value = 'No se encontraron datos de ventas por sucursal';
         }
-    } catch (error) {
+    } catch (error: any) {
         isValid2.value = true;
-        if(axios.isAxiosError(error)){
-            const status = error.response?.status;
-            if(status === 404){
-                message2.value = error.response?.data?.message || 'No se encontraron sucursales';
-            } else {
-                message2.value = 'Error al cargar las sucursales';
-            }
-        }
+        message2.value = error?.response?.data?.message || error?.response?.data?.error || 'Error al cargar las sucursales o no se encontraron datos disponibles.';
     }
 });
 

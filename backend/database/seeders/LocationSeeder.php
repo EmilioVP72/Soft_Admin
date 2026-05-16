@@ -4,11 +4,14 @@ namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
+use Faker\Factory as Faker;
 
 class LocationSeeder extends Seeder
 {
     public function run(): void
     {
+        $faker = Faker::create('es_MX');
+
         $countryId = DB::table('countries')->insertGetId([
             'country' => 'México',
             'created_at' => now(),
@@ -29,19 +32,30 @@ class LocationSeeder extends Seeder
             'updated_at' => now(),
         ], 'id_municipality');
 
-        DB::table('localities')->insert([
+        $localities = [
             [
-                'locality' => 'Zona Centro',
-                'fk1_id_municipality' => $municipalityId,
-                'created_at' => now(),
+                'locality' => 'Zona Centro', 
+                'fk1_id_municipality' => $municipalityId, 
+                'created_at' => now(), 
                 'updated_at' => now()
             ],
             [
-                'locality' => 'Guadalupe',
+                'locality' => 'Guadalupe', 
+                'fk1_id_municipality' => $municipalityId, 
+                'created_at' => now(), 
+                'updated_at' => now()
+            ]
+        ];
+
+        for ($i = 0; $i < 5; $i++) {
+            $localities[] = [
+                'locality' => 'Colonia ' . $faker->lastName,
                 'fk1_id_municipality' => $municipalityId,
                 'created_at' => now(),
                 'updated_at' => now()
-            ],
-        ]);
+            ];
+        }
+
+        DB::table('localities')->insert($localities);
     }
 }

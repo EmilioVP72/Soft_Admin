@@ -76,6 +76,31 @@ export const useNotification = () => {
         toasts.value = [];
     };
 
+    const handleApiError = (error?: any) => {
+        let message = 'No se pudo procesar la solicitud. Por favor, inténtalo más tarde o contacta a soporte técnico si el problema persiste.';
+        let title = 'Atención';
+
+        if (error?.response) {
+            const status = error.response.status;
+            const apiMessage = error.response.data?.message || error.response.data?.error;
+            
+            if (apiMessage) {
+                message = apiMessage;
+            }
+            if (status) {
+                title = `Error ${status}`;
+            }
+        } else if (error?.message) {
+            message = error.message;
+        }
+
+        showError(
+            title, 
+            message,
+            6000
+        );
+    };
+
     const showConfirmation = (
         title: string,
         message: string,
@@ -125,6 +150,7 @@ export const useNotification = () => {
         showWarning,
         showInfo,
         clearAllToasts,
+        handleApiError,
 
         // Modal management
         modal: computed(() => modal.value),

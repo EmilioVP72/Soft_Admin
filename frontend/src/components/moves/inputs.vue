@@ -8,6 +8,7 @@ import InputForm from './InputForm.vue';
 import ErrorComponent from '@/components/shared/Error.vue';
 import { normalizeSearchText } from '@/utils/search';
 import { formatDateTime24 } from '@/utils/datetime';
+import SkeletonTable from '@/components/shared/SkeletonTable.vue';
 
 interface MoveRow {
     id_transaction: number;
@@ -218,7 +219,8 @@ const exportExcel = () => {
             </div>
         </div>
         <div class="inputs-body table-section">
-            <table class="moves-table">
+            <SkeletonTable v-if="isLoading" :rows="8" :columns="7" />
+            <table v-else class="moves-table">
                 <thead class="table-header">
                     <tr class="header-row">
                         <th class="header-cell">ID</th>

@@ -4,6 +4,7 @@ namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
+use Faker\Factory as Faker;
 
 class DepartmentSeeder extends Seeder
 {
@@ -11,48 +12,30 @@ class DepartmentSeeder extends Seeder
     {
         $stores = DB::table('stores')->orderBy('id_store')->get();
         $suppliers = DB::table('suppliers')->get();
+        $faker = Faker::create('es_MX');
         
         if ($stores->isEmpty() || $suppliers->isEmpty()) {
             $this->command->warn('Stores or Suppliers missing. Skipping DepartmentSeeder.');
             return;
         }
 
-        // Definiciones de departamentos basadas en la lógica real (generalización vs especificidad)
-        $definitions = [
-            0 => [ // Primera tienda (Tienda Matriz por ejemplo)
-                'Lácteos' => [
-                    ['name' => 'Lácteos', 'desc' => 'Leche, yogures y crema']
-                ],
-                'Farmacia' => [
-                    ['name' => 'Farmacia', 'desc' => 'Medicamentos de patente, genéricos y cuidado personal']
-                ],
-                'Abarrotes' => [
-                    ['name' => 'Abarrotes', 'desc' => 'Despensa básica y abarrotes generales']
-                ],
-            ],
-            1 => [ // Segunda tienda (Sucursal Roma por ejemplo)
-                'Lácteos' => [
-                    ['name' => 'Quesos', 'desc' => 'Variedad de quesos regionales e importados']
-                ],
-                'Botanas' => [
-                    ['name' => 'Botanas', 'desc' => 'Frituras, cacahuates y snacks salados'],
-                    ['name' => 'Dulcería', 'desc' => 'Golosinas, chocolates y chicles']
-                ]
-            ]
+        $possibleDeps = [
+            'Abarrotes' => ['Abarrotes Básicos', 'Enlatados', 'Semillas y Cereales'],
+            'Lácteos' => ['Lácteos', 'Quesos', 'Yogures'],
+            'Carnes' => ['Carnes Rojas', 'Aves', 'Pescados'],
+            'Frutas y Verduras' => ['Frutas Frescas', 'Verduras', 'Legumbres'],
+            'Farmacia' => ['Medicamentos', 'Cuidado Personal', 'Suplementos'],
+            'Electrónica' => ['Audio y Video', 'Computación', 'Telefonía'],
+            'Hogar' => ['Limpieza', 'Blancos', 'Decoración'],
+            'Ferretería' => ['Herramientas', 'Eléctrico', 'Plomería']
         ];
 
-        foreach ($stores as $index => $store) {
-            // Utilizamos las definiciones preparadas. Si hubiera más tiendas, asignarían un por defecto.
-            $storeDefs = $definitions[$index] ?? [
-                'Abarrotes' => [
-                    ['name' => 'Abarrotes', 'desc' => 'Artículos de primera necesidad']
-                ],
-                'Lácteos' => [
-                    ['name' => 'Lácteos', 'desc' => 'Productos derivados de la leche']
-                ]
-            ];
+        foreach ($stores as $store) {
+            // Pick 3 to 5 random general departments for this store
+            $numDeps = rand(3, 5);
+            $selectedDeps = $faker->randomElements(array_keys($possibleDeps), $numDeps);
 
-            foreach ($storeDefs as $gDepName => $deps) {
+            foreach ($selectedDeps as $gDepName) {
                 // 1. Crear la generalización (general_deps) para la tienda
                 $gDepartmentId = DB::table('general_deps')->insertGetId([
                     'g_departament' => $gDepName,
@@ -63,33 +46,34 @@ class DepartmentSeeder extends Seeder
                 ], 'id_general_dep');
 
                 // 2. Crear los departamentos específicos ligados a la generalización
-                foreach ($deps as $dep) {
+                foreach ($possibleDeps[$gDepName] as $depName) {
                     $departmentId = DB::table('departments')->insertGetId([
-                        'department' => $dep['name'],
-                        'description' => $dep['desc'],
+                        'department' => $depName,
+                        'description' => 'Subcategoría: ' . $depName,
                         'fk1_id_general_dep' => $gDepartmentId,
                         'created_at' => now(),
                         'updated_at' => now(),
                     ], 'id_department');
 
-                    // 3. Simular montos de proveedores para el departamento
-                    $supplier = $suppliers->random();
-
-                    DB::table('department_suppliers')->insert([
-                        'montos' => rand(10000, 50000),
-                        'fk1_id_supplier' => $supplier->id_supplier,
-                        'fk2_id_department' => $departmentId,
-                    ]);
-                    
-                    // 4. Registrar pagos simulados a ese proveedor
-                    DB::table('supplier_payments')->insert([
-                        'fk1_id_supplier' => $supplier->id_supplier,
-                        'fk2_id_department' => $departmentId,
-                        'amount_paid' => rand(1000, 15000),
-                        'payment_date' => now()->subDays(rand(1, 45)),
-                        'created_at' => now(),
-                        'updated_at' => now(),
-                    ]);
+                    // 3. Simular montos de proveedores para el departamento (1 o 2 proveedores)
+                    $depSuppliers = $suppliers->random(rand(1, 2));
+                    foreach ($depSuppliers as $supplier) {
+                        DB::table('department_suppliers')->insert([
+                            'montos' => rand(10000, 50000),
+                            'fk1_id_supplier' => $supplier->id_supplier,
+                            'fk2_id_department' => $departmentId,
+                        ]);
+                        
+                        // 4. Registrar pagos simulados a ese proveedor
+                        DB::table('supplier_payments')->insert([
+                            'fk1_id_supplier' => $supplier->id_supplier,
+                            'fk2_id_department' => $departmentId,
+                            'amount_paid' => rand(1000, 15000),
+                            'payment_date' => $faker->dateTimeBetween('-2 months', 'now'),
+                            'created_at' => now(),
+                            'updated_at' => now(),
+                        ]);
+                    }
                 }
             }
         }

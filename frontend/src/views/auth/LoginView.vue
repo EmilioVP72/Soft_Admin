@@ -3,11 +3,13 @@ import {reactive, ref} from 'vue';
 import {useRouter} from 'vue-router';
 import LoginServices from '@/services/LoginServices';
 import { useAuthStore } from '../../stores/auth';
+import { useGlobalLoader } from '@/composables/useGlobalLoader';
 import axios from 'axios';
 import {z} from 'zod';
 
 const router = useRouter();
 const authStore = useAuthStore();
+const { startLoading, stopLoading } = useGlobalLoader();
 
 const formData = reactive({
   email: '',
@@ -58,6 +60,8 @@ const submitForm = async () => {
     return;
   }
   
+  startLoading();
+  
   try {
     
     const response = await LoginServices.loginUser({email: formData.email, password: formData.password});
@@ -78,6 +82,7 @@ const submitForm = async () => {
 
   } finally{
     isLoading.value = false;
+    stopLoading();
   }
 }
 

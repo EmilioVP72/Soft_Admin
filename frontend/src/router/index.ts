@@ -59,6 +59,24 @@ const router = createRouter({
         showNavbar: true, 
         requiresAuth: true 
        }
+    },
+    {
+      path: '/inventory',
+      name: 'inventory',
+      component: () => import('@/views/inventory/Inventory.vue'),
+      meta : { 
+        showNavbar: true, 
+        requiresAuth: true 
+       }
+    },
+    {
+      path: '/ticket/:id/:name',
+      name: 'ticket',
+      component: () => import('@/components/inventory/InventoriesRegister.vue'),
+      meta : { 
+        showNavbar: true, 
+        requiresAuth: true 
+       }
     }
   ]
 })
