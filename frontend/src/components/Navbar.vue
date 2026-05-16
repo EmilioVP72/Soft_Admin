@@ -15,8 +15,7 @@ const menuItems = [
   { name: 'Datos', path: '/data' },
   { name: 'Calculos', path: '/calculate' },
   { name: 'Movimientos', path: '/moves' },
-  
-  // Agrega más elementos del menú según sea necesario
+  { name: 'Inventario', path: '/inventory' }
 ];
 
 const toggleMenu = () => {  isMenuOpen.value = !isMenuOpen.value; };

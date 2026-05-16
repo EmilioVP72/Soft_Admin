@@ -2,7 +2,7 @@
 import { 
   BanknotesIcon, 
   TableCellsIcon,
-  DocumentCurrencyDollarIcon
+  ClipboardDocumentListIcon
 } from '@heroicons/vue/24/outline';
 
 </script>
@@ -13,13 +13,13 @@ import {
             <h2>Acciones Rápidas</h2>
             <section class="actions" >
                 <section class="action" >
-                    <DocumentCurrencyDollarIcon class="icon"/>
-                    <h3>Realizar Factura</h3>
-                    <p>Para crear una factura ingresando los datos necesarios</p>
-                    <h3>En Construcción...</h3>
-                    <!-- <RouterLink to="" class="btn-action">
-                        Crear Factura
-                    </RouterLink> -->
+                    <ClipboardDocumentListIcon class="icon"/>
+                    <h3>Inventario</h3>
+                    <p>Registrar mercancía entrante, verificar su estado y generar reportes para revisión con proveedores en caso de daños o inconsistencias.
+                    </p>
+                    <RouterLink to="/inventory" class="btn-action">
+                        Ver Inventario
+                    </RouterLink>
                 </section>     
                 <section class="action">
                     <BanknotesIcon class="icon"/>

@@ -69,12 +69,7 @@ onMounted(async () => {
         isValid.value = false;
     } catch (error) {
         isValid.value = true;
-        if(axios.isAxiosError(error)){
-            const status = error.response?.status;
-            if(status === 404){
-                message.value = error.response?.data?.message;
-            }
-        }
+        message.value = 'Hubo un error al obtener los datos generales. Por favor, inténtalo de nuevo más tarde.';
     }
 
     // Cargar gráficas por sucursal
@@ -133,14 +128,7 @@ onMounted(async () => {
         }
     } catch (error) {
         isValid2.value = true;
-        if(axios.isAxiosError(error)){
-            const status = error.response?.status;
-            if(status === 404){
-                message2.value = error.response?.data?.message || 'No se encontraron sucursales';
-            } else {
-                message2.value = 'Error al cargar las sucursales';
-            }
-        }
+        message2.value = 'Error al cargar las sucursales o no se encontraron datos disponibles.';
     }
 });
 

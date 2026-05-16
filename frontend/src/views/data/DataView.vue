@@ -6,6 +6,7 @@ import GeneralSales from '@/components/data/sales/GeneralSales.vue';
 import StoresSales from '@/components/data/sales/StoresSales.vue';
 import Departments from '@/components/data/departments/Departments.vue';
 import Suppliers from '@/components/data/suppliers/Suppliers.vue';
+import GeneralDepartments from '@/components/data/departments/GeneralDepartments.vue';
 const componentsMap = {
     'sucursal': Stores,
     'empleados': Employees,
@@ -13,7 +14,7 @@ const componentsMap = {
     'ventas_sucursal': StoresSales,
     'departamentos': Departments,
     'proveedores': Suppliers,
-    
+    'departamentos_generales': GeneralDepartments,    
 };
 
 const options = [
@@ -23,7 +24,7 @@ const options = [
     { value: 'ventas_sucursal', label: 'Ventas por Sucursal' },
     { value: 'departamentos', label: 'Departamentos' },
     { value: 'proveedores', label: 'Proveedores' },
-
+    { value: 'departamentos_generales', label: 'Departamentos Generales' },
 ];
 
 const selectedOption = ref(localStorage.getItem('dataViewOption') || 'ventas');

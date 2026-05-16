@@ -12,7 +12,7 @@ const props = defineProps({
 });
 
 const emit = defineEmits(['close', 'saved']);
-const { showWarning, showError } = useNotification();
+const { showWarning, showError, handleApiError } = useNotification();
 
 const form = ref({
     fk2_id_department: '',
@@ -86,7 +86,7 @@ const submitForm = async () => {
         });
         emit('saved');
     } catch (error: any) {
-        showError('Error al registrar', error.response?.data?.message || 'Error al registrar el pago.');
+        handleApiError(error);
     } finally {
         isSubmitting.value = false;
     }
