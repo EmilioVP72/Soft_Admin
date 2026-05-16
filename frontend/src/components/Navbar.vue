@@ -13,7 +13,7 @@ const isMenuOpen = ref(false);
 const menuItems = [
   { name: 'Inicio', path: '/dashboard' },
   { name: 'Datos', path: '/data' },
-  { name: 'Calculos', path: '/calculate' },
+  { name: 'Cálculos', path: '/calculate' },
   { name: 'Movimientos', path: '/moves' },
   { name: 'Inventario', path: '/inventory' }
 ];

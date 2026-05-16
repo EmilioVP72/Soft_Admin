@@ -4,6 +4,7 @@ import { useRoute } from 'vue-router';
 import InventoryServices from '@/services/InventoryServices';
 import { useNotification } from '@/composables/useNotification';
 import SkeletonCard from '@/components/shared/SkeletonCard.vue';
+import EmptyState from '@/components/shared/EmptyState.vue';
 
 const route = useRoute();
 const { showError, showSuccess, handleApiError } = useNotification();
@@ -20,9 +21,9 @@ const newTicket = ref({
 
 const loadTickets = async () => {
     try{
-        const response = await InventoryServices.getAllRegistersOfProduct(route.params.id);
+        const response = await InventoryServices.getAllRegistersOfProduct(Number(route.params.id));
         registers.value = response.data.data.map((item: any) => ({    
-            idTicket: item.id_product_inventory,  
+            ticketId: item.id_product_inventory,  
             quantity: item.ticket_quantity,
             physicalQuantity: item.physical_quantity,
             difference: item.difference,
@@ -86,7 +87,7 @@ const submitNewTicket = async () => {
     
     try {
         const payload = {
-            fk1_id_product: route.params.id,
+            fk1_id_product: Number(route.params.id),
             ticket_quantity: newTicket.value.ticket_quantity,
             status: 'pending',
             ticket_date: newTicket.value.ticket_date.replace('T', ' ') + ':00'
@@ -118,7 +119,7 @@ const verifyTicket = async (register: any) => {
             physical_quantity: register.physicalQuantity,
             notes: register.notes || ''
         };
-        await InventoryServices.verifyInventory(register.idTicket, payload);
+        await InventoryServices.verifyInventory(register.ticketId, payload);
         
         // Reload list
         loadTickets();
@@ -151,7 +152,7 @@ onMounted( async () => {
                 <h2>Registrar Nuevo Ticket</h2>
                 <div class="form-group">
                     <label>Producto</label>
-                    <input type="text" :value="route.params.name" disabled>
+                    <input type="text" :value="productName" disabled>
                 </div>
                 <div class="form-group">
                     <label>Estado Inicial</label>
@@ -174,13 +175,19 @@ onMounted( async () => {
 
         <section class="tickets">
             <SkeletonCard v-if="isLoading" :count="4" />
+            <EmptyState 
+                v-else-if="registers.length === 0"
+                title="Historial Vacío"
+                message="No se encontró ningún registro en el historial para este producto."
+                iconClass="fas fa-clipboard-list"
+            />
             <template v-else>
                 <div v-for="register in registers" :key="register.ticketId" :class="['ticket', register.status]">
-                <section class="ticket-data">
-                    <div class="ticket-status">
-                        <h3>Fecha: {{ formatDate(register.ticketDate) }} | Hora: {{ formatTime(register.ticketDate) }}</h3>
-                        <p v-if="register.verifiedAt">Verificación: {{ formatDate(register.verifiedAt) }} | Hora: {{ formatTime(register.verifiedAt) }}</p>
-                        <p v-else>Verificación: Aún no verificado</p>
+                    <section class="ticket-data">
+                        <div class="ticket-status">
+                            <h3>Fecha: {{ formatDate(register.ticketDate) }} | Hora: {{ formatTime(register.ticketDate) }}</h3>
+                            <p v-if="register.verifiedAt">Verificación: {{ formatDate(register.verifiedAt) }} | Hora: {{ formatTime(register.verifiedAt) }}</p>
+                            <p v-else>Verificación: Aún no verificado</p>
                         <div class="status-container">
                             <h3 :class="['status-badge', register.status]">{{ mapStatus(register.status) }}</h3>
                             <button v-if="register.status === 'discrepancy' && !register.isEditing" class="btn-edit-status" @click="register.isEditing = true" title="Editar discrepancia">
@@ -206,7 +213,7 @@ onMounted( async () => {
                         </div>
                         <div v-else>
                             <p>Diferencia: {{ register.difference  || 0}}</p>
-                            <p>{{ register.notes || 'No se han registrado notas o aun no se verifica el registro' }}</p>
+                            <p>{{ register.notes || 'No se han registrado notas o aún no se verifica el registro' }}</p>
                         </div>
                     </div>
                 </section>

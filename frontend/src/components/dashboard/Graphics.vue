@@ -67,9 +67,9 @@ onMounted(async () => {
             ]
         }
         isValid.value = false;
-    } catch (error) {
+    } catch (error: any) {
         isValid.value = true;
-        message.value = 'Hubo un error al obtener los datos generales. Por favor, inténtalo de nuevo más tarde.';
+        message.value = error?.response?.data?.message || error?.response?.data?.error || 'Hubo un error al obtener los datos generales. Por favor, inténtalo de nuevo más tarde.';
     }
 
     // Cargar gráficas por sucursal
@@ -118,17 +118,17 @@ onMounted(async () => {
                         }
                     }
                 });
-            } catch (error) {
-                showError('Error al cargar', `No se pudieron cargar los datos de la sucursal ${store.name}.`);
+            } catch (error: any) {
+                showError('Error al cargar', error?.response?.data?.message || error?.response?.data?.error || `No se pudieron cargar los datos de la sucursal ${store.name}.`);
             }
         }
         isValid2.value = storeCharts.value.length === 0;
         if (isValid2.value) {
             message2.value = 'No se encontraron datos de ventas por sucursal';
         }
-    } catch (error) {
+    } catch (error: any) {
         isValid2.value = true;
-        message2.value = 'Error al cargar las sucursales o no se encontraron datos disponibles.';
+        message2.value = error?.response?.data?.message || error?.response?.data?.error || 'Error al cargar las sucursales o no se encontraron datos disponibles.';
     }
 });
 

@@ -36,10 +36,17 @@ const summaryTotal = computed(() => {
     return salesDetails.value.reduce((acc: number, detail: any) => acc + (Number(detail.subtotal) || 0), 0);
 });
 
+// Verifica dinámicamente si el método de pago seleccionado es tarjeta
+const isCardPayment = computed(() => {
+    const payment = payments.value.find((p: any) => (p.id_payment || p.id) === selectedPayment.value);
+    if (!payment) return false;
+    return String(payment.payment).toLowerCase().includes('tarjeta');
+});
+
 // Calcula el total final real (aplicando la comisión/descuento de tarjeta si aplica)
 const finalAmount = computed(() => {
     const total = Number(totalSale.value) || 0;
-    if (selectedPayment.value === 2) {
+    if (isCardPayment.value) {
         return total * 0.97; // 3% menos de comisión
     }
     return total;
@@ -278,7 +285,7 @@ const saveTransaction = async () => {
         <label for="totalSale">Total de la Venta (MXN):</label>
         <input type="number" step="0.01" min="0.01" placeholder="0.00" v-model.number="totalSale" required>
         
-        <p v-if="selectedPayment === 2" style="color: #d97706; font-size: 0.9em; margin-top: -10px; margin-bottom: 15px; font-weight: 500;">
+        <p v-if="isCardPayment" style="color: #d97706; font-size: 0.9em; margin-top: -10px; margin-bottom: 15px; font-weight: 500;">
             Se registrará un total de <strong>$ {{ finalAmount.toFixed(2) }}</strong> (Total menos 3% de comisión por tarjeta).
         </p>
 
@@ -339,7 +346,7 @@ const saveTransaction = async () => {
                                 <td colspan="3" style="padding: 8px; text-align: right;"><strong>Total Acumulado:</strong></td>
                                 <td colspan="2" style="padding: 8px;">
                                     <strong>$ {{ Number(summaryTotal || 0).toFixed(2) }}</strong>
-                                    <div v-if="selectedPayment === 2" style="color: #d97706; font-size: 0.85em; margin-top: 4px; font-weight: normal;">
+                                    <div v-if="isCardPayment" style="color: #d97706; font-size: 0.85em; margin-top: 4px; font-weight: normal;">
                                         Total con tarjeta: <strong>$ {{ (summaryTotal * 0.97).toFixed(2) }}</strong>
                                     </div>
                                 </td>

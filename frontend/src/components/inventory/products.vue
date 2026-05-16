@@ -66,8 +66,8 @@ const filteredProducts = computed(() => {
         // Search filter
         const query = props.search.toLowerCase().trim();
         const matchesSearch = query === '' || 
-                              p.product.toLowerCase().includes(query) || 
-                              (p.barcode && p.barcode.toLowerCase().includes(query));
+                              String(p.product || '').toLowerCase().includes(query) || 
+                              String(p.barcode || '').toLowerCase().includes(query);
         
         // Status filter
         let matchesStatus = true;
