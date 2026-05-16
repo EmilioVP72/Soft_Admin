@@ -21,7 +21,7 @@ var unitPrice = ref<number>(0);
 const selectedPayment = ref<number | string>('');
 const totalSale = ref<number>(0);
 const notes = ref<string>('');
-const { showWarning, showError, showSuccess, handleApiError } = useNotification();
+const { showWarning, showSuccess, handleApiError } = useNotification();
 const router = useRouter();
 
 // --- PROPIEDADES COMPUTADAS ---

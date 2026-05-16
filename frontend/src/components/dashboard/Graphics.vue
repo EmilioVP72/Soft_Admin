@@ -2,7 +2,6 @@
 
 import StoresServices from '@/services/StoresServices';
 import { onMounted, ref } from 'vue';
-import axios from 'axios';
 import ErrorMessage from '@/components/shared/Error.vue';
 import type { ChartData, ChartOptions } from 'chart.js';
 import BarGraph from '@/components/dashboard/graphics/BarGraph.vue';

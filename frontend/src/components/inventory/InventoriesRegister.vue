@@ -152,7 +152,7 @@ onMounted( async () => {
                 <h2>Registrar Nuevo Ticket</h2>
                 <div class="form-group">
                     <label>Producto</label>
-                    <input type="text" :value="productName" disabled>
+                    <input type="text" :value="route.params.name" disabled>
                 </div>
                 <div class="form-group">
                     <label>Estado Inicial</label>
